@@ -18,13 +18,13 @@
 # 2. loop (array expansion): is replaced with 'n' lines, for each element of the 'array' variable
 #	%%for (varname): // (single-line version) some code here
 #	%%for (varname)
-#	// (multi-line version) some code here
+#	// (multi-line version - note the absence of ':') some code here
 #	%%end for
 #
 # 3. conditional: is put into the output only if the condition evaluates to true
 #	%%if myfunc(foo,bar): // (single-line version) some code here
 #	%%if myfunc(foo,bar)
-#	// (multi-line version) some code here
+#	// (multi-line version - note the absence of ':') some code here
 #	%%end if
 
 
