@@ -4,7 +4,6 @@
 # Here is an example of how this script should be called:
 #	$ awk \
 #		-v variables=" foo=FOO; bar=BAR; " \
-#		-v functions=" myfunc1(2) myfunc2(0) " \
 #		-f "util.awk" \
 #		-f "template-functions.awk" \
 #		-f "template.awk" \

@@ -304,24 +304,18 @@ cccmk_template()
 		packagefile=$project_packagefile;
 		track_paths=$project_track_paths;
 		track=$project_track;
-	"
+		"
 	fi
-	local functions="
-		is(2)
-		tracked(1)
-	"
 	if [ -z "$outputfile" ]
 	then
 		awk_inplace "$inputfile" \
 		-v variables="$variables" \
-		-v functions="$functions" \
 		-f "$CCCMK_PATH_SCRIPTS/util.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template-functions.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template.awk"
 	else
 		awk \
 		-v variables="$variables" \
-		-v functions="$functions" \
 		-f "$CCCMK_PATH_SCRIPTS/util.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template-functions.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template.awk" \

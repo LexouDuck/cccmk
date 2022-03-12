@@ -81,13 +81,12 @@ Each project template file is processed by the `template.awk` templater program 
 // Here is an example of how this script should be called:
 	$ awk \
 		-v variables=" foo=FOO; bar=BAR; " \
-		-v functions=" myfunc1(2) myfunc2(0) " \
 		-f ~/.cccmk/scripts/util.awk \
 		-f ~/.cccmk/scripts/template-functions.awk \
 		-f ~/.cccmk/scripts/template.awk \
 		"$inputfile"
 
-// As for the syntax of the template file's contents, essentially 3 directives are accepted:
+// As for the syntax of the template file's contents, essentially 3 kinds of directives are accepted:
 
 // 1. variable (string expansion): is replaced with the content of the variable named 'varname'
 	%[varname]%

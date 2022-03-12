@@ -114,12 +114,13 @@ include $(MKFILES_DIR)rules/packages.mk
 
 include $(MKFILES_DIR)rules/lists.mk
 include $(MKFILES_DIR)rules/build.mk
-%%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/lists-tests.mk):include $(MKFILES_DIR)rules/lists-tests.mk
-%%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/build-tests.mk):include $(MKFILES_DIR)rules/build-tests.mk
+%%if tracked(_if_ask_mkfile/mkfile/rules/_if_type_program/_if_ask_app/app.mk):include $(MKFILES_DIR)rules/app.mk
 include $(MKFILES_DIR)rules/install.mk
 include $(MKFILES_DIR)rules/dist.mk
 include $(MKFILES_DIR)rules/clean.mk
 
+%%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/lists-tests.mk):include $(MKFILES_DIR)rules/lists-tests.mk
+%%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/build-tests.mk):include $(MKFILES_DIR)rules/build-tests.mk
 %%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/test.mk)       :include $(MKFILES_DIR)rules/test.mk
 %%if tracked(_if_ask_mkfile/mkfile/rules/_if_multiselect/coverage.mk)     :include $(MKFILES_DIR)rules/coverage.mk
 %%if tracked(_if_ask_mkfile/mkfile/rules/_if_multiselect/debugging.mk)    :include $(MKFILES_DIR)rules/debugging.mk

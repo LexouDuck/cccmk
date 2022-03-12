@@ -4,4 +4,4 @@ Name=%[appname]%
 Comment=%[description]%
 Version=%[version]%
 Exec=%[name]%
-Icon=%[icon]%
+Icon=%[name]%

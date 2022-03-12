@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>      <string>English</string>
     <key>CFBundleExecutable</key>             <string>%[appname]%</string>
     <key>CFBundleGetInfoString</key>          <string>%[version]%, Copyright %[year]% %[author]%</string>
-    <key>CFBundleIconFile</key>               <string>%[name]%.icns</string>
+    <key>CFBundleIconFile</key>               <string>icons.icns</string>
     <key>CFBundleIdentifier</key>             <string>com.mycompany.%[name]%</string>
     <key>CFBundleDocumentTypes</key>          <array></array>
     <key>CFBundleInfoDictionaryVersion</key>  <string>6.0</string>
