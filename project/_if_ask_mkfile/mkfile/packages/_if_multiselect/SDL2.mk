@@ -8,20 +8,22 @@ PACKAGE_SDL2_LIBMODE ?= dynamic
 PACKAGE_SDL2_DIR = $(LIBDIR)$(PACKAGE_SDL2)/
 PACKAGE_SDL2_BIN = $(PACKAGE_SDL2_DIR)bin/$(OSMODE)/
 PACKAGE_SDL2_INCLUDE = $(PACKAGE_SDL2_BIN)include/SDL2/
-PACKAGE_SDL2_LINKDIR = $(PACKAGE_SDL2_BIN)bin/
+PACKAGE_SDL2_LINKDIR = $(PACKAGE_SDL2_BIN)$(PACKAGE_SDL2_LIBMODE)/
 PACKAGE_SDL2_LINKLIB = -lSDL2
 PACKAGE_SDL2_LINK = -L$(PACKAGE_SDL2_LINKDIR) $(PACKAGE_SDL2_LINKLIB)
 ifeq ($(OSMODE),linux)
-	PACKAGE_SDL2_INCLUDE = $(PACKAGE_SDL2_BIN)include/
+	PACKAGE_SDL2_INCLUDE = $(PACKAGE_SDL2_BIN)$(PACKAGE_SDL2_LIBMODE)/include/
 	PACKAGE_SDL2_LINKDIR = $(PACKAGE_SDL2_BIN)build/.libs/
 	PACKAGE_SDL2_LINKLIB += -lm
 endif
 # on MacOS, SDL2 is a framework, so linking is complicated
 ifeq ($(OSMODE),macos)
-	PACKAGE_SDL2_INCLUDE = $(PACKAGE_SDL2_BIN)SDL2.framework/Headers/
-	PACKAGE_SDL2_LINKDIR = $(PACKAGE_SDL2_BIN)
+ifeq ($(PACKAGE_SDL2_LIBMODE),dynamic)
+	PACKAGE_SDL2_INCLUDE = $(PACKAGE_SDL2_BIN)$(PACKAGE_SDL2_LIBMODE)/SDL2.framework/Headers/
+	PACKAGE_SDL2_LINKDIR = $(PACKAGE_SDL2_BIN)$(PACKAGE_SDL2_LIBMODE)/
 	PACKAGE_SDL2_LINKLIB = -framework SDL2
 	PACKAGE_SDL2_LINK = -F$(PACKAGE_SDL2_LINKDIR) $(PACKAGE_SDL2_LINKLIB)
+endif
 endif
 
 
@@ -36,9 +38,10 @@ else ifneq ($(filter $(OSMODE), win32 win64),)
 	PACKAGE_SDL2_PKG = SDL2-devel-$(PACKAGE_SDL2_VERSION)-mingw.tar.gz
 	PACKAGE_SDL2_PKG_INSTALL = \
 		tar -xf $(PACKAGE_SDL2_PKG) --directory=$(PACKAGE_SDL2_DIR) ; \
-		{ mv -f $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION)/* $(PACKAGE_SDL2_DIR) && rmdir $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION) ; } ; \
-		{ mkdir -p $(PACKAGE_SDL2_DIR)bin/win32/ && mv $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32/* $(PACKAGE_SDL2_DIR)bin/win32/ && rmdir $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32 ; } ; \
-		{ mkdir -p $(PACKAGE_SDL2_DIR)bin/win64/ && mv $(PACKAGE_SDL2_DIR)i686-w64-mingw32/*   $(PACKAGE_SDL2_DIR)bin/win64/ && rmdir $(PACKAGE_SDL2_DIR)i686-w64-mingw32   ; } ;
+		mv -f $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION)/* $(PACKAGE_SDL2_DIR) && \
+		rmdir $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION) ; \
+		{ mkdir -p $(PACKAGE_SDL2_DIR)bin/win32/ && mv $(PACKAGE_SDL2_DIR)i686-w64-mingw32/*   $(PACKAGE_SDL2_DIR)bin/win32/ && rmdir $(PACKAGE_SDL2_DIR)i686-w64-mingw32   ; } ; \
+		{ mkdir -p $(PACKAGE_SDL2_DIR)bin/win64/ && mv $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32/* $(PACKAGE_SDL2_DIR)bin/win64/ && rmdir $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32 ; } ;
 	PACKAGE_SDL2_GETVERSIONS = \
 		grep 'mingw.tar.gz'
 else ifeq ($(OSMODE),macos)
@@ -46,7 +49,7 @@ else ifeq ($(OSMODE),macos)
 	PACKAGE_SDL2_PKG_INSTALL = \
 		listing=`hdiutil attach $(PACKAGE_SDL2_PKG) | grep Volumes` ; \
 		volume=`echo "$$listing" | cut -f 3` ; \
-		cp -rf "$$volume"/SDL2.framework $(PACKAGE_SDL2_BIN) ; \
+		cp -rf "$$volume"/SDL2.framework $(PACKAGE_SDL2_BIN)$(PACKAGE_SDL2_LIBMODE) ; \
 		hdiutil detach `echo "$$listing" | cut -f 1`
 	PACKAGE_SDL2_GETVERSIONS = \
 		grep '.dmg'
@@ -54,7 +57,8 @@ else ifeq ($(OSMODE),linux)
 	PACKAGE_SDL2_PKG = SDL2-$(PACKAGE_SDL2_VERSION).zip
 	PACKAGE_SDL2_PKG_INSTALL = \
 		unzip $(PACKAGE_SDL2_PKG) -d $(PACKAGE_SDL2_DIR) ; \
-		{ mv -f $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION)/* $(PACKAGE_SDL2_BIN) && rmdir $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION) ; } ; \
+		mv -f $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION)/* $(PACKAGE_SDL2_BIN) && \
+		rmdir $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION) ; \
 		cd $(PACKAGE_SDL2_BIN) ; \
 		./configure && make
 	PACKAGE_SDL2_GETVERSIONS = \
@@ -86,8 +90,8 @@ package-SDL2 #! downloads the package, according to the version number set
 package-SDL2:
 	@$(call packages_setversion,$(PACKAGE_SDL2),$(PACKAGE_SDL2_VERSION))
 	@$(call print_message,"Downloading package: $(PACKAGE_SDL2)@$(PACKAGE_SDL2_VERSION)...")
-	@mkdir -p $(PACKAGE_SDL2_BIN)
 	@curl $(PACKAGE_SDL2_URL)$(PACKAGE_SDL2_PKG) --progress-bar --output $(PACKAGE_SDL2_PKG)
+	@mkdir -p $(PACKAGE_SDL2_BIN)$(PACKAGE_SDL2_LIBMODE)
 	@$(PACKAGE_SDL2_PKG_INSTALL)
 	@rm -f $(PACKAGE_SDL2_PKG)
 	@$(call print_success,"Installed $(PACKAGE_SDL2)@$(PACKAGE_SDL2_VERSION)")

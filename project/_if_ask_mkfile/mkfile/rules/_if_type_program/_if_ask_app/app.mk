@@ -2,16 +2,18 @@
 
 
 
-#! The year for this application (used for copyright metadata)
-APPYEAR := $(shell . .cccmk && echo $${project_year})
-#! The author name for this application (used for copyright metadata)
-APPSIGN := $(shell . .cccmk && echo $${project_author})
 #! The full name of the application (with spaces, and any other strange characters)
 APPNAME := $(NAME)
 #! The short description of the application
 APPDESC := 
 #! The filepath of the icon file to associate with this application (ideally, a 512x512 .png image)
 APPICON := 
+#! The year for this application (used for copyright metadata)
+APPYEAR := $(shell . .cccmk && echo $${project_year})
+#! The author name for this application (used for copyright metadata)
+APPAUTHOR := $(shell . .cccmk && echo $${project_author})
+#! The complete legal name of the application (this is where you would indicate copyright, if any)
+APPLEGAL = $(APPNAME) v$(VERSION) - $(APPAUTHOR), $(APPYEAR)
 
 #! The various sizes of application icons to produce from the source $(APPICON)
 ICON_SIZES := \
@@ -26,9 +28,9 @@ ICON_SIZES := \
 #! The output filepath of the distributable application (platform-dependent)
 APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME)
 #! The file which stores application metadata (platform-dependent)
+APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).meta
+#! A generic filename without an extension, used to do metadata operations to prepare app
 APPFILE = $(BINDIR)$(OSMODE)/$(APPNAME)
-#! The source template used to generate the platofmr-specific $(APPMETA) file
-APPFILE_TEMPLATE = $(MKFILES_DIR)rules/app-info.$(OSMODE)
 
 
 
@@ -38,13 +40,27 @@ _:=$(shell $(call print_error,"Unknown platform ($(OSMODE)), cannot embed applic
 
 
 else ifeq ($(OSMODE),linux)
-APPMETA = $(BINDIR)$(OSMODE)/.desktop
 APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME)
+APPMETA = $(BINDIR)$(OSMODE)/.desktop
+define APPMETADATA
+[Desktop Entry]
+Type=Application
+Name=$(APPNAME)
+GenericName=$(APPLEGAL)
+Comment=$(APPDESC)
+Version=$(VERSION)
+Exec=$(NAME)
+Icon=$(NAME)
+endef
+export APPMETADATA
 #! rule to create app bundle
-$(APPDIST):
+$(APPDIST): $(APPMETA) $(BINDIR)$(OSMODE)/.icons
 	@cp $(NAME) $(APPDIST)
+#! rule to create metadata resource file
+$(APPMETA):
+	@echo "$${APPMETADATA}" > $(APPMETA)
 #! rule to create app icon resource files
-$(BINDIR)$(OSMODE)/.icons:
+$(BINDIR)$(OSMODE)/.icons: $(APPICON)
 	@mkdir -p $@
 	@for i in $(ICON_SIZES) ; do \
 		folder='$@/$${i}x$${i}' ; \
@@ -55,26 +71,51 @@ $(BINDIR)$(OSMODE)/.icons:
 
 
 else ifeq ($(OSMODE),macos)
-APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).plist
 APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME).app
+APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).plist
+define APPMETADATA
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>      <string>English</string>
+    <key>CFBundleName</key>                   <string>$(APPNAME)</string>
+    <key>CFBundleExecutable</key>             <string>$(NAME)</string>
+    <key>CFBundleGetInfoString</key>          <string>$(APPDESC)</string>
+    <key>CFBundleIconFile</key>               <string>icons.icns</string>
+    <key>CFBundleIdentifier</key>             <string>com.$(APPAUTHOR).$(NAME)</string>
+    <key>CFBundleDocumentTypes</key>          <array></array>
+    <key>CFBundleInfoDictionaryVersion</key>  <string>6.0</string>
+    <key>CFBundlePackageType</key>            <string>APPL</string>
+    <key>CFBundleShortVersionString</key>     <string>$(VERSION)</string>
+    <key>CFBundleSignature</key>              <string>$(NAME)</string>
+    <key>CFBundleVersion</key>                <string>$(VERSION)</string>
+    <key>NSHumanReadableCopyright</key>       <string>$(APPLEGAL)</string>
+    <key>LSMinimumSystemVersion</key>         <string>10</string>
+</dict>
+</plist>
+endef
+export APPMETADATA
 # 4-character code for legacy macintosh apps
 APPCODE = $(shell echo "$(NAME)" | cut -c1-4 )
 #! rule to create app bundle
-$(APPDIST): $(APPFILE).icns
+$(APPDIST): $(APPMETA) $(APPFILE).icns
 	@rm -rf $(APPDIST)
 	@mkdir $(APPDIST)
 	@mkdir $(APPDIST)/Contents
 	@mkdir $(APPDIST)/Contents/MacOS
 	@mkdir $(APPDIST)/Contents/Resources
-	@cp $(NAME)              $(APPDIST)/Contents/MacOS/$(APPNAME)
-	@mv $(APPMETA)           $(APPDIST)/Contents/Info.plist
-	@cp $(APPFILE).icns      $(APPDIST)/Contents/Resources/icons.icns
-	@echo "APPL$(APPCODE)" > $(APPDIST)/Contents/PkgInfo
-	@rm -f $(APPMETA)
-	@rm -rf $(APPFILE).icns
+	@libs="`find $(BINDIR)$(OSMODE) -maxdepth 1 -name '*.framework' `" ; if ! [ -z "$${libs}" ] ; then cp -prf $${libs} $(APPDIST)/Contents/MacOS/ ; fi
+	@libs="`find $(BINDIR)$(OSMODE) -maxdepth 1 -name '*.dylib'     `" ; if ! [ -z "$${libs}" ] ; then cp -prf $${libs} $(APPDIST)/Contents/MacOS/ ; fi
+	@cp -p $(NAME)            $(APPDIST)/Contents/MacOS/$(NAME)
+	@mv $(APPFILE).icns       $(APPDIST)/Contents/Resources/icons.icns
+	@mv $(APPMETA)            $(APPDIST)/Contents/Info.plist
+	@echo "APPL$(APPCODE)"  > $(APPDIST)/Contents/PkgInfo
+#! rule to create metadata resource file
+$(APPMETA):
+	@echo "$${APPMETADATA}" > $(APPMETA)
 #! rule to create app icon resource file
 $(APPFILE).icns: $(APPICON)
-	@rm -rf   $(APPFILE).iconset
 	@mkdir -p $(APPFILE).iconset
 	@for i in $(ICON_SIZES) ; do \
 		magick convert $(APPICON) -scale $${i} $(APPFILE).iconset/icon_$${i}x$${i}.png ; \
@@ -88,11 +129,36 @@ $(APPFILE).icns: $(APPICON)
 
 
 else ifneq ($(filter $(OSMODE), win32 win64),)
-APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).rc
 APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME).exe
+APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).rc
+define APPMETADATA
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName",      "$(APPNAME)"
+      VALUE "FileDescription",  "$(APPDESC)"
+      VALUE "FileVersion",      "$(VERSION)"
+      VALUE "InternalName",     "$(NAME)"
+      VALUE "LegalCopyright",   "$(APPLEGAL)"
+      VALUE "OriginalFilename", "$(NAME).exe"
+      VALUE "ProductName",      "$(APPNAME)"
+      VALUE "ProductVersion",   "$(VERSION)"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 1252
+  END
+END
+endef
+export APPMETADATA
 #! rule to create app bundle
-$(APPDIST): $(APPFILE).ico
-	@mv $(APPFILE) $(APPMETA)
+$(APPDIST): $(APPMETA) $(APPFILE).ico
 	@echo '0 ICON "$(APPFILE).ico"' > $(APPMETA).icon
 	@windres $(APPMETA)      -O coff -o $(APPFILE).res
 	@windres $(APPMETA).icon -O coff -o $(APPFILE).res.icon
@@ -102,6 +168,9 @@ $(APPDIST): $(APPFILE).ico
 	@rm -f $(APPFILE).res
 	@rm -f $(APPFILE).res.icon
 	@rm -f $(APPFILE).ico
+#! rule to create metadata resource file
+$(APPMETA):
+	@echo "$${APPMETADATA}" > $(APPMETA)
 #! rule to create app icon resource file
 $(APPFILE).ico: $(APPICON)
 	@mkdir -p $(TEMPDIR)
@@ -126,25 +195,11 @@ endif
 
 .PHONY:\
 app #! creates a distributable GUI desktop application, with metadata and icon
-app: build-release
+app: MODE=release
+app: $(NAME)
 	@if ! [ -d ~/.cccmk ]; then \
 		$(call print_error,"You must install cccmk to use this rule (https://github.com/LexouDuck/cccmk)") ; \
 	fi
 	@$(call print_message,"Processing application metadata...")
-	@awk \
-		-v variables="\
-			name=$(NAME);\
-			appname=$(APPNAME);\
-			description=$(APPDESC);\
-			icon=$(APPICON);\
-			year=$(APPYEAR);\
-			author=$(APPSIGN);\
-			version=$(VERSION);\
-		" \
-		-f ~/.cccmk/scripts/util.awk \
-		-f ~/.cccmk/scripts/template-functions.awk \
-		-f ~/.cccmk/scripts/template.awk \
-		$(APPFILE_TEMPLATE) > $(APPMETA)
-	@$(call print_message,"Creating application bundle...")
 	@$(MAKE) $(APPDIST)
 	@$(call print_success,"Created application bundle: $(APPDIST)")
