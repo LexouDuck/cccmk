@@ -9,9 +9,9 @@ APPDESC :=
 #! The filepath of the icon file to associate with this application (ideally, a 512x512 .png image)
 APPICON := 
 #! The year for this application (used for copyright metadata)
-APPYEAR := $(shell . .cccmk && echo $${project_year})
+APPYEAR := $(shell . ./.cccmk && echo $${project_year})
 #! The author name for this application (used for copyright metadata)
-APPAUTHOR := $(shell . .cccmk && echo $${project_author})
+APPAUTHOR := $(shell . ./.cccmk && echo $${project_author})
 #! The complete legal name of the application (this is where you would indicate copyright, if any)
 APPLEGAL = $(APPNAME) v$(VERSION) - $(APPAUTHOR), $(APPYEAR)
 
@@ -34,6 +34,13 @@ APPFILE = $(BINDIR)$(OSMODE)/$(APPNAME)
 
 
 
+#! Shell command: ImageMagick command-line image editor toolchain
+MAGICK := magick
+#! Shell command: ImageMagick command-line options
+MAGICK_FLAGS := 
+
+
+
 ifeq ($(OSMODE),)
 _:=$(shell $(call print_error,"Unknown platform ($(OSMODE)), cannot embed application metadata"))
 
@@ -41,31 +48,41 @@ _:=$(shell $(call print_error,"Unknown platform ($(OSMODE)), cannot embed applic
 
 else ifeq ($(OSMODE),linux)
 APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME)
-APPMETA = $(BINDIR)$(OSMODE)/.desktop
+APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).desktop
 define APPMETADATA
 [Desktop Entry]
 Type=Application
+Version=1.0
 Name=$(APPNAME)
 GenericName=$(APPLEGAL)
 Comment=$(APPDESC)
-Version=$(VERSION)
-Exec=$(NAME)
 Icon=$(NAME)
+Path=$(abspath $(BINDIR)$(OSMODE))
+Exec=$(abspath $(BINDIR)$(OSMODE)/$(NAME))
+Terminal=false
+MimeType=
 endef
 export APPMETADATA
+MAGICK = 
+APPINSTALL_PREFIX = /usr/share# $(HOME)/.local/share
 #! rule to create app bundle
 $(APPDIST): $(APPMETA) $(BINDIR)$(OSMODE)/.icons
-	@cp $(NAME) $(APPDIST)
+	@cp -p $(NAME) $(APPDIST)
+	@desktop-file-validate $(APPMETA)
+	@$(SUDO) desktop-file-install $(APPMETA) --dir=$(APPINSTALL_PREFIX)/applications
+	@$(SUDO) cp -rp $(BINDIR)$(OSMODE)/.icons/*    $(APPINSTALL_PREFIX)/icons/hicolor/
+	@$(SUDO) update-desktop-database $(APPINSTALL_PREFIX)/applications
 #! rule to create metadata resource file
 $(APPMETA):
+	@mkdir -p $(@D)
 	@echo "$${APPMETADATA}" > $(APPMETA)
 #! rule to create app icon resource files
 $(BINDIR)$(OSMODE)/.icons: $(APPICON)
 	@mkdir -p $@
 	@for i in $(ICON_SIZES) ; do \
-		folder='$@/$${i}x$${i}' ; \
+		folder="$@/$${i}x$${i}/apps" ; \
 		mkdir -p $$folder ; \
-		magick convert $(APPICON) -scale $$i $$folder/$(NAME).png ; \
+		$(MAGICK) convert $(APPICON) -scale $$i $$folder/$(NAME).png ; \
 	done
 
 
@@ -78,20 +95,20 @@ define APPMETADATA
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDevelopmentRegion</key>      <string>English</string>
-    <key>CFBundleName</key>                   <string>$(APPNAME)</string>
-    <key>CFBundleExecutable</key>             <string>$(NAME)</string>
-    <key>CFBundleGetInfoString</key>          <string>$(APPDESC)</string>
-    <key>CFBundleIconFile</key>               <string>icons.icns</string>
-    <key>CFBundleIdentifier</key>             <string>com.$(APPAUTHOR).$(NAME)</string>
-    <key>CFBundleDocumentTypes</key>          <array></array>
-    <key>CFBundleInfoDictionaryVersion</key>  <string>6.0</string>
-    <key>CFBundlePackageType</key>            <string>APPL</string>
-    <key>CFBundleShortVersionString</key>     <string>$(VERSION)</string>
-    <key>CFBundleSignature</key>              <string>$(NAME)</string>
-    <key>CFBundleVersion</key>                <string>$(VERSION)</string>
-    <key>NSHumanReadableCopyright</key>       <string>$(APPLEGAL)</string>
-    <key>LSMinimumSystemVersion</key>         <string>10</string>
+	<key>CFBundleDevelopmentRegion</key>      <string>English</string>
+	<key>CFBundleName</key>                   <string>$(APPNAME)</string>
+	<key>CFBundleExecutable</key>             <string>$(NAME)</string>
+	<key>CFBundleGetInfoString</key>          <string>$(APPDESC)</string>
+	<key>CFBundleIconFile</key>               <string>icons.icns</string>
+	<key>CFBundleIdentifier</key>             <string>com.$(APPAUTHOR).$(NAME)</string>
+	<key>CFBundleDocumentTypes</key>          <array></array>
+	<key>CFBundleInfoDictionaryVersion</key>  <string>6.0</string>
+	<key>CFBundlePackageType</key>            <string>APPL</string>
+	<key>CFBundleShortVersionString</key>     <string>$(VERSION)</string>
+	<key>CFBundleSignature</key>              <string>$(NAME)</string>
+	<key>CFBundleVersion</key>                <string>$(VERSION)</string>
+	<key>NSHumanReadableCopyright</key>       <string>$(APPLEGAL)</string>
+	<key>LSMinimumSystemVersion</key>         <string>10</string>
 </dict>
 </plist>
 endef
@@ -113,12 +130,13 @@ $(APPDIST): $(APPMETA) $(APPFILE).icns
 	@echo "APPL$(APPCODE)"  > $(APPDIST)/Contents/PkgInfo
 #! rule to create metadata resource file
 $(APPMETA):
+	@mkdir -p $(@D)
 	@echo "$${APPMETADATA}" > $(APPMETA)
 #! rule to create app icon resource file
 $(APPFILE).icns: $(APPICON)
 	@mkdir -p $(APPFILE).iconset
 	@for i in $(ICON_SIZES) ; do \
-		magick convert $(APPICON) -scale $${i} $(APPFILE).iconset/icon_$${i}x$${i}.png ; \
+		$(MAGICK) convert $(APPICON) -scale $${i} $(APPFILE).iconset/icon_$${i}x$${i}.png ; \
 		half=$$(($$i / 2)) ; \
 		cp  $(APPFILE).iconset/icon_$${i}x$${i}.png \
 			$(APPFILE).iconset/icon_$${half}x$${half}@2x.png ; \
@@ -136,24 +154,24 @@ define APPMETADATA
 FILEVERSION     1,0,0,0
 PRODUCTVERSION  1,0,0,0
 BEGIN
-  BLOCK "StringFileInfo"
-  BEGIN
-    BLOCK "040904E4"
-    BEGIN
-      VALUE "CompanyName",      "$(APPNAME)"
-      VALUE "FileDescription",  "$(APPDESC)"
-      VALUE "FileVersion",      "$(VERSION)"
-      VALUE "InternalName",     "$(NAME)"
-      VALUE "LegalCopyright",   "$(APPLEGAL)"
-      VALUE "OriginalFilename", "$(NAME).exe"
-      VALUE "ProductName",      "$(APPNAME)"
-      VALUE "ProductVersion",   "$(VERSION)"
-    END
-  END
-  BLOCK "VarFileInfo"
-  BEGIN
-    VALUE "Translation", 0x0409, 1252
-  END
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904E4"
+		BEGIN
+			VALUE "CompanyName",      "$(APPNAME)"
+			VALUE "FileDescription",  "$(APPDESC)"
+			VALUE "FileVersion",      "$(VERSION)"
+			VALUE "InternalName",     "$(NAME)"
+			VALUE "LegalCopyright",   "$(APPLEGAL)"
+			VALUE "OriginalFilename", "$(NAME).exe"
+			VALUE "ProductName",      "$(APPNAME)"
+			VALUE "ProductVersion",   "$(VERSION)"
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0409, 1252
+	END
 END
 endef
 export APPMETADATA
@@ -170,14 +188,15 @@ $(APPDIST): $(APPMETA) $(APPFILE).ico
 	@rm -f $(APPFILE).ico
 #! rule to create metadata resource file
 $(APPMETA):
+	@mkdir -p $(@D)
 	@echo "$${APPMETADATA}" > $(APPMETA)
 #! rule to create app icon resource file
 $(APPFILE).ico: $(APPICON)
 	@mkdir -p $(TEMPDIR)
 	@for i in $(ICON_SIZES) ; do \
-		magick convert $(APPICON) -scale $${i} $(TEMPDIR)$${i}.png ; \
+		$(MAGICK) convert $(APPICON) -scale $${i} $(TEMPDIR)$${i}.png ; \
 	done
-	@magick convert $(foreach i,$(ICON_SIZES), $(TEMPDIR)$(i).png) $@
+	@$(MAGICK) convert $(foreach i,$(ICON_SIZES), $(TEMPDIR)$(i).png) $@
 	@rm -rf $(TEMPDIR)
 
 

@@ -51,7 +51,7 @@ $(NAME_STATIC): $(OBJS)
 	@cp -p $@ $(BINDIR)$(OSMODE)/static/
 	@$(foreach i,$(PACKAGES), \
 		if [ "$(PACKAGE_$(i)_LIBMODE)" == "static" ] ; then \
-			cp -rp $(PACKAGE_$(i)_BIN)static/* $(BINDIR)$(OSMODE)/static/ ; \
+			cp -rp $(PACKAGE_$(i)_LINKDIR)* $(BINDIR)$(OSMODE)/static/ ; \
 		fi ; )
 
 
@@ -81,8 +81,8 @@ endif
 	@mkdir -p $(BINDIR)$(OSMODE)/dynamic/
 	@cp -p $@ $(BINDIR)$(OSMODE)/dynamic/
 	@$(foreach i,$(PACKAGES), \
-		if [ "$(PACKAGE_$(i)_LIBMODE)" == "dynamic" ] ; then \
-			cp -rp $(PACKAGE_$(i)_BIN)dynamic/* $(BINDIR)$(OSMODE)/dynamic/ ; \
+		if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
+			cp -rp $(PACKAGE_$(i)_LINKDIR)* $(BINDIR)$(OSMODE)/dynamic/ ; \
 		fi ; )
 
 

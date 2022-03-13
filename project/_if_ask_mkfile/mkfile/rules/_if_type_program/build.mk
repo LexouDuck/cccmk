@@ -49,8 +49,8 @@ $(NAME): $(OBJS)
 	@mkdir -p $(BINDIR)$(OSMODE)/
 	@cp -p $@ $(BINDIR)$(OSMODE)/
 	@$(foreach i,$(PACKAGES), \
-		if [ "$(PACKAGE_$(i)_LIBMODE)" == "dynamic" ] ; then \
-			cp -rp $(PACKAGE_$(i)_BIN)dynamic/* $(BINDIR)$(OSMODE)/ ; \
+		if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
+			cp -rp $(PACKAGE_$(i)_LINKDIR)* $(BINDIR)$(OSMODE)/ ; \
 		fi ; )
 
 
