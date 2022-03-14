@@ -168,11 +168,11 @@ do
 	then
 		if cmp -s "$path_tmp/$file_pwd.new" "$path_pwd/$file_pwd"
 		then
+			printf "$io_green""IDENTICAL""$io_reset\n"
 			response=true
 			identical=true
-			printf "$io_green""IDENTICAL""$io_reset\n"
 		else
-			printf "$io_warning""DIFFERENT""$io_reset\n"
+			printf "$io_yellow""DIFFERENT""$io_reset\n"
 			if cmp -s "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd"
 			then printf " - user-side changes: no\n"
 			else printf " - user-side changes: yes `cccmk_diff_brief "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd" | cut -d' ' -f 3 `\n"
@@ -206,6 +206,7 @@ do
 			done
 		fi
 	else
+		printf "$io_yellow""MISSING""$io_reset\n"
 		print_warning "Could not find project tracked file '$path_pwd/$file_pwd'."
 		printf "$io_cyan""Do you wish to create the file '$file_pwd' using the template ?""$io_reset\n"
 		prompt_question response 'n'
@@ -238,8 +239,11 @@ do
 				fi
 			elif [ -f "$path_tmp/$file_pwd.old" ]; then cp -p "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd"
 			elif [ -f "$path_tmp/$file_pwd.new" ]; then cp -p "$path_tmp/$file_pwd.new" "$path_pwd/$file_pwd"
-			else print_failure "Could not update file '$file_pwd'" ; continue
+			else
+				print_failure "Could not update file '$file_pwd'"
+				continue
 			fi
+			print_success "Updated file '$file_pwd'."
 		fi
 		# apply new tracking revision hash to .cccmk project tracker file
 		awk_inplace "$path_pwd/$project_cccmkfile" \
@@ -250,10 +254,6 @@ do
 			-f "$CCCMK_PATH_SCRIPTS/cccmk_track.awk"
 		# keep track all previously updated/merged files
 		updated_files="$updated_files $trackedfile_pwdpath"
-
-		if $verbose
-		then print_success "Updated file '$file_pwd'."
-		fi
 	else
 		print_message "Update operation cancelled for file: $file_pwd"
 		continue

@@ -17,8 +17,8 @@ prompt_text()
 	fi
 	echo "[<ENTER> to confirm and proceed]"
 	# check if the `read` command supports the `-i` default-value flag
-	if read -i "test" &> /dev/null
-	then read -p "> " -e answer -i "$default"
+	if   read -p "> " -i "$default" -e answer <<< "" &> /dev/null
+	then read -p "> " -i "$default" -e answer
 	else read -p "> " -e answer
 	fi
 	eval $retval='${answer}'
