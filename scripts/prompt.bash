@@ -5,16 +5,22 @@
 #! prompts the user to input some text
 #! @param $1	retval: name of the return value variable
 #! @param $2	helpmsg: message to display to explain the text to type (typically in brackets)
+#! @param $3 ?	default: the default string value to fill out, which the user can then edit (not all shells support this)
 prompt_text()
 {
 	local retval=$1
 	local answer
 	local helpmsg="$2"
+	local default="$3"
 	if ! [ -z "$helpmsg" ]
 	then echo "$helpmsg"
 	fi
 	echo "[<ENTER> to confirm and proceed]"
-	read -p "> " answer
+	# check if the `read` command supports the `-i` default-value flag
+	if read -i "test" &> /dev/null
+	then read -p "> " -e answer -i "$default"
+	else read -p "> " -e answer
+	fi
 	eval $retval='${answer}'
 }
 

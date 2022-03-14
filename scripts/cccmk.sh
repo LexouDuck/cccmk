@@ -70,9 +70,9 @@ cccmk_version="`( cat "$cccmk_install/VERSION" )`"
 #! The git revision of the currently installed cccmk
 cccmk_git_rev="`( cd "$cccmk_install" ; git rev-parse HEAD )`"
 #! The git repo URL from which to get any cccmk templates
-cccmk_git_url="https://raw.githubusercontent.com/LexouDuck/libccc"
+cccmk_git_url="https://raw.githubusercontent.com/LexouDuck/cccmk"
 #! The git branch name/revision hash to use when doing a 'cccmk upgrade'
-cccmk_upgrade=dev
+cccmk_upgrade=master
 #! The shell command (and arguments) used to perform and display file text diffs
 cccmk_diffcmd="git --no-pager diff --no-index --color"
 #cccmk_diffcmd="diff --color"

@@ -81,48 +81,83 @@ do
 		fi
 	fi
 
-	#! The URL of the tracked template file
-	file_url="$cccmk_git_url/$trackedfile_ccc_rev/cccmk/$cccmk_dir_project/$trackedfile_cccpath"
-
 	#! The file in the current project
 	file_pwd="$trackedfile_pwdpath"
 	#! The equivalent filepath tracked from the cccmk templates
 	file_ccc="$trackedfile_cccpath"
 
+	#! The URL of the tracked template file
+	file_url="$cccmk_git_url/$trackedfile_ccc_rev/$cccmk_dir_project/$file_ccc"
+
 	mkdir -p "`dirname "$path_tmp/$file_pwd" `"
+	errormsg=""
+	fetched=false
 	# get tracked template from the internet
-	print_verbose "fetching template file from url: '$file_url'"
-	curl --silent "$file_url" > "$path_tmp/$file_pwd.old"
-	if ! [ -f "$path_tmp/$file_pwd.old" ]
+	while ! $fetched
+	do
+		printf "cccmk: ""$io_blue""message""$io_reset"": Updating file: '$file_pwd' -> "  >&2
+		#print_verbose "fetching template file from url: '$file_url'"
+		curl --silent "$file_url" > "$path_tmp/$file_pwd.old"
+		if ! [ -f "$path_tmp/$file_pwd.old" ]
+		then
+			errormsg="Could not retrieve tracked template from repo at '$file_url'."
+			continue
+		elif [ -z "`cat "$path_tmp/$file_pwd.old" `" ]
+		then
+			errormsg="Retrieved empty template file from repo at '$file_url'."
+			rm -f "$path_tmp/$file_pwd.old"
+			continue
+		elif ! [ -z "` head -1 "$path_tmp/$file_pwd.old" | grep 'Moved Permanently' `" ]
+		then
+			errormsg="Redirection error for template from repo at '$file_url'."
+			rm -f "$path_tmp/$file_pwd.old"
+			continue
+		elif ! [ -z "` head -1 "$path_tmp/$file_pwd.old" | grep '^[45][0-9][0-9]: ' `" ]
+		then
+			errormsg="`cat "$path_tmp/$file_pwd.old" `"
+			rm -f "$path_tmp/$file_pwd.old"
+			response=""
+			printf "$io_red""ERROR""$io_reset\n"
+			print_failure "Error while retrieving template from repo at '$file_url':"
+			print_failure "$errormsg"
+			printf "$io_cyan""Could not get latest project template for file:$io_reset $file_ccc\n"
+			printf "$io_cyan""It is possible that the template file has been moved to another path.""$io_reset\n"
+			printf "$io_cyan""Please specify the new path of this project template file, if applicable.""$io_reset\n"
+			prompt_text response "Type the new template file's path, or an empty string to abort the update for this file." "$file_ccc"
+			if [ -z "$response" ]
+			then
+				print_message "Update operation aborted for file: $file_pwd"
+				break
+			else
+				print_message "Assuming file path has changed: '$file_ccc' -> '$response'"
+				file_ccc="$response"
+				file_url="$cccmk_git_url/$trackedfile_ccc_rev/$cccmk_dir_project/$file_ccc"
+				continue
+			fi
+		else
+			cccmk_template "$path_tmp/$file_pwd.old"
+			fetched=true
+		fi
+	done
+	# skip over to the next file, if there was a problem when fetching
+	if ! $fetched
 	then
-		print_error "Could not retrieve tracked template from repo at '$file_url'."
-		rm -f "$path_tmp/$file_pwd.old" ; continue
-	elif [ -z "`cat "$path_tmp/$file_pwd.old" `" ]
-	then
-		print_error "Retrieved empty template file from repo at '$file_url':"
-		rm -f "$path_tmp/$file_pwd.old" ; continue
-	elif ! [ -z "` head -1 "$path_tmp/$file_pwd.old" | grep 'Moved Permanently' `" ]
-	then
-		print_error "Redirection error for template from repo at '$file_url':"
-		rm -f "$path_tmp/$file_pwd.old" ; continue
-	elif ! [ -z "` head -1 "$path_tmp/$file_pwd.old" | grep '^[45][0-9][0-9]: ' `" ]
-	then
-		print_error "Error while retrieving template from repo at '$file_url':"
-		print_error "` cat "$path_tmp/$file_pwd.old" `"
-		rm -f "$path_tmp/$file_pwd.old" ; continue
-	else
-		cccmk_template "$path_tmp/$file_pwd.old"
+		printf "$io_red""ERROR""$io_reset\n"
+		print_failure "$errormsg"
+		continue
 	fi
 
-	# check that the source template file exists
+	# check that the "new template" source file actually exists
 	if ! [ -f "$path_ccc/$file_ccc" ]
-	then print_error "Could not find source template file '$path_ccc/$file_ccc'."
+	then
+		printf "$io_red""ERROR""$io_reset\n"
+		print_failure "Could not find source template file: $path_ccc/$file_ccc"
 		continue # exit 1
 	else
 		cccmk_template "$path_ccc/$file_ccc" "$path_tmp/$file_pwd.new"
 	fi
 
-	# fix file permissions for downloaded file
+	# fix file permissions for the newly downloaded "old template" file
 	chmod "`file_getmode "$path_ccc/$file_ccc" `" "$path_tmp/$file_pwd.old"
 
 	response=false
@@ -135,18 +170,16 @@ do
 		then
 			response=true
 			identical=true
+			printf "$io_green""IDENTICAL""$io_reset\n"
 		else
-			print_message "The file '$file_pwd' differs from the cccmk template" # (see diff above)"
-			#print_message "NOTE: the cccmk template is shown as old/red, and your file is shown as new/green."
+			printf "$io_warning""DIFFERENT""$io_reset\n"
 			if cmp -s "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd"
 			then printf " - user-side changes: no\n"
 			else printf " - user-side changes: yes `cccmk_diff_brief "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd" | cut -d' ' -f 3 `\n"
-				
 			fi
 			if cmp -s "$path_tmp/$file_pwd.old" "$path_tmp/$file_pwd.new"
 			then printf " - cccmk-side updates: no\n"
 			else printf " - cccmk-side updates: yes `cccmk_diff_brief "$path_tmp/$file_pwd.old" "$path_tmp/$file_pwd.new" | cut -d' ' -f 3 `\n"
-				
 			fi
 			printf "$io_cyan""How do you wish to update '$file_pwd' ?""$io_reset\n"
 			identical=true
@@ -163,6 +196,7 @@ do
 					(overwrite) response=true  ; overwrite=true  ;;
 					(unchanged) response=false ; overwrite=false ;;
 					(show_diff)
+						#print_message "NOTE: the cccmk template is shown as old/red, and your file is shown as new/green."
 						cccmk_diff_fancy "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd"
 						cccmk_diff_fancy "$path_tmp/$file_pwd.old" "$path_tmp/$file_pwd.new"
 						continue ;;
@@ -182,8 +216,8 @@ do
 	if $response
 	then
 		if $identical
-		then print_message "The file is identical to the cccmk template: '$file_pwd'"
-		else print_message "Updating file: '$file_pwd'..."
+		then print_verbose "The file is identical to the cccmk template: '$file_ccc'"
+		else print_verbose "Updating file: '$file_pwd'..."
 			# do a git 3-way merge to update the file in question
 			print_verbose "performing 3-way diff/merge:\n%s\n%s\n%s\n%s" \
 				" - project_track modified file: [`file_timestamp "$path_pwd/$file_pwd"`] $path_pwd/$file_pwd" \
@@ -206,29 +240,22 @@ do
 			elif [ -f "$path_tmp/$file_pwd.new" ]; then cp -p "$path_tmp/$file_pwd.new" "$path_pwd/$file_pwd"
 			else print_failure "Could not update file '$file_pwd'" ; continue
 			fi
-			print_success "Updated file '$file_pwd'."
 		fi
-
 		# apply new tracking revision hash to .cccmk project tracker file
 		awk_inplace "$path_pwd/$project_cccmkfile" \
-			-v filepath="$file_pwd" \
+			-v file_ccc="$file_ccc" \
+			-v file_pwd="$file_pwd" \
 			-v rev="$cccmk_git_rev" \
-		'{
-			if (/^[0-9a-fA-F]{40}:/)
-			{
-				split($0, parts, /:/);
-				if (parts[3] == filepath)
-				{
-					print rev ":" parts[2] ":" filepath;
-				}
-				else print;
-			}
-			else print;
-		}'
+			-f "$CCCMK_PATH_SCRIPTS/util.awk" \
+			-f "$CCCMK_PATH_SCRIPTS/cccmk_track.awk"
 		# keep track all previously updated/merged files
 		updated_files="$updated_files $trackedfile_pwdpath"
+
+		if $verbose
+		then print_success "Updated file '$file_pwd'."
+		fi
 	else
-		print_message "Update operation cancelled for '$file_pwd'."
+		print_message "Update operation cancelled for file: $file_pwd"
 		continue
 	fi
 done
