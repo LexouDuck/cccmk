@@ -48,7 +48,7 @@ DOCDIR = ./doc/
 #! The directory for testing programs (stores source/header code for the various testing programs)
 TESTDIR = ./test/
 %%end if
-%%if tracked(.githooks/_if_ask_autoversion/pre-commit)
+%%if tracked(.githooks/)
 #! The directory for git hooks scripts
 GITHOOKSDIR = ./.githooks/
 %%end if

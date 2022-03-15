@@ -22,7 +22,7 @@ function _if_tracked(filepath)
 	split(vars["track"], array, /[ \t\n]/);
 	for (i in array)
 	{
-		if (array[i] ~ "^[^:]*:" filepath ":(.*)$")
+		if (array[i] ~ "^[^:]*:" filepath)
 		{
 			return (1);
 		}

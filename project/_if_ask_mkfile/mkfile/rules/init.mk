@@ -7,6 +7,8 @@ init #! Performs initial project setup (should be executed once, after cloning t
 init:
 	@$(call print_message,"Setting up project...")
 	@git submodule update --init --recursive
+%%if tracked(.githooks/)
 	@git config core.hooksPath $(GITHOOKSDIR)
+%%end if
 
 # TODO 'configure' rule, for easier cross-platform setup ?
