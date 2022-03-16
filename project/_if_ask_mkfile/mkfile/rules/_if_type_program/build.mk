@@ -16,18 +16,24 @@ LDLIBS := $(LDLIBS) \
 INCLUDES := $(INCLUDES) \
 	$(foreach i,$(PACKAGES), -I$(PACKAGE_$(i)_INCLUDE))
 
+#! Shell command used to copy over libraries from ./lib into ./bin
+#! @param $(1)	file extension glob
+copylibs = $(foreach i,$(PACKAGES), \
+	if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
+		for i in $(PACKAGE_$(i)_LINKDIR)*.$(LIBEXT_dynamic) ; do \
+			cp -p "$$i" $(BINDIR)$(OSMODE)/ ; \
+		done ; \
+	fi ; )
 
 
 .PHONY:\
 build-debug #! Builds the program, in 'debug' mode (with debug flags and symbol-info)
 build-debug: MODE = debug
-build-debug: CFLAGS += $(CFLAGS_DEBUG)
 build-debug: $(NAME)
 
 .PHONY:\
 build-release #! Builds the program, in 'release' mode (with optimization flags)
 build-release: MODE = release
-build-release: CFLAGS += $(CFLAGS_RELEASE)
 build-release: $(NAME)
 
 
@@ -48,10 +54,7 @@ $(NAME): $(OBJS)
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
 	@mkdir -p $(BINDIR)$(OSMODE)/
 	@cp -p $@ $(BINDIR)$(OSMODE)/
-	@$(foreach i,$(PACKAGES), \
-		if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
-			cp -rp $(PACKAGE_$(i)_LINKDIR)* $(BINDIR)$(OSMODE)/ ; \
-		fi ; )
+	@$(call copylibs)
 
 
 
