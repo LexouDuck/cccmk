@@ -31,6 +31,8 @@ $(error Invalid value for LIBMODE, should be `static` or `dynamic`)
 endif
 
 %%if is(type,library)
+#! Define build target name for library, according to current $(LIBMODE)
+NAME_LIBMODE  = $(NAME_$(LIBMODE))
 #! Define build target name for static library with appropriate file extensions
 NAME_static  = $(NAME).$(LIBEXT_static)
 #! Define build target name for dynamic library with appropriate file extensions
