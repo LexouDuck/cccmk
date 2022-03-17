@@ -4,14 +4,14 @@
 
 %%if is(type,library)
 #! GNU conventional variable: archiver program (for static libraries)
-AR ?= ar
+AR = ar
 #! GNU conventional variable: archiver program options
 ARFLAGS = \
 	-r \
 	-c \
 
 #! GNU conventional variable: archive symbol table tool (for static libraries)
-RANLIB ?= ranlib
+RANLIB = ranlib
 #! GNU conventional variable: archive symbol table tool options
 RANLIB_FLAGS = \
 	-D \
@@ -71,7 +71,7 @@ ifneq ($(findstring clang,$(CC)),)
 endif
 
 #! This variable is intentionally empty, to specify additional C compiler options from the commandline
-CFLAGS_EXTRA ?= 
+CFLAGS_EXTRA ?= \
 #	-fanalyzer \
 #	-fsanitize=address \
 #	-fsanitize=thread \
@@ -100,7 +100,7 @@ LDFLAGS_OS_linux =
 LDFLAGS_OS_other = 
 
 #! This variable is intentionally empty, to specify additional C linker options from the commandline
-LDFLAGS_EXTRA ?= 
+LDFLAGS_EXTRA ?= \
 
 
 
@@ -127,7 +127,7 @@ LDLIBS_OS += -L./ -static-libgcc
 endif
 
 #! This variable is intentionally empty, to specify additional linked libraries from the commandline
-LDLIBS_EXTRA ?= 
+LDLIBS_EXTRA ?= \
 # -L/usr/local/lib -ltsan \
 
 
@@ -153,4 +153,4 @@ INCLUDES_OS_linux =
 INCLUDES_OS_other = 
 
 #! This variable is intentionally empty, to specify additional header directories from the commandline
-INCLUDES_EXTRA ?= 
+INCLUDES_EXTRA ?= \

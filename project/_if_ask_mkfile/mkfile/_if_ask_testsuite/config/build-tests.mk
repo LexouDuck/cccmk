@@ -42,7 +42,7 @@ ifneq ($(findstring clang,$(CC)),)
 endif
 
 #! This variable is intentionally empty, to specify additional C compiler options from the commandline
-TEST_CFLAGS_EXTRA = 
+TEST_CFLAGS_EXTRA ?= \
 #	-fanalyzer \
 #	-fsanitize=address \
 #	-fsanitize=thread \
@@ -71,7 +71,7 @@ TEST_LDFLAGS_OS_linux =
 TEST_LDFLAGS_OS_other = 
 
 #! This variable is intentionally empty, to specify additional C linker options from the commandline
-TEST_LDFLAGS_EXTRA ?= 
+TEST_LDFLAGS_EXTRA ?= \
 
 
 
@@ -99,14 +99,15 @@ TEST_LDLIBS_OS += -L./ -static-libgcc
 endif
 
 #! This variable is intentionally empty, to specify additional linked libraries from the commandline
-TEST_LDLIBS_EXTRA ?= 
+TEST_LDLIBS_EXTRA ?= \
 #	-L/usr/local/lib -ltsan \
 
 
 
 #! GNU conventional variable: List of included folders, which store header code files
-TEST_INCLUDES = -I$(TESTDIR) \
+TEST_INCLUDES = \
 	-I$(HDRDIR) \
+	-I$(TESTDIR) \
 	$(TEST_INCLUDES_MODE) \
 	$(TEST_INCLUDES_OS) \
 	$(TEST_INCLUDES_EXTRA)
@@ -125,4 +126,4 @@ TEST_INCLUDES_OS_linux =
 TEST_INCLUDES_OS_other = 
 
 #! This variable is intentionally empty, to specify additional header directories from the commandline
-TEST_INCLUDES_EXTRA ?= 
+TEST_INCLUDES_EXTRA ?= \
