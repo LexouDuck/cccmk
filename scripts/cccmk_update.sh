@@ -163,6 +163,7 @@ do
 	response=false
 	identical=false
 	overwrite=false
+	conflicts=
 	# check if files exist, and prompt user accordingly
 	if [ -f "$path_pwd/$file_pwd" ]
 	then
@@ -234,7 +235,8 @@ do
 						"$path_pwd/$file_pwd" \
 						"$path_tmp/$file_pwd.old" \
 						"$path_tmp/$file_pwd.new" \
-					>  "$path_tmp/.tmp" || print_warning "CONFLICT: merge conflicts in file: '$file_pwd'"
+					>  "$path_tmp/.tmp" \
+					|| { print_warning "CONFLICT: merge conflicts in file: '$file_pwd'" ; conflicts="$conflicts $file_pwd"; }
 					mv "$path_tmp/.tmp" "$path_pwd/$file_pwd"
 				fi
 			elif [ -f "$path_tmp/$file_pwd.old" ]; then cp -p "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd"
@@ -259,6 +261,10 @@ do
 		continue
 	fi
 done
-print_verbose "finished updating files."
+print_success "Finished updating all tracked files."
+print_warning "Since there were some merge conflicts, make sure you check these files:"
+for i in $conflicts
+do printf "CONFLICT: $i\n"
+done
 # cleanup temp files
 rm -rf "$path_tmp"
