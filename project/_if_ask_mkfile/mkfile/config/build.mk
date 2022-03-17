@@ -56,7 +56,6 @@ CFLAGS_MODE_debug = \
 #! C compiler flags which are only present in "release" build mode
 CFLAGS_MODE_release = \
 	-O3 \
-	-flto \
 	-D RELEASE=1
 
 #! C compiler options which are platform-specific, according to $(OSMODE)
@@ -72,6 +71,7 @@ endif
 
 #! This variable is intentionally empty, to specify additional C compiler options from the commandline
 CFLAGS_EXTRA ?= \
+#	-flto \
 #	-fanalyzer \
 #	-fsanitize=address \
 #	-fsanitize=thread \
