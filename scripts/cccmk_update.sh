@@ -237,6 +237,7 @@ do
 						"$path_tmp/$file_pwd.new" \
 					>  "$path_tmp/.tmp" \
 					|| { print_warning "CONFLICT: merge conflicts in file: '$file_pwd'" ; conflicts="$conflicts $file_pwd"; }
+					chmod "`file_getmode "$path_pwd/$file_pwd" `" "$path_tmp/.tmp"
 					mv "$path_tmp/.tmp" "$path_pwd/$file_pwd"
 				fi
 			elif [ -f "$path_tmp/$file_pwd.old" ]; then cp -p "$path_tmp/$file_pwd.old" "$path_pwd/$file_pwd"

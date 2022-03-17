@@ -72,6 +72,7 @@ awk_inplace()
 	local temp="$1.tmp"
 	shift 1
 	awk "$@" "$file" > "$temp"
+	chmod "`file_getmode "$file" `" "$temp"
 	mv "$temp" "$file"
 }
 
