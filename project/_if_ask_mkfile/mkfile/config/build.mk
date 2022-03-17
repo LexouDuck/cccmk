@@ -4,14 +4,17 @@
 
 %%if is(type,library)
 #! GNU conventional variable: archiver program (for static libraries)
-AR = ar
+AR ?= ar
 #! GNU conventional variable: archiver program options
-ARFLAGS = -r -c
+ARFLAGS = \
+	-r \
+	-c \
 
 #! GNU conventional variable: archive symbol table tool (for static libraries)
-RANLIB = ranlib
+RANLIB ?= ranlib
 #! GNU conventional variable: archive symbol table tool options
-RANLIB_FLAGS = -D
+RANLIB_FLAGS = \
+	-D \
 
 
 
@@ -63,7 +66,7 @@ CFLAGS_OS_win64 = -D__USE_MINGW_ANSI_STDIO=1 # -fno-ms-compatibility
 CFLAGS_OS_macos = -Wno-language-extension-token
 CFLAGS_OS_linux = -Wno-unused-result -fPIC
 CFLAGS_OS_other = 
-ifeq ($(CC),clang)
+ifneq ($(findstring clang,$(CC)),)
 	CFLAGS_OS += -Wno-missing-braces
 endif
 

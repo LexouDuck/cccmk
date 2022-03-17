@@ -26,7 +26,7 @@ printf "Files changed:$IO_CYAN\n$CHANGED\n$IO_RESET"
 
 match=false
 
-for i in "$CHANGED"
+for i in $CHANGED
 do
 	if printf "$SOURCES" | grep -q "./$i"
 	then

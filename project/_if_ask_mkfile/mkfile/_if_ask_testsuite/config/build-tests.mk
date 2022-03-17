@@ -37,7 +37,7 @@ TEST_CFLAGS_OS_win64 = -D__USE_MINGW_ANSI_STDIO=1 # -fno-ms-compatibility
 TEST_CFLAGS_OS_macos = -Wno-language-extension-token
 TEST_CFLAGS_OS_linux = -Wno-unused-result -fPIC
 TEST_CFLAGS_OS_other = 
-ifeq ($(CC),clang)
+ifneq ($(findstring clang,$(CC)),)
 	TEST_CFLAGS_OS += -Wno-missing-braces
 endif
 
