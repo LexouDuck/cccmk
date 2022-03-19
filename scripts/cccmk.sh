@@ -246,7 +246,7 @@ project_missing=
 
 if ! [ -f "./$project_cccmkfile" ]
 then print_warning "The current folder is not a valid cccmk project folder - missing '$project_cccmkfile'"
-	project_missing="$project_missing\n- missing project tracker file: '$project_cccmkfile'"
+	project_missing="$project_missing - missing project tracker file: './$project_cccmkfile'\n"
 else
 	# parse the .cccmk file (by simply running it as an inline shell script)
 	. "./$project_cccmkfile"
@@ -265,18 +265,19 @@ fi
 if [ -z "$project_versionfile" ]
 then :
 elif ! [ -f "./$project_versionfile" ]
-then project_missing="$project_missing\n- missing versioning info file: '$project_versionfile'"
+then project_missing="$project_missing - missing versioning info file: './$project_versionfile'\n"
 fi
 
 if [ -z "$project_packagefile" ]
 then :
 elif ! [ -f "./$project_packagefile" ]
-then project_missing="$project_missing\n- missing packages dependency list file: '$project_packagefile'"
+then project_missing="$project_missing - missing packages dependency list file: './$project_packagefile'\n"
 fi
 
 # display warning if current folder is missing any necessary project files
 if ! [ -z "$project_missing" ]
-then print_warning "The current cccmk project folder is missing important files:$project_missing"
+then print_warning "The current cccmk project folder is missing important files:"
+	printf "$project_missing"
 fi
 
 

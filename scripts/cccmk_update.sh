@@ -2,7 +2,7 @@
 
 
 
-if ! [ -z "$project_missing" ]
+if ! [ -f "./$project_cccmkfile" ]
 then
 	print_error "The current folder is not a valid cccmk project folder (needed for command 'cccmk update')"
 	exit 1
