@@ -263,9 +263,12 @@ do
 	fi
 done
 print_success "Finished updating all tracked files."
-print_warning "Since there were some merge conflicts, make sure you check these files:"
-for i in $conflicts
-do printf "CONFLICT: $i\n"
-done
+if [ -z "$conflicts" ]
+then
+	print_warning "Since there were some merge conflicts, make sure you check these files:"
+	for i in $conflicts
+	do printf "CONFLICT: $i\n"
+	done
+fi
 # cleanup temp files
 rm -rf "$path_tmp"
