@@ -8,7 +8,7 @@ project_template_copy()
 	local filename="$3"
 
 	# skip any project template helper scripts
-	if [ "$filename" == ".cccmk" ]
+	if [ "$filename" = ".cccmk" ]
 	then continue
 	fi
 	# if no value was provided to the 'output_filename' variable, then use the source filename
@@ -67,7 +67,7 @@ project_template_copy_recurse()
 				if [ -z "$output_filename" ]
 				then output_filename="$selected_file"
 				fi
-				if [ "$selected_file" == "none" ]
+				if [ "$selected_file" = "none" ]
 				then print_verbose "No file selected."
 				else
 					project_template_copy "$dir/$subdir" "$dest" "$selected_file"
@@ -228,7 +228,9 @@ fi
 project_year="`date "+%Y" `"
 
 # by default, do not perform any project after-create operations
-after_create=""
+if ! [ "`type -t after_create`" = "function" ]
+then after_create() { : ; }
+fi
 
 (
 	# create project folder and cd inside it
@@ -264,7 +266,7 @@ after_create=""
 	# create initial project version file
 	echo "$command_arg_name@0.0.0-?" > "$project_versionfile"
 	# initial setup for project, after creation
-	$after_create
+	after_create
 	# set up git repo for new project
 	git init
 	git add --all

@@ -36,9 +36,9 @@ prompt_question()
 	local default="`echo "$2" | tr [:upper:] [:lower:]`" # force lowercase
 	if [ -z "$default" ]
 	then echo '[y/n]'
-	elif [ "$default" == 'y' ]
+	elif [ "$default" = 'y' ]
 	then echo '[Y/n]'
-	elif [ "$default" == 'n' ]
+	elif [ "$default" = 'n' ]
 	then echo '[y/N]'
 	else
 		print_error "bad call to prompt_question(), 'default' arg should be 'y','n', or nothing"
@@ -58,9 +58,9 @@ prompt_question()
 			then
 				print_error "Invalid answer, should be either 'y'/'yes' or 'n'/'no'."
 				exit 1
-			elif [ "$default" == 'y' ]
+			elif [ "$default" = 'y' ]
 			then answer=true
-			elif [ "$default" == 'n' ]
+			elif [ "$default" = 'n' ]
 			then answer=false
 			fi
 			print_message "Default option ('$default') selected."
@@ -274,7 +274,7 @@ prompt_multiselect()
 		for ((i=0; i<${#options[@]}; i++))
 		do
 			local prefix="[ ]"
-			if [ "${selected[i]}" == "${options[i]}" ]
+			if [ "${selected[i]}" = "${options[i]}" ]
 			then prefix="[x]"
 			fi
 			cursor_to $(($startrow + $i))

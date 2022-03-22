@@ -1,4 +1,13 @@
 #!/bin/sh -e
 
-# initial project setup
-after_create='npm install'
+# shell command for initial project setup
+after_create()
+{
+	npm install
+}
+
+# shell command to parse version number from versionfile
+parse_versionfile()
+{
+	cat "$1" | awk '{ if (match($0, /^[ \t]*"version"[ \t]*:[ \t]*"([^"]*)"/, matched)) { print matched[1]; } }'
+}

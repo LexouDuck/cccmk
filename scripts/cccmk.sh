@@ -139,7 +139,7 @@ parse_args()
 	then print_warning "No command/arguments given to cccmk, displaying help..."
 	else while [ $# -gt 0 ]
 	do
-		if [ "`echo "$1" | cut -c1-1`" == "-" ]
+		if [ "`echo "$1" | cut -c1-1`" = "-" ]
 		then # options (w/ leading dash)
 		case "$1" in
 			(-h|--help|help)        command="$1" ; show_help    ; exit 0 ;;
@@ -245,8 +245,8 @@ project_track=
 project_missing=
 
 if ! [ -f "./$project_cccmkfile" ]
-then print_warning "The current folder is not a valid cccmk project folder - missing '$project_cccmkfile'"
-	project_missing="$project_missing - missing project tracker file: './$project_cccmkfile'\n"
+then print_warning "The current folder is not a valid cccmk project folder."
+	project_missing="$project_missing - missing project tracker file: ./$project_cccmkfile\n"
 else
 	# parse the .cccmk file (by simply running it as an inline shell script)
 	. "./$project_cccmkfile"
@@ -265,13 +265,39 @@ fi
 if [ -z "$project_versionfile" ]
 then :
 elif ! [ -f "./$project_versionfile" ]
-then project_missing="$project_missing - missing versioning info file: './$project_versionfile'\n"
+then project_missing="$project_missing - missing versioning info file: ./$project_versionfile\n"
+else
+	for subdir in `list_subfolders $CCCMK_PATH_PROJECT`
+	do
+		if echo "$subdir" | grep -q "_if_lang_"
+		then
+			values="` echo "$subdir" | cut -d'_' -f 4`"
+			langs="`  echo "$values" | tr '-' ' ' `"
+			if contains "$project_lang" "$langs"
+			then
+				. $CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk
+				if [ "`type -t parse_versionfile `" = "function" ]
+				then
+					project_version=`parse_versionfile "$project_versionfile" `
+					break
+				else
+					print_warning "Cannot parse version number from versionfile, no \`parse_versionfile\` function implemented."
+					print_warning "Go check the code inside your language-specific script file: $CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk"
+					parse_versionfile() { : ; }
+				fi
+			fi
+		fi
+	done
+	if [ -z "$project_version" ]
+	then print_warning "Could not parse version number from versionfile, got empty string."
+	fi
+	print_verbose "parsed project_version:     '$project_version'"
 fi
 
 if [ -z "$project_packagefile" ]
 then :
 elif ! [ -f "./$project_packagefile" ]
-then project_missing="$project_missing - missing packages dependency list file: './$project_packagefile'\n"
+then project_missing="$project_missing - missing packages dependency list file: ./$project_packagefile\n"
 fi
 
 # display warning if current folder is missing any necessary project files
@@ -305,6 +331,7 @@ cccmk_template()
 		packagefile=$project_packagefile;
 		track_paths=$project_track_paths;
 		track=$project_track;
+		version=$project_version;
 		"
 	fi
 	if [ -z "$outputfile" ]

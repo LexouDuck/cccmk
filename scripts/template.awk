@@ -40,7 +40,7 @@ function template_variable(str)
 		}
 		else
 		{
-			print_error("unknown variable used: " matchvar[1]);
+			print_warning("unknown variable used: " matchvar[1]);
 			break;
 		}
 	}

@@ -1,4 +1,13 @@
 #!/bin/sh -e
 
-# initial project setup
-after_create='make init version'
+# shell command for initial project setup
+after_create()
+{
+	make init version
+}
+
+# shell command to parse version number from versionfile
+parse_versionfile()
+{
+	cat "$1" | egrep -o '[0-9]+(\.[0-9]+)+'
+}

@@ -35,7 +35,7 @@ contains()
 {
 	for i in $2
 	do
-		if [ "$i" == "$1" ]
+		if [ "$i" = "$1" ]
 		then return 0
 		fi
 	done
