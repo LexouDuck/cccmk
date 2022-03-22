@@ -229,7 +229,7 @@ project_year="`date "+%Y" `"
 
 # by default, do not perform any project after-create operations
 if ! [ "`type -t after_create`" = "function" ]
-then after_create() { : ; }
+then after_create() { : ; } # define empty function
 fi
 
 (

@@ -239,11 +239,15 @@ project_track_paths=""
 #! Parsed from the .cccmk file: the list of project files to track with cccmk
 project_track=
 
+#! Parsed from the $project_versionfile: the current version number of the project
+project_version=
+
 
 
 #! The list of absent files which are necessary for any project using cccmk
 project_missing=
 
+# parse the project tracker file
 if ! [ -f "./$project_cccmkfile" ]
 then print_warning "The current folder is not a valid cccmk project folder."
 	project_missing="$project_missing - missing project tracker file: ./$project_cccmkfile\n"
@@ -262,6 +266,7 @@ else
 	print_verbose "parsed project_track:       '$project_track'"
 fi
 
+# parse the project file which holds the version number
 if [ -z "$project_versionfile" ]
 then :
 elif ! [ -f "./$project_versionfile" ]
@@ -272,8 +277,7 @@ else
 		if echo "$subdir" | grep -q "_if_lang_"
 		then
 			values="` echo "$subdir" | cut -d'_' -f 4`"
-			langs="`  echo "$values" | tr '-' ' ' `"
-			if contains "$project_lang" "$langs"
+			if contains "$project_lang" "` echo "$values" | tr '-' ' ' `"
 			then
 				. $CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk
 				if [ "`type -t parse_versionfile `" = "function" ]
@@ -283,7 +287,7 @@ else
 				else
 					print_warning "Cannot parse version number from versionfile, no \`parse_versionfile\` function implemented."
 					print_warning "Go check the code inside your language-specific script file: $CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk"
-					parse_versionfile() { : ; }
+					parse_versionfile() { : ; } # define empty function
 				fi
 			fi
 		fi
@@ -291,9 +295,10 @@ else
 	if [ -z "$project_version" ]
 	then print_warning "Could not parse version number from versionfile, got empty string."
 	fi
-	print_verbose "parsed project_version:     '$project_version'"
+	print_verbose "parsed project_version: '$project_version'"
 fi
 
+# parse the project file which holds the list of packages
 if [ -z "$project_packagefile" ]
 then :
 elif ! [ -f "./$project_packagefile" ]

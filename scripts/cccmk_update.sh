@@ -263,11 +263,11 @@ do
 	fi
 done
 print_success "Finished updating all tracked files."
-if [ -z "$conflicts" ]
+if ! [ -z "$conflicts" ]
 then
 	print_warning "Since there were some merge conflicts, make sure you check these files:"
 	for i in $conflicts
-	do printf "CONFLICT: $i\n"
+	do print_warning "CONFLICT: $i"
 	done
 fi
 # cleanup temp files
