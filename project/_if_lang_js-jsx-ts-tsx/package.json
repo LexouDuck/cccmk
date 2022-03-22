@@ -1,72 +1,85 @@
 {
-  "name": "%[name]%",
-  "version": "0.1.0",
-  "author": "%[author]%",
-  "contributors": [
-    "%[author]%"
-  ],
-  "description": "A React-based web application",
-  "license": "See LICENSE.md",
-  "repository": "",
-  "bugs": "",
-  "homepage": ".",
-  "private": true,
-  "main": "index.js",
-  "scripts": {
-%%if tracked(.githooks/):    "prepare": "git config core.hooksPath ./.githooks/",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "lint": "eslint --config .eslintrc.json ",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "lint-all": "npm run lint -- src --ext .js,.jsx,.ts,.tsx ",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "format": "prettier-eslint --config .eslintrc.style.json --write ",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "format-all": "npm run format -- src --ext .js,.jsx,.ts,.tsx ",
-    "eject": "react-scripts eject"
-  },
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.3",
-    "@testing-library/user-event": "^13.5.0",
-%%if is(lang,tsx):    "@types/jest": "^27.4.1",
-%%if is(lang,tsx):    "@types/node": "^16.11.26",
-%%if is(lang,tsx):    "@types/react": "^17.0.39",
-%%if is(lang,tsx):    "@types/react-dom": "^17.0.13",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
-%%if is(lang,tsx):    "ts-node": "^10.2.0",
-%%if is(lang,tsx):    "typescript": "^4.6.2",
-    "web-vitals": "^2.1.4"
-  },
-  "devDependencies": {
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "@typescript-eslint/eslint-plugin": "^4.31.0",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "@typescript-eslint/parser": "^4.31.0",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "eslint": "^7.32.0",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "lint-staged": "^11.1.2",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "prettier": "^2.4.0",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "prettier-eslint": "^13.0.0",
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "prettier-eslint-cli": "^5.0.1",
-  },
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):  "lint-staged": {
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):    "*.{js,jsx,ts,tsx,css,md}": "echo 'npm run format -- '"
-%%if tracked(_if_lang_jsx-tsx/_if_ask_eslint/):  },
+	"name": "%[name]%",
+	"version": "%[version]%",
+	"author": "%[author]%",
+	"contributors": [
+	],
+	"description": "A React-based web application",
+	"license": "See LICENSE.md",
+	"repository": "",
+	"bugs": "",
+	"keywords": [
+	],
+	"homepage": ".",
+	"private": true,
+%%if is(type,binding):	"gypfile": true,
+	"main": "index.js",
+	"scripts": {
+%%if tracked(.githooks/):		"prepare": "[ -e .git ] && git config core.hooksPath ./.githooks/",
+		"stop": "if [ \"$OS\" = \"Windows_NT\" ]; then taskkill -F -IM node.exe ; else sudo pkill node ; fi",
+%%if matches(lang,js$):		"start": "node src/index.js",
+%%if matches(lang,ts$):		"build": "tsc",
+%%if matches(lang,ts$):		"start": "tsc && node build/index.js",
+%%if matches(lang,[jt]sx):		"start": "react-scripts start",
+%%if matches(lang,[jt]sx):		"build": "react-scripts build",
+%%if matches(lang,[jt]sx):		"test": "react-scripts test",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"lint": "eslint --config .eslintrc.json ",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"lint-all": "npm run lint -- ./src --ext .js,.jsx,.ts,.tsx ",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"format": "eslint --config .eslintrc.json --fix ",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"format-all": "npm run format -- ./src --ext .js,.jsx,.ts,.tsx ",
+%%if matches(lang,[jt]sx):		"eject": "react-scripts eject"
+	},
+	"dependencies": {
+%%if matches(lang,[jt]sx):		"@testing-library/jest-dom": "^5.16.2",
+%%if matches(lang,[jt]sx):		"@testing-library/react": "^12.1.3",
+%%if matches(lang,[jt]sx):		"@testing-library/user-event": "^13.5.0",
+%%if matches(lang,tsx$):		"@types/jest": "^27.4.1",
+%%if matches(lang,tsx?):		"@types/node": "^15.6.1",
+%%if matches(lang,tsx$):		"@types/react": "^17.0.39",
+%%if matches(lang,tsx$):		"@types/react-dom": "^17.0.13",
+		"dotenv": "^10.0.0",
+%%if matches(lang,[jt]sx):		"react": "^17.0.2",
+%%if matches(lang,[jt]sx):		"react-dom": "^17.0.2",
+%%if matches(lang,[jt]sx):		"react-scripts": "5.0.0",
+%%if matches(lang,tsx?):		"typescript": "^4.6.2",
+%%if matches(lang,[jt]sx):		"web-vitals": "^2.1.4"
+	},
+	"devDependencies": {
+%%if matches(lang,tsx?):		"@types/jest": "^27.0.2",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"@typescript-eslint/eslint-plugin": "^4.33.0",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"@typescript-eslint/parser": "^4.33.0",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"eslint": "^7.32.0",
+		"eslint-plugin-jest": "^24.4.0",
+		"eslint-plugin-testing-library": "^4.12.2",
+		"jest": "^27.2.4",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"lint-staged": "^11.1.2",
+%%if is(type,binding):		"node-addon-api": "^3.1.0",
+%%if is(type,binding):		"node-gyp": "^8.4.0",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"prettier": "^2.4.0",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"prettier-eslint": "^13.0.0",
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"prettier-eslint-cli": "^5.0.1",
+%%if matches(lang,tsx?):		"ts-jest": "^27.0.5",
+	},
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):	"lint-staged": {
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):		"*.{js,jsx,ts,tsx,css}": "npm run format -- "
+%%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):	},
 %%if matches(lang,[jt]s$)
-  "engines": {
-    "node": ">=14.0"
-  }
+	"engines": {
+		"node": ">=12.0"
+	}
 %%end if
 %%if matches(lang,[jt]sx)
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 %%end if
 }

@@ -1,12 +1,16 @@
 { // NOTE: this eslint config file only contains style rules, for auto-formatting with prettier-eslint
 	"root": true, // this folder is the root-most folder of the project, prevent eslint from looking in parent oflders
+%%if matches(lang,tsx?)
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"project": [ "./tsconfig.json", "./tests/tsconfig.json" ]
+		"project": [
+			"./tsconfig.json"
+		]
 	},
+%%end if
 	"plugins": [
-		"@typescript-eslint"/*,*/
-		/*"react",*/
+%%if matches(lang,tsx?):		"@typescript-eslint",
+%%if matches(lang,[jt]sx):		"react",
 	],
 	// STYLE RULES
 	"extends":[],
@@ -18,29 +22,29 @@
 		"array-bracket-spacing":                                    ["warn", "never"],
 		"array-element-newline":                                    ["warn", "consistent"],
 		"block-spacing":                                            ["warn", "always"],
-%%if matches(lang,jsx?):		"brace-style":                                                                            ["warn", "allman", { "allowSingleLine": true }],
-%%if matches(lang,tsx?):		"brace-style":   ["off"], "@typescript-eslint/brace-style":                               ["warn", "allman", { "allowSingleLine": true }],
-%%if matches(lang,jsx?):		"comma-dangle":                                                                           ["warn", "always-multiline"],
-%%if matches(lang,tsx?):		"comma-dangle":  ["off"], "@typescript-eslint/comma-dangle":                              ["warn", "always-multiline"],
-%%if matches(lang,jsx?):		"comma-spacing":                                                                          ["warn"],
-%%if matches(lang,tsx?):		"comma-spacing": ["off"], "@typescript-eslint/comma-spacing":                             ["warn"],
+%%if matches(lang,jsx?):		"brace-style":                                              ["warn", "allman", { "allowSingleLine": true }],
+%%if matches(lang,tsx?):		"brace-style":                                              ["off"],"@typescript-eslint/brace-style": ["warn", "allman", { "allowSingleLine": true }],
+%%if matches(lang,jsx?):		"comma-dangle":                                             ["warn", "always-multiline"],
+%%if matches(lang,tsx?):		"comma-dangle":                                             ["off"],"@typescript-eslint/comma-dangle": ["warn", "always-multiline"],
+%%if matches(lang,jsx?):		"comma-spacing":                                            ["warn"],
+%%if matches(lang,tsx?):		"comma-spacing":                                            ["off"],"@typescript-eslint/comma-spacing": ["warn"],
 		"comma-style":                                              ["warn"],
 		"computed-property-spacing":                                ["warn", "never"],
 		"dot-location":                                             ["warn", "property"],
 %%if matches(lang,jsx?):		"func-call-spacing":                                                                      ["warn", "never"],
-%%if matches(lang,tsx?):		"func-call-spacing": ["off"], "@typescript-eslint/func-call-spacing":                     ["warn", "never"],
+%%if matches(lang,tsx?):		"func-call-spacing":                                        ["off"],"@typescript-eslint/func-call-spacing": ["warn", "never"],
 		"function-call-argument-newline":                           ["warn", "consistent"],
 		"function-paren-newline":                                   ["warn", "multiline"],
 		"generator-star-spacing":                                   ["warn", {"before": true, "after": true}],
 		"implicit-arrow-linebreak":                                 ["warn", "beside"],
-%%if matches(lang,jsx?):		"indent":                                                                                 ["warn", "tab", { "SwitchCase": 1 }],
-%%if matches(lang,tsx?):		"indent": ["off"], "@typescript-eslint/indent":                                           ["warn", "tab", { "SwitchCase": 1 }],
+%%if matches(lang,jsx?):		"indent":                                                   ["warn", "tab", { "SwitchCase": 1 }],
+%%if matches(lang,tsx?):		"indent":                                                   ["off"],"@typescript-eslint/indent": ["warn", "tab", { "SwitchCase": 1 }],
 		"key-spacing":                                              ["warn", { "align": "colon" }],
-%%if matches(lang,jsx?):		"keyword-spacing":                                                                        ["warn", { "before": true, "after": true }],
-%%if matches(lang,tsx?):		"keyword-spacing": ["off"], "@typescript-eslint/keyword-spacing":                         ["warn", { "before": true, "after": true }],
+%%if matches(lang,jsx?):		"keyword-spacing":                                          ["warn", { "before": true, "after": true }],
+%%if matches(lang,tsx?):		"keyword-spacing":                                          ["off"],"@typescript-eslint/keyword-spacing": ["warn", { "before": true, "after": true }],
 		"linebreak-style":                                          ["warn", "unix"],
-%%if matches(lang,jsx?):		"lines-between-class-members":                                                            ["warn", "always", { "exceptAfterSingleLine": true }],
-%%if matches(lang,tsx?):		"lines-between-class-members": ["off"], "@typescript-eslint/lines-between-class-members": ["warn", "always", { "exceptAfterSingleLine": true }],
+%%if matches(lang,jsx?):		"lines-between-class-members":                              ["warn", "always", { "exceptAfterSingleLine": true }],
+%%if matches(lang,tsx?):		"lines-between-class-members":                              ["off"],"@typescript-eslint/lines-between-class-members": ["warn", "always", { "exceptAfterSingleLine": true }],
 		"multiline-ternary":                                        ["warn", "always-multiline"],
 		"newline-per-chained-call":                                 ["warn", { "ignoreChainWithDepth": 4 }],
 		"no-mixed-spaces-and-tabs":                                 ["warn"],
@@ -51,8 +55,8 @@
 		"no-whitespace-before-property":                            ["warn"],
 		"nonblock-statement-body-position":                         ["off"], // TODO be more rigid for this one ?
 		"object-curly-newline":                                     ["warn", { "multiline": true, "consistent": true , "minProperties": 3 }],
-%%if matches(lang,jsx?):		"object-curly-spacing":                                                                   ["warn", "always"],
-%%if matches(lang,tsx?):		"object-curly-spacing": ["off"], "@typescript-eslint/object-curly-spacing":               ["warn", "always"],
+%%if matches(lang,jsx?):		"object-curly-spacing":                                     ["warn", "always"],
+%%if matches(lang,tsx?):		"object-curly-spacing":                                     ["off"],"@typescript-eslint/object-curly-spacing": ["warn", "always"],
 		"object-property-newline":                                  ["warn", { "allowAllPropertiesOnSameLine": true }], //
 		"operator-linebreak":                                       ["warn", "before", { "overrides": { "=": "after"}}],
 		"padded-blocks":                                            ["warn", "never"],
@@ -61,11 +65,11 @@
 		"semi-style":                                               ["warn", "last"],
 		"semi-spacing":                                             ["warn", { "before": false, "after": true }],
 		"space-before-blocks":                                      ["warn", "always"],
-%%if matches(lang,jsx?):		"space-before-function-paren":                                                            ["warn", { "named": "never", "anonymous": "always", "asyncArrow": "always" }],
-%%if matches(lang,tsx?):		"space-before-function-paren": ["off"], "@typescript-eslint/space-before-function-paren": ["warn", { "named": "never", "anonymous": "always", "asyncArrow": "always" }],
+%%if matches(lang,jsx?):		"space-before-function-paren":                              ["warn", { "named": "never", "anonymous": "always", "asyncArrow": "always" }],
+%%if matches(lang,tsx?):		"space-before-function-paren":                              ["off"],"@typescript-eslint/space-before-function-paren": ["warn", { "named": "never", "anonymous": "always", "asyncArrow": "always" }],
 		"space-in-parens":                                          ["warn", "never"],
-%%if matches(lang,jsx?):		"space-infix-ops":                                                                        ["warn"],
-%%if matches(lang,tsx?):		"space-infix-ops": ["off"], "@typescript-eslint/space-infix-ops":                         ["warn"],
+%%if matches(lang,jsx?):		"space-infix-ops":                                          ["warn"],
+%%if matches(lang,tsx?):		"space-infix-ops":                                          ["off"],"@typescript-eslint/space-infix-ops": ["warn"],
 		"space-unary-ops":                                          ["warn", { "words": true, "nonwords": false }],
 		"switch-colon-spacing":                                     ["warn", { "before": false, "after": true }],
 		"template-curly-spacing":                                   ["warn", "never"],
@@ -155,19 +159,19 @@
 		"consistent-this":                                          ["warn", "this"],
 		"curly":                                                    ["warn", "multi-or-nest"],
 		"default-case-last":                                        ["off"], // enforce default clauses in switch statements to be last
-%%if matches(lang,jsx?):		"dot-notation":                                                                           ["off"], // enforce dot notation whenever possible
-%%if matches(lang,tsx?):		"dot-notation": ["off"], "@typescript-eslint/dot-notation":                               ["off"], // enforce dot notation whenever possible
+%%if matches(lang,jsx?):		"dot-notation":                                             ["off"], // enforce dot notation whenever possible
+%%if matches(lang,tsx?):		"dot-notation":                                             ["off"],"@typescript-eslint/dot-notation": ["off"], // enforce dot notation whenever possible
 		"eol-last":                                                 ["warn", "always"],
 		"func-style":                                               ["warn", "declaration", { "allowArrowFunctions": true }],
-%%if matches(lang,jsx?):		"init-declarations":                                                                      ["off"], // require or disallow initialization in variable declarations
-%%if matches(lang,tsx?):		"init-declarations": ["off"], "@typescript-eslint/init-declarations":                     ["off"], // require or disallow initialization in variable declarations
+%%if matches(lang,jsx?):		"init-declarations":                                        ["off"], // require or disallow initialization in variable declarations
+%%if matches(lang,tsx?):		"init-declarations":                                        ["off"],"@typescript-eslint/init-declarations": ["off"], // require or disallow initialization in variable declarations
 		"jsx-quotes":                                               ["warn", "prefer-double"],
 		"new-parens":                                               ["warn"],
 		"no-floating-decimal":                                      ["off"], // disallow leading or trailing decimal points in numeric literals
 		"no-implicit-coercion":                                     ["off"], // disallow shorthand type conversions
 		"no-lonely-if":                                             ["warn"],
-%%if matches(lang,jsx?):		"no-magic-numbers":                                                                       ["off"], // disallow magic numbers
-%%if matches(lang,tsx?):		"no-magic-numbers": ["off"], "@typescript-eslint/no-magic-numbers":                       ["off"], // disallow magic numbers
+%%if matches(lang,jsx?):		"no-magic-numbers":                                         ["off"], // disallow magic numbers
+%%if matches(lang,tsx?):		"no-magic-numbers":                                         ["off"],"@typescript-eslint/no-magic-numbers": ["off"], // disallow magic numbers
 		"no-mixed-operators":                                       ["warn"],
 		"no-self-assign":                                           ["off"], // disallow assignments where both sides are exactly the same
 		"no-self-compare":                                          ["off"], // disallow comparisons where both sides are exactly the same
@@ -184,10 +188,10 @@
 		"prefer-template":                                          ["off"], // require template literals instead of string concatenation
 		"prefer-regex-literals":                                    ["off"], // disallow use of the `RegExp` constructor in favor of regular expression literals
 		"quote-props":                                              ["warn", "consistent-as-needed"],
-%%if matches(lang,jsx?):		"quotes":                                                                                 ["warn", "double"],
-%%if matches(lang,tsx?):		"quotes": ["off"], "@typescript-eslint/quotes":                                           ["warn", "double"],
-%%if matches(lang,jsx?):		"semi":                                                                                   ["warn", "always"],
-%%if matches(lang,tsx?):		"semi": ["off"], "@typescript-eslint/semi":                                               ["warn", "always"],
+%%if matches(lang,jsx?):		"quotes":                                                   ["warn", "double"],
+%%if matches(lang,tsx?):		"quotes":                                                   ["off"],"@typescript-eslint/quotes": ["warn", "double"],
+%%if matches(lang,jsx?):		"semi":                                                     ["warn", "always"],
+%%if matches(lang,tsx?):		"semi":                                                     ["off"],"@typescript-eslint/semi": ["warn", "always"],
 		"unicode-bom":                                              ["warn", "never"],
 		"wrap-regex":                                               ["off"],//["warn"],
 %%if matches(lang,tsx?)
@@ -222,8 +226,8 @@
 %%end if
 
 		// STYLE: forbid features
-%%if matches(lang,jsx?):		"no-array-constructor":                                                                      ["off"],//["warn"],
-%%if matches(lang,tsx?):		"no-array-constructor": ["off"], "@typescript-eslint/no-array-constructor":                  ["off"],//["warn"],
+%%if matches(lang,jsx?):		"no-array-constructor":                                     ["off"],//["warn"],
+%%if matches(lang,tsx?):		"no-array-constructor":                                     ["off"],"@typescript-eslint/no-array-constructor": ["off"],//["warn"],
 		"no-bitwise":                                               ["off"], // disallow the use of bitwise operators: `&`, `|`, `<<`, `>>`
 		"no-continue":                                              ["off"], // disallow the use of the `continue` control-flow keyword
 		"no-multi-assign":                                          ["off"], // disallow multiple assignments on a single line
@@ -253,8 +257,8 @@
 		"no-param-reassign":                                        ["off"], // disallow reassigning `function` parameters
 		"no-void":                                                  ["off"], // disallow `void` operators
 		"no-with":                                                  ["off"], // disallow `with` statements
-%%if matches(lang,jsx?):		"no-shadow":                                                                          ["off"], // disallow variable declarations from shadowing variables declared in the outer scope
-%%if matches(lang,tsx?):		"no-shadow": ["off"], "@typescript-eslint/no-shadow":                                 ["off"], // disallow variable declarations from shadowing variables declared in the outer scope
+%%if matches(lang,jsx?):		"no-shadow":                                                ["off"], // disallow variable declarations from shadowing variables declared in the outer scope
+%%if matches(lang,tsx?):		"no-shadow":                                                ["off"],"@typescript-eslint/no-shadow": ["off"], // disallow variable declarations from shadowing variables declared in the outer scope
 %%if matches(lang,tsx?)
 		"@typescript-eslint/ban-ts-comment":                        ["off"], // Bans @ts-<directive> comments from being used or requires descriptions after directive
 		"@typescript-eslint/ban-tslint-comment":                    ["off"], // Bans // tslint:<rule-flag> comments from being used
@@ -274,19 +278,19 @@
 		
 		// LOGIC: code readability
 		"complexity":                                               ["off"], // enforce a maximum cyclomatic complexity allowed in a program
-%%if matches(lang,jsx?):		"default-param-last":                                                                 ["off"], // enforce default parameters to be last
-%%if matches(lang,tsx?):		"default-param-last": ["off"], "@typescript-eslint/default-param-last":               ["off"], // enforce default parameters to be last
+%%if matches(lang,jsx?):		"default-param-last":                                       ["off"], // enforce default parameters to be last
+%%if matches(lang,tsx?):		"default-param-last":                                       ["off"],"@typescript-eslint/default-param-last": ["off"], // enforce default parameters to be last
 		"grouped-accessor-pairs":                                   ["off"], // require get/set accessor pairs to be grouped together
 		"no-confusing-arrow":                                       ["off"], // disallow arrow functions where they could be confused with comparisons
 		"no-div-regex":                                             ["off"], // disallow division operators explicitly at the beginning of regular expressions
-%%if matches(lang,jsx?):		"no-duplicate-imports":                                                               ["warn"], // disallow duplicate module imports
-%%if matches(lang,tsx?):		"no-duplicate-imports": ["off"], "@typescript-eslint/no-duplicate-imports":           ["warn"], // disallow duplicate module imports
+%%if matches(lang,jsx?):		"no-duplicate-imports":                                     ["warn"], // disallow duplicate module imports
+%%if matches(lang,tsx?):		"no-duplicate-imports":                                     ["off"],"@typescript-eslint/no-duplicate-imports": ["warn"], // disallow duplicate module imports
 		"no-else-return":                                           ["off"], // disallow `else` blocks after `return` statements in `if` statements
 		"no-extra-boolean-cast":                                    ["off"], // disallow unnecessary boolean casts
-%%if matches(lang,jsx?):		"no-extra-parens":                                                                    ["off"], // disallow unnecessary parentheses
-%%if matches(lang,tsx?):		"no-extra-parens": ["off"], "@typescript-eslint/no-extra-parens":                     ["off"], // disallow unnecessary parentheses
-%%if matches(lang,jsx?):		"no-extra-semi":                                                                      ["off"], // disallow unnecessary semicolons
-%%if matches(lang,tsx?):		"no-extra-semi": ["off"], "@typescript-eslint/no-extra-semi":                         ["off"], // disallow unnecessary semicolons
+%%if matches(lang,jsx?):		"no-extra-parens":                                          ["off"], // disallow unnecessary parentheses
+%%if matches(lang,tsx?):		"no-extra-parens":                                          ["off"],"@typescript-eslint/no-extra-parens": ["off"], // disallow unnecessary parentheses
+%%if matches(lang,jsx?):		"no-extra-semi":                                            ["off"], // disallow unnecessary semicolons
+%%if matches(lang,tsx?):		"no-extra-semi":                                            ["off"],"@typescript-eslint/no-extra-semi": ["off"], // disallow unnecessary semicolons
 		"no-octal":                                                 ["off"], // disallow octal literals
 		"no-regex-spaces":                                          ["off"], // disallow multiple spaces in regular expressions
 		"no-return-assign":                                         ["off"], // disallow assignment operators in `return` statements
@@ -294,8 +298,8 @@
 		"no-undef-init":                                            ["off"], // disallow initializing variables to `undefined`
 		"no-unexpected-multiline":                                  ["off"], // disallow confusing multiline expressions
 		"no-useless-backreference":                                 ["off"], // disallow useless backreferences in regular expressions
-%%if matches(lang,jsx?):		"no-useless-constructor":                                                             ["off"], // disallow unnecessary constructors
-%%if matches(lang,tsx?):		"no-useless-constructor": ["off"], "@typescript-eslint/no-useless-constructor":       ["off"], // disallow unnecessary constructors
+%%if matches(lang,jsx?):		"no-useless-constructor":                                   ["off"], // disallow unnecessary constructors
+%%if matches(lang,tsx?):		"no-useless-constructor":                                   ["off"],"@typescript-eslint/no-useless-constructor": ["off"], // disallow unnecessary constructors
 		"no-useless-computed-key":                                  ["off"], // disallow unnecessary computed property keys in objects and classes
 		"no-useless-rename":                                        ["off"], // disallow renaming import, export, and destructured assignments to the same name
 		"no-useless-catch":                                         ["off"], // disallow unnecessary `catch` clauses
@@ -330,13 +334,13 @@
 		"no-constant-condition":                                    ["warn"], // disallow constant expressions in conditions
 		"no-empty":                                                 ["warn"], // disallow empty block statements
 		"no-empty-character-class":                                 ["warn"], // disallow empty character classes in regular expressions
-%%if matches(lang,jsx?):		"no-empty-function":                                                                  ["warn"], // disallow empty functions
-%%if matches(lang,tsx?):		"no-empty-function": ["off"], "@typescript-eslint/no-empty-function":                 ["warn"], // disallow empty functions
+%%if matches(lang,jsx?):		"no-empty-function":                                        ["warn"], // disallow empty functions
+%%if matches(lang,tsx?):		"no-empty-function":                                        ["off"],"@typescript-eslint/no-empty-function": ["warn"], // disallow empty functions
 		"no-unused-labels":                                         ["warn"], // disallow unused labels
-%%if matches(lang,jsx?):		"no-unused-expressions":                                                              ["warn"], // disallow unused expressions
-%%if matches(lang,tsx?):		"no-unused-expressions": ["off"], "@typescript-eslint/no-unused-expressions":         ["warn"], // disallow unused expressions
-%%if matches(lang,jsx?):		"no-unused-vars":                                                                     ["warn"], // disallow unused variables
-%%if matches(lang,tsx?):		"no-unused-vars": ["off"], "@typescript-eslint/no-unused-vars":                       ["warn"], // disallow unused variables
+%%if matches(lang,jsx?):		"no-unused-expressions":                                    ["warn"], // disallow unused expressions
+%%if matches(lang,tsx?):		"no-unused-expressions":                                    ["off"],"@typescript-eslint/no-unused-expressions": ["warn"], // disallow unused expressions
+%%if matches(lang,jsx?):		"no-unused-vars":                                           ["warn"], // disallow unused variables
+%%if matches(lang,tsx?):		"no-unused-vars":                                           ["off"],"@typescript-eslint/no-unused-vars": ["warn"], // disallow unused variables
 		"no-warning-comments":                                      ["warn"], // disallow specified warning terms in comments
 		"no-debugger":                                              ["warn"], // disallow the use of `debugger`
 %%if matches(lang,tsx?)
@@ -376,14 +380,14 @@
 		"no-new-wrappers":                                          ["warn"], // disallow `new` operators with the `String`, `Number`, and `Boolean` objects
 		"no-proto":                                                 ["warn"], // disallow the use of the `__proto__` property
 		"no-useless-call":                                          ["warn"], // disallow unnecessary calls to `.call()` and `.apply()`
-%%if matches(lang,jsx?):		"no-dupe-class-members":                                                                ["warn"], // disallow duplicate class members
-%%if matches(lang,tsx?):		"no-dupe-class-members": ["off"], "@typescript-eslint/no-dupe-class-members":           ["warn"], // disallow duplicate class members
-%%if matches(lang,jsx?):		"no-redeclare":                                                                         ["warn"], // disallow variable redeclaration
-%%if matches(lang,tsx?):		"no-redeclare": ["off"], "@typescript-eslint/no-redeclare":                             ["warn"], // disallow variable redeclaration
-%%if matches(lang,jsx?):		"no-throw-literal":                                                                     ["warn"], // disallow throwing literals as exceptions
-%%if matches(lang,tsx?):		"no-throw-literal": ["off"], "@typescript-eslint/no-throw-literal":                     ["warn"], // disallow throwing literals as exceptions
-%%if matches(lang,jsx?):		"return-await":                                                                         ["warn"], // disallow unnecessary `return await`
-%%if matches(lang,tsx?):		"no-return-await": ["off"], "@typescript-eslint/return-await":                          ["warn"], // disallow unnecessary `return await`
+%%if matches(lang,jsx?):		"no-dupe-class-members":                                    ["warn"], // disallow duplicate class members
+%%if matches(lang,tsx?):		"no-dupe-class-members":                                    ["off"],"@typescript-eslint/no-dupe-class-members": ["warn"], // disallow duplicate class members
+%%if matches(lang,jsx?):		"no-redeclare":                                             ["warn"], // disallow variable redeclaration
+%%if matches(lang,tsx?):		"no-redeclare":                                             ["off"],"@typescript-eslint/no-redeclare": ["warn"], // disallow variable redeclaration
+%%if matches(lang,jsx?):		"no-throw-literal":                                         ["warn"], // disallow throwing literals as exceptions
+%%if matches(lang,tsx?):		"no-throw-literal":                                         ["off"],"@typescript-eslint/no-throw-literal": ["warn"], // disallow throwing literals as exceptions
+%%if matches(lang,jsx?):		"return-await":                                             ["warn"], // disallow unnecessary `return await`
+%%if matches(lang,tsx?):		"no-return-await":                                          ["off"],"@typescript-eslint/return-await": ["warn"], // disallow unnecessary `return await`
 		"no-var":                                                   ["warn"], // require `let` or `const` instead of `var`
 		"prefer-named-capture-group":                               ["warn"], // enforce using named capture group in regular expression
 		"prefer-numeric-literals":                                  ["warn"], // disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal, and hexadecimal literals
@@ -462,12 +466,12 @@
 		"no-fallthrough":                                           ["warn"], // disallow fallthrough of `case` statements
 		"no-label-var":                                             ["warn"], // disallow labels that share a name with a variable
 		"no-lone-blocks":                                           ["warn"], // disallow unnecessary nested blocks
-%%if matches(lang,jsx?):		"no-invalid-this":                                                                       ["warn"], // disallow `this` keywords outside of classes or class-like objects
-%%if matches(lang,tsx?):		"no-invalid-this": ["off"], "@typescript-eslint/no-invalid-this":                        ["warn"], // disallow `this` keywords outside of classes or class-like objects
-%%if matches(lang,jsx?):		"no-loop-func":                                                                          ["warn"], // disallow function declarations that contain unsafe references inside loop statements
-%%if matches(lang,tsx?):		"no-loop-func": ["off"], "@typescript-eslint/no-loop-func":                              ["warn"], // disallow function declarations that contain unsafe references inside loop statements
-%%if matches(lang,jsx?):		"no-loss-of-precision":                                                                  ["warn"], // disallow literal numbers that lose precision
-%%if matches(lang,tsx?):		"no-loss-of-precision": ["off"], "@typescript-eslint/no-loss-of-precision":              ["warn"], // disallow literal numbers that lose precision
+%%if matches(lang,jsx?):		"no-invalid-this":                                          ["warn"], // disallow `this` keywords outside of classes or class-like objects
+%%if matches(lang,tsx?):		"no-invalid-this":                                          ["off"],"@typescript-eslint/no-invalid-this": ["warn"], // disallow `this` keywords outside of classes or class-like objects
+%%if matches(lang,jsx?):		"no-loop-func":                                             ["warn"], // disallow function declarations that contain unsafe references inside loop statements
+%%if matches(lang,tsx?):		"no-loop-func":                                             ["off"],"@typescript-eslint/no-loop-func": ["warn"], // disallow function declarations that contain unsafe references inside loop statements
+%%if matches(lang,jsx?):		"no-loss-of-precision":                                     ["warn"], // disallow literal numbers that lose precision
+%%if matches(lang,tsx?):		"no-loss-of-precision":                                     ["off"],"@typescript-eslint/no-loss-of-precision": ["warn"], // disallow literal numbers that lose precision
 		"no-misleading-character-class":                            ["warn"], // disallow characters which are made with multiple code points in character class syntax
 		"no-nonoctal-decimal-escape":                               ["warn"], // disallow `\8` and `\9` escape sequences in string literals
 		"no-promise-executor-return":                               ["warn"], // disallow returning values from Promise executor functions
@@ -480,10 +484,10 @@
 		"no-unreachable":                                           ["warn"], // disallow unreachable code after `return`, `throw`, `continue`, and `break` statements
 		"no-unreachable-loop":                                      ["warn"], // disallow loops with a body that allows only one iteration
 		"no-unsafe-negation":                                       ["warn"], // disallow negating the left operand of relational operators
-%%if matches(lang,jsx?):		"no-use-before-define":                                                                  ["warn"], // disallow the use of variables before they are defined
-%%if matches(lang,tsx?):		"no-use-before-define": ["off"], "@typescript-eslint/no-use-before-define":              ["warn"], // disallow the use of variables before they are defined
-%%if matches(lang,jsx?):		"require-await":                                                                         ["warn"], // disallow async functions which have no `await` expression
-%%if matches(lang,tsx?):		"require-await": ["off"], "@typescript-eslint/require-await":                            ["warn"], // disallow async functions which have no `await` expression
+%%if matches(lang,jsx?):		"no-use-before-define":                                     ["warn"], // disallow the use of variables before they are defined
+%%if matches(lang,tsx?):		"no-use-before-define":                                     ["off"],"@typescript-eslint/no-use-before-define": ["warn"], // disallow the use of variables before they are defined
+%%if matches(lang,jsx?):		"require-await":                                            ["warn"], // disallow async functions which have no `await` expression
+%%if matches(lang,tsx?):		"require-await":                                            ["off"],"@typescript-eslint/require-await": ["warn"], // disallow async functions which have no `await` expression
 		"require-yield":                                            ["warn"], // require generator functions to contain `yield`
 		"require-unicode-regexp":                                   ["warn"], // enforce the use of `u` flag on RegExp
 		"use-isnan":                                                ["warn"], // require calls to `isNaN()` when checking for `NaN`
@@ -517,8 +521,8 @@
 		
 		// LOGIC: security risks & vulnerabilities
 		"no-eval":                                                  ["warn"], // disallow the use of `eval()`
-%%if matches(lang,jsx?):		"no-implied-eval":                                                                    ["warn"], // disallow the use of `eval()`-like methods
-%%if matches(lang,tsx?):		"no-implied-eval": ["off"], "@typescript-eslint/no-implied-eval":                     ["warn"], // disallow the use of `eval()`-like methods
+%%if matches(lang,jsx?):		"no-implied-eval":                                          ["warn"], // disallow the use of `eval()`-like methods
+%%if matches(lang,tsx?):		"no-implied-eval":                                          ["off"],"@typescript-eslint/no-implied-eval": ["warn"], // disallow the use of `eval()`-like methods
 		"no-script-url":                                            ["warn"], // disallow `javascript:` urls
 %%if matches(lang,[jt]sx)
 		"react/no-danger":                                          ["warn"], // Prevent usage of dangerous JSX props
@@ -554,7 +558,7 @@
 		"react/jsx-no-duplicate-props":                             ["warn"], // Enforce no duplicate props
 %%end if
 
-		"camelcase":                                                ["off"]
+		"camelcase": ["off"]
 	}
 }
 
