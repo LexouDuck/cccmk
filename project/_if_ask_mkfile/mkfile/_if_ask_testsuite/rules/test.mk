@@ -2,18 +2,10 @@
 
 
 
-#! Shell command used to launch the test program
-run_test = ./$(NAME_TEST)
-
-#! The directory in which to store text logs of the test suite output
-TEST_LOGDIR = $(LOGDIR)test/
-
-
-
 .PHONY:\
 test #! Runs the test suite program, with the given 'ARGS'
 test: $(NAME_TEST)
-	@$(call run_test) $(ARGS)
+	@$(call run,$(NAME_TEST)) $(ARGS)
 
 
 
@@ -21,7 +13,7 @@ test: $(NAME_TEST)
 test-logs #! Builds and runs the test suite program with the given 'ARGS', logging all results to files
 test-logs: $(NAME_TEST)
 	@mkdir -p $(TEST_LOGDIR)$(OSMODE)/
-	@$(call run_test) -var --test-all $(ARGS) >> $(TEST_LOGDIR)$(OSMODE)/$(NAME_TEST).txt
+	@$(call run,$(NAME_TEST)) -var --test-all $(ARGS) >> $(TEST_LOGDIR)$(OSMODE)/$(NAME_TEST).txt
 
 .PHONY:\
 clean-test-logs #! Deletes any test suite logs
@@ -41,9 +33,9 @@ else ifeq ($(OSMODE),win32)
 else ifeq ($(OSMODE),win64)
 	@$(call print_error,"Windows 64-bit platform: requires manual configuration")
 else ifeq ($(OSMODE),macos)
-	@$(call run_test) $(ARGS) >> $(LOGDIR)libccc_test.log
+	@$(call run,$(NAME_TEST)) $(ARGS) >> $(LOGDIR)libccc_test.log
 	@$(SUDO) ln -sf "`xcode-select -p`/usr/lib/libLeaksAtExit.dylib" "/usr/local/lib"
-	@leaks --fullContent -atExit -- $(call run_test) $(ARGS) > $(LOGDIR)leaks/xcode_$(NAME_TEST).txt
+	@leaks --fullContent -atExit -- $(call run,$(NAME_TEST)) $(ARGS) > $(LOGDIR)leaks/xcode_$(NAME_TEST).txt
 	@$(SUDO) rm "/usr/local/lib/libLeaksAtExit.dylib"
 else ifeq ($(OSMODE),linux)
 	@valgrind \
@@ -53,7 +45,7 @@ else ifeq ($(OSMODE),linux)
 		--track-origins=yes \
 		--verbose \
 		--log-file=$(LOGDIR)leaks/valgrind_$(NAME_TEST).txt \
-		$(call run_test) $(ARGS)
+		$(call run,$(NAME_TEST)) $(ARGS)
 endif
 
 

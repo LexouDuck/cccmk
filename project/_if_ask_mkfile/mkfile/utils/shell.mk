@@ -8,3 +8,8 @@ ifeq ($(OS),Windows_NT)
 else
 	SUDO = sudo
 endif
+
+
+
+#! Shell command used to run a program
+run = ./$(1)
