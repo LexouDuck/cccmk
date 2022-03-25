@@ -11,11 +11,10 @@
 	"keywords": [
 	],
 	"homepage": ".",
-	"private": true,
 %%if is(type,binding):	"gypfile": true,
 	"main": "index.js",
 	"scripts": {
-%%if tracked(.githooks/):		"prepare": "[ -e .git ] && git config core.hooksPath ./.githooks/",
+%%if tracked(.githooks/):		"prepare": "[ -e .git ] && git config core.hooksPath ./.githooks/ || printf \"\"",
 		"stop": "if [ \"$OS\" = \"Windows_NT\" ]; then taskkill -F -IM node.exe ; else sudo pkill node ; fi",
 %%if matches(lang,js$):		"start": "node src/index.js",
 %%if matches(lang,ts$):		"build": "tsc",
