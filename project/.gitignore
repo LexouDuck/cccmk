@@ -189,6 +189,7 @@ pids
 
 # Windows
 Thumbs.db
+desktop.ini
 
 # FAT32
 .Trash-[0-9]*
