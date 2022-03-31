@@ -24,7 +24,7 @@ It is worth noting that `cccmk` was originally designed as a build system manage
 
 ### Installation
 
-While it is simple enough to download this repo as a .zip and manually install cccmk, it is recommended that you clone the repo proper, using `git clone` (see "Step 1, method A: read-only installation").
+While it is simple enough to download this repo as a .zip and manually install cccmk, it is recommended that you clone the repo properly, using `git clone` (see "Step 1, method A: read-only installation").
 If you wish to customize the "project template", or `cccmk` itself, then it is probably best that you fork this repository, so that you can then `git push` your custom changes to your own forked repo (see "Step 1, method B: customizable installation").
 
 - **Step 1, method A: read-only installation**
@@ -51,7 +51,7 @@ Then, we simply need to let your shell know where to find the `cccmk` command:
 sudo ln -s  ~/.cccmk/scripts/cccmk.sh  /usr/local/bin/cccmk
 sudo chmod 755 /usr/local/bin/cccmk # On most systems, this isn't necessary
 ```
-That should be it ! Try running `cccmk help` to see if it works.
+That should be it ! Try running `cccmk --help` to see if it works.
 
 NOTE: If you use a windows machine, then, depending on the shell that you use, there is perhaps no `chmod` command, there is probably no `sudo` command, and there is most likely no simple working `ln -s` command to create symlinks.
 In this case, the best manner to have a working `cccmk` command is to add your installation folder to your PATH env variable, like so:
@@ -69,7 +69,7 @@ mv ~/.cccmk/scripts/cccmk.sh ~/.cccmk/scripts/cccmk # remove the .sh file extens
 - `cccmk diff`: comparing tracked project files to the corresponding "project template" source file
 - `cccmk update`: updating files in existing projects, to synchronize them with their "project template" source
 
-To learn more, try using `cccmk help`.
+To learn more, try using `cccmk --help`.
 
 
 
