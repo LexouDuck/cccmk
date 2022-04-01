@@ -214,7 +214,7 @@ endif
 
 .PHONY:\
 app #! creates a distributable GUI desktop application, with metadata and icon
-app: MODE=release
+app: BUILDMODE=release
 app: $(NAME)
 	@if ! [ -d ~/.cccmk ]; then \
 		$(call print_error,"You must install cccmk to use this rule (https://github.com/LexouDuck/cccmk)") ; \

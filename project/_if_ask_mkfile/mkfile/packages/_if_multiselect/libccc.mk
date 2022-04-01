@@ -36,7 +36,7 @@ package-libccc:
 	@$(call print_message,"Downloading package: $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)...")
 	@git submodule update --init $(PACKAGE_libccc_DIR)
 	@$(call print_message,"Building package: $(PACKAGE_libccc)...")
-	@$(MAKE) -C $(PACKAGE_libccc_DIR) build-$(MODE)
+	@$(MAKE) -C $(PACKAGE_libccc_DIR) build-$(BUILDMODE)
 	@$(call print_success,"Installed $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)")
 
 
