@@ -70,13 +70,14 @@ endif
 
 
 #! The shell command to retrieve and output list of newer versions, if any
+#! @param $(1)	The "current version number" to compare to
 package_SDL2_checkupdates = \
 	curl --silent $(PACKAGE_SDL2_URL) \
 	| grep 'SDL2' \
 	| cut -d'"' -f 8 \
 	| $(PACKAGE_SDL2_GETVERSIONS) \
 	| sort --version-sort \
-	| awk -v found=0 '\
+	| awk -v found=$(1) '\
 	{\
 		if (/$(PACKAGE_SDL2_VERSION)/) { found = 1 }\
 		else if (found) { found += 1; print; }\
@@ -88,6 +89,10 @@ package_SDL2_checkupdates = \
 .PHONY:\
 package-SDL2 #! downloads the package, according to the version number set
 package-SDL2:
+ifeq ($(strip $(PACKAGE_SDL2_VERSION)),?)
+	$(call print_message,"No specific version set - getting latest version...")
+	$(eval PACKAGE_SDL2_VERSION := $(shell $(call package_SDL2_checkupdates,1) | tail -1))
+endif
 	@$(call packages_setversion,$(PACKAGE_SDL2),$(PACKAGE_SDL2_VERSION))
 	@$(call print_message,"Downloading package: $(PACKAGE_SDL2)@$(PACKAGE_SDL2_VERSION)...")
 	@curl $(PACKAGE_SDL2_URL)$(PACKAGE_SDL2_PKG) --progress-bar --output $(PACKAGE_SDL2_PKG)
@@ -102,9 +107,12 @@ package-SDL2:
 update-SDL2 #! updates the package to the latest version
 update-SDL2:
 	@$(call print_message,"Checking new versions for package: $(PACKAGE_SDL2)...")
+	@if [ "$(PACKAGE_SDL2_VERSION)" = "?" ] || ! [ -d "$(PACKAGE_SDL2_DIR)" ] ; then \
+		$(MAKE) package-SDL2 ; \
+	fi
 	@echo "=> Current version is: $(PACKAGE_SDL2_VERSION)"
-	@new_versions=`$(call package_SDL2_checkupdates)` ; \
-	if [ -z "$${new_versions}" ]; then \
+	@new_versions=`$(call package_SDL2_checkupdates,0)` ; \
+	if [ -z "$${new_versions}" ] ; then \
 		printf "Newest version already set.\n" ; \
 	else \
 		newer_version=`echo "$${new_versions}" | tail -1` ; \
