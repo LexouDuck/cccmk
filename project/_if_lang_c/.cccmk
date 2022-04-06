@@ -3,7 +3,7 @@
 # shell command for initial project setup
 after_create()
 {
-	make init version
+	make setup
 }
 
 # shell command to parse version number from versionfile

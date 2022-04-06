@@ -265,13 +265,13 @@ fi
 
 	# create initial project version file
 	echo "$command_arg_name@0.0.0-?" > "$project_versionfile"
-	# initial setup for project, after creation
-	after_create
 	# set up git repo for new project
 	git init
 	git add --all
 	git branch -m master
 	git commit -m "initial commit"
+	# initial setup for project, after creation
+	after_create
 	
 
 	if $verbose
