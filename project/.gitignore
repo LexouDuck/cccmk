@@ -15,6 +15,7 @@
 /obj/
 /bin/
 /dist/
+%%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/packages.mk):/lib/*/
 
 # Testing
 /coverage/
@@ -28,6 +29,7 @@ log.txt
 # Documentation
 #/doc/
 #/docs/
+%%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/_if_multiselect/doc.mk):/doc/doxyrest/
 
 # Reference material
 /ref/
