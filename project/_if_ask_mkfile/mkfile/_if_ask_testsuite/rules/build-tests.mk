@@ -3,7 +3,7 @@
 
 
 #! Derive list of compiled object files (.o) from list of srcs
-TEST_OBJS := $(TEST_SRCS:$(SRCDIR)%.c=$(OBJDIR)%.o)
+TEST_OBJS := $(TEST_SRCS:%.c=$(OBJDIR)%.o)
 
 #! Derive list of dependency files (.d) from list of srcs
 TEST_DEPS := $(TEST_OBJS:%.o=%.d)
