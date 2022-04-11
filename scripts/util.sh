@@ -6,9 +6,15 @@
 ### utility functions for logging/io
 ###
 
-ansi_esc() { printf "\033[""$@""m" ; }
+ansi_esc()      { printf "\033[""$@""m" ; }
+ansi_color_fg() { printf "\033[38;5;""$@""m" ; }
+ansi_color_bg() { printf "\033[48;5;""$@""m" ; }
 
-io_reset="`   ansi_esc 0`"
+io_reset="`     ansi_esc 0`"
+
+io_bold="`      ansi_esc 1`"
+io_underline="` ansi_esc 4`"
+
 io_red="`     ansi_esc 31`"
 io_green="`   ansi_esc 32`"
 io_yellow="`  ansi_esc 33`"
