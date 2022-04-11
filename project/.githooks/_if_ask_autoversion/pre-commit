@@ -20,12 +20,15 @@ CHANGED="` git diff --cached --name-only `"
 printf "Files changed:$IO_CYAN\n$CHANGED\n$IO_RESET"
 
 #! List of important files (which, when changed, should update the version number)
-%%if tracked(_if_ask_mkfile/mkfile/rules/lists.mk):SOURCES="`{ make show-lists ; make help-makefiles ; } | cut -d' ' -f 1 `"
-%%if matches(lang,jsx?):SOURCES="`{ find ./src -name "*.%[lang]%" }`"
-%%if matches(lang,tsx?):SOURCES="`{ find ./src -name "*.%[lang]%" }`"
+SOURCES=""
+%%if tracked(_if_ask_mkfile/mkfile/utils/help.mk) :SOURCES="$SOURCES ` make help-makefiles | cut -d' ' -f 1 `"
+%%if tracked(_if_ask_mkfile/mkfile/rules/lists.mk):SOURCES="$SOURCES ` make show-lists `"
+%%if matches(lang,jsx?)                           :SOURCES="`{ find ./src -name "*.%[lang]%" }`"
+%%if matches(lang,tsx?)                           :SOURCES="`{ find ./src -name "*.%[lang]%" }`"
+
+
 
 match=false
-
 for i in $CHANGED
 do
 	if printf "$SOURCES" | grep -q "./$i"
