@@ -65,6 +65,7 @@ $(BINOUT)$(NAME) \
 $(BINOUT)static/$(NAME_static) \
 $(BINOUT)dynamic/$(NAME_dynamic) \
 %%end if
+$(TEST_OBJSFILE) \
 $(TEST_OBJS)
 	@printf "Compiling testing program: $@ -> "
 	@$(CC) -o $@ $(TEST_CFLAGS) $(TEST_LDFLAGS) $(call test_objs) $(TEST_LDLIBS)
