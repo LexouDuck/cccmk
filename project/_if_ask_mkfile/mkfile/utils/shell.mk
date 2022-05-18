@@ -11,5 +11,14 @@ endif
 
 
 
+#! This cross-platform function can be used to kill a running process via its name
+ifeq ($(OS),Windows_NT)
+kill = taskkill -F -IM $(1)
+else
+kill = sudo pkill $(1)
+endif
+
+
+
 #! Shell command used to run a program
 run = ./$(1)
