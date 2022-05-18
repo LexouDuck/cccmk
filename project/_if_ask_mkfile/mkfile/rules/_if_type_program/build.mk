@@ -2,8 +2,13 @@
 
 
 
+objs = ` cat "$(OBJSFILE)" | tr '\n' ' ' `
+
+#! Path of the file which stores the list of compiled object files
+OBJSFILE = $(OBJOUT)objs.txt
+
 #! Derive list of compiled object files (.o) from list of srcs
-OBJS := $(SRCS:$(SRCDIR)%.c=$(OBJDIR)%.o)
+OBJS := $(SRCS:$(SRCDIR)%.c=$(OBJOUT)%.o)
 
 #! Derive list of dependency files (.d) from list of srcs
 DEPS := $(OBJS:%.o=%.d)
@@ -21,9 +26,10 @@ INCLUDES := $(INCLUDES) \
 copylibs = $(foreach i,$(PACKAGES), \
 	if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
 		for i in $(PACKAGE_$(i)_LINKDIR)*.$(LIBEXT_dynamic) ; do \
-			cp -p "$$i" $(BINDIR)$(OSMODE)/ ; \
+			cp -p "$$i" $(BINOUT)dynamic/ ; \
 		done ; \
 	fi ; )
+
 
 
 .PHONY:\
@@ -38,8 +44,16 @@ build-release: $(NAME)
 
 
 
+#! Generates the list of object files
+$(OBJSFILE): $(SRCSFILE)
+	@mkdir -p $(@D)
+	@printf "" > $(OBJSFILE)
+	$(foreach i,$(OBJS),	@printf "$(i)\n" >> $(OBJSFILE) $(C_NL))
+
+
+
 #! Compiles object files from source files
-$(OBJDIR)%.o : $(SRCDIR)%.c
+$(OBJOUT)%.o : $(SRCDIR)%.c
 	@mkdir -p $(@D)
 	@printf "Compiling file: $@ -> "
 	@$(CC) -o $@ $(CFLAGS) -MMD $(INCLUDES) -c $<
@@ -48,12 +62,11 @@ $(OBJDIR)%.o : $(SRCDIR)%.c
 
 
 #! Compiles the project executable
-$(NAME): $(OBJS)
+$(BINOUT)$(NAME): $(OBJSFILE) $(OBJS)
+	@mkdir -p $(@D)
 	@printf "Compiling program: $@ -> "
 	@$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS)
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
-	@mkdir -p $(BINDIR)$(OSMODE)/
-	@cp -p $@ $(BINDIR)$(OSMODE)/
 	@$(call copylibs)
 
 
@@ -83,25 +96,26 @@ clean-build-bin \
 clean-build-obj #! Deletes all .o build object files
 clean-build-obj:
 	@$(call print_message,"Deleting all build .o files...")
-	@rm -f $(OBJS)
+	$(foreach i,$(OBJS),	@rm "$(i)" $(C_NL))
 
 .PHONY:\
 clean-build-dep #! Deletes all .d build dependency files
 clean-build-dep:
 	@$(call print_message,"Deleting all build .d files...")
-	@rm -f $(DEPS)
+	$(foreach i,$(DEPS),	@rm "$(i)" $(C_NL))
 
 .PHONY:\
 clean-build-exe #! Deletes the built program in the root project folder
 clean-build-exe:
-	@$(call print_message,"Deleting program: $(NAME)")
+	@$(call print_message,"Deleting program: $(BINOUT)$(NAME)")
+	@rm -f $(BINOUT)$(NAME)
 	@rm -f $(NAME)
 
 .PHONY:\
 clean-build-bin #! Deletes all build binaries in the ./bin folder
 clean-build-bin:
-	@$(call print_message,"Deleting builds in '$(BINDIR)$(OSMODE)'...")
-	@rm -f $(BINDIR)$(OSMODE)/*
+	@$(call print_message,"Deleting builds in '$(BINOUT)'...")
+	@rm -f $(BINOUT)*
 
 
 
