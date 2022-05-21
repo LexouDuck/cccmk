@@ -26,11 +26,11 @@ ICON_SIZES := \
 512 \
 
 #! The output filepath of the distributable application (platform-dependent)
-APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME)
+APPDIST = $(BINOUT)$(APPNAME)
 #! The file which stores application metadata (platform-dependent)
-APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).meta
+APPMETA = $(BINOUT)$(APPNAME).meta
 #! A generic filename without an extension, used to do metadata operations to prepare app
-APPFILE = $(BINDIR)$(OSMODE)/$(APPNAME)
+APPFILE = $(BINOUT)$(APPNAME)
 
 
 
@@ -47,8 +47,8 @@ _:=$(shell $(call print_error,"Unknown platform ($(OSMODE)), cannot embed applic
 
 
 else ifeq ($(OSMODE),linux)
-APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME)
-APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).desktop
+APPDIST = $(BINOUT)$(APPNAME)
+APPMETA = $(BINOUT)$(APPNAME).desktop
 define APPMETADATA
 [Desktop Entry]
 Type=Application
@@ -57,8 +57,8 @@ Name=$(APPNAME)
 GenericName=$(APPLEGAL)
 Comment=$(APPDESC)
 Icon=$(NAME)
-Path=$(abspath $(BINDIR)$(OSMODE))
-Exec=$(abspath $(BINDIR)$(OSMODE)/$(NAME))
+Path=$(abspath $(BINOUT))
+Exec=$(abspath $(BINOUT)$(NAME))
 Terminal=false
 MimeType=
 endef
@@ -66,18 +66,18 @@ export APPMETADATA
 MAGICK = 
 APPINSTALL_PREFIX = /usr/share# $(HOME)/.local/share
 #! rule to create app bundle
-$(APPDIST): $(APPMETA) $(BINDIR)$(OSMODE)/.icons
+$(APPDIST): $(APPMETA) $(BINOUT).icons
 	@cp -p $(NAME) $(APPDIST)
 	@desktop-file-validate $(APPMETA)
 	@$(SUDO) desktop-file-install $(APPMETA) --dir=$(APPINSTALL_PREFIX)/applications
-	@$(SUDO) cp -rp $(BINDIR)$(OSMODE)/.icons/*    $(APPINSTALL_PREFIX)/icons/hicolor/
+	@$(SUDO) cp -rp $(BINOUT).icons/*    $(APPINSTALL_PREFIX)/icons/hicolor/
 	@$(SUDO) update-desktop-database $(APPINSTALL_PREFIX)/applications
 #! rule to create metadata resource file
 $(APPMETA):
 	@mkdir -p $(@D)
 	@echo "$${APPMETADATA}" > $(APPMETA)
 #! rule to create app icon resource files
-$(BINDIR)$(OSMODE)/.icons: $(APPICON)
+$(BINOUT).icons: $(APPICON)
 	@mkdir -p $@
 	@for i in $(ICON_SIZES) ; do \
 		folder="$@/$${i}x$${i}/apps" ; \
@@ -88,8 +88,8 @@ $(BINDIR)$(OSMODE)/.icons: $(APPICON)
 
 
 else ifeq ($(OSMODE),macos)
-APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME).app
-APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).plist
+APPDIST = $(BINOUT)$(APPNAME).app
+APPMETA = $(BINOUT)$(APPNAME).plist
 define APPMETADATA
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -122,8 +122,8 @@ $(APPDIST): $(APPMETA) $(APPFILE).icns
 	@mkdir $(APPDIST)/Contents
 	@mkdir $(APPDIST)/Contents/MacOS
 	@mkdir $(APPDIST)/Contents/Resources
-	@libs="`find $(BINDIR)$(OSMODE) -maxdepth 1 -name '*.framework' `" ; if ! [ -z "$${libs}" ] ; then cp -prf $${libs} $(APPDIST)/Contents/MacOS/ ; fi
-	@libs="`find $(BINDIR)$(OSMODE) -maxdepth 1 -name '*.dylib'     `" ; if ! [ -z "$${libs}" ] ; then cp -prf $${libs} $(APPDIST)/Contents/MacOS/ ; fi
+	@libs="`find $(BINOUT) -maxdepth 1 -name '*.framework' `" ; if ! [ -z "$${libs}" ] ; then cp -prf $${libs} $(APPDIST)/Contents/MacOS/ ; fi
+	@libs="`find $(BINOUT) -maxdepth 1 -name '*.dylib'     `" ; if ! [ -z "$${libs}" ] ; then cp -prf $${libs} $(APPDIST)/Contents/MacOS/ ; fi
 	@cp -p $(NAME)            $(APPDIST)/Contents/MacOS/$(NAME)
 	@mv $(APPFILE).icns       $(APPDIST)/Contents/Resources/icons.icns
 	@mv $(APPMETA)            $(APPDIST)/Contents/Info.plist
@@ -147,8 +147,8 @@ $(APPFILE).icns: $(APPICON)
 
 
 else ifneq ($(filter $(OSMODE), win32 win64),)
-APPDIST = $(BINDIR)$(OSMODE)/$(APPNAME).exe
-APPMETA = $(BINDIR)$(OSMODE)/$(APPNAME).rc
+APPDIST = $(BINOUT)$(APPNAME).exe
+APPMETA = $(BINOUT)$(APPNAME).rc
 define APPMETADATA
 1 VERSIONINFO
 FILEVERSION     1,0,0,0

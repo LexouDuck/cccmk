@@ -65,16 +65,18 @@ OBJOUT = $(OBJDIR)$(OSMODE)/
 #! The directory for built binary files (stores programs/libraries built by this project)
 BINDIR = ./bin/
 BINOUT = $(BINDIR)$(OSMODE)/
+#! The directory for output logs (stores `.txt` outputs of the test suite program)
+LOGDIR = ./log/
+LOGOUT = $(LOGDIR)$(OSMODE)/
+%%if tracked(_if_ask_mkfile/mkfile/rules/_if_multiselect/coverage.mk)
+#! The directory for test-suite code-coverage output reports
+COVDIR = $(LOGDIR)coverage/
+COVOUT = $(COVDIR)$(OSMODE)/
+%%end if
 #! The directory for distribution archives (stores `.zip` distributable builds)
 DISTDIR = ./dist/
 #! The directory for temporary (can be used for several things - should always be deleted after use)
 TEMPDIR = ./temp/
-#! The directory for output logs (stores `.txt` outputs of the test suite program)
-LOGDIR = ./log/
-%%if tracked(_if_ask_mkfile/mkfile/rules/_if_multiselect/coverage.mk)
-#! The directory for test-suite code-coverage output reports
-COVDIR = $(LOGDIR)coverage/
-%%end if
 %%if tracked(_if_ask_mkfile/mkfile/rules/_if_multiselect/lint.mk)
 #! The directory for linter/static analyzer output logs (stores warnings logs)
 LINTDIR = $(LOGDIR)lint/
