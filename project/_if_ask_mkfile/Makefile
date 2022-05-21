@@ -61,17 +61,17 @@ LISTSDIR = $(MKFILES_DIR)lists/
 
 #! The directory for compiled object files (stores `.o` and `.d` files)
 OBJDIR = ./obj/
-OBJOUT = $(OBJDIR)$(OSMODE)/
+OBJOUT = $(OBJDIR)$(BUILDMODE)_$(OSMODE)/
 #! The directory for built binary files (stores programs/libraries built by this project)
 BINDIR = ./bin/
-BINOUT = $(BINDIR)$(OSMODE)/
+BINOUT = $(BINDIR)$(BUILDMODE)_$(OSMODE)/
 #! The directory for output logs (stores `.txt` outputs of the test suite program)
 LOGDIR = ./log/
-LOGOUT = $(LOGDIR)$(OSMODE)/
+LOGOUT = $(LOGDIR)$(BUILDMODE)_$(OSMODE)/
 %%if tracked(_if_ask_mkfile/mkfile/rules/_if_multiselect/coverage.mk)
 #! The directory for test-suite code-coverage output reports
 COVDIR = $(LOGDIR)coverage/
-COVOUT = $(COVDIR)$(OSMODE)/
+COVOUT = $(COVDIR)$(BUILDMODE)_$(OSMODE)/
 %%end if
 #! The directory for distribution archives (stores `.zip` distributable builds)
 DISTDIR = ./dist/
