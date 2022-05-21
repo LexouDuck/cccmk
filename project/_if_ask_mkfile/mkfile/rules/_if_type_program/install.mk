@@ -5,14 +5,14 @@
 .PHONY:\
 install #! Installs the program (copies files from `./bin/` to `/usr/local/`)
 install: \
-$(BINOUT)$(NAME)
+$(BINPATH)$(NAME)
 	@$(call print_message,"Installing program: $(NAME)...")
 	@$(SUDO) mkdir -p $(INSTALLDIR)/bin/
 ifeq ($(INSTALL_SYMLINK),)
-	@$(SUDO) $(INSTALL_PROGRAM) $(BINOUT)$(NAME) \
+	@$(SUDO) $(INSTALL_PROGRAM) $(BINPATH)$(NAME) \
 		$(INSTALLDIR)/bin/$(NAME)
 else
-	@$(SUDO) $(INSTALL_PROGRAM) $(BINOUT)$(NAME) \
+	@$(SUDO) $(INSTALL_PROGRAM) $(BINPATH)$(NAME) \
 		$(INSTALLDIR)/bin/$(NAME)-$(VERSION)
 	@$(SUDO) ln -sf \
 		$(INSTALLDIR)/bin/$(NAME)-$(VERSION) \

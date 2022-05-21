@@ -12,13 +12,13 @@ test: $(NAME_TEST)
 .PHONY:\
 test-logs #! Builds and runs the test suite program with the given 'ARGS', logging all results to files
 test-logs: $(NAME_TEST)
-	@mkdir -p $(LOGOUT)/
-	@$(call run,$(NAME_TEST)) -var --test-all $(ARGS) >> $(LOGOUT)/$(NAME_TEST).txt
+	@mkdir -p $(LOGPATH)/
+	@$(call run,$(NAME_TEST)) -var --test-all $(ARGS) >> $(LOGPATH)/$(NAME_TEST).txt
 
 .PHONY:\
 clean-test-logs #! Deletes any test suite logs
 clean-test-logs:
-	@rm -f $(LOGOUT)/$(NAME_TEST).txt
+	@rm -f $(LOGPATH)/$(NAME_TEST).txt
 
 
 

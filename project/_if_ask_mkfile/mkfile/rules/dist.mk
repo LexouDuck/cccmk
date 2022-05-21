@@ -37,14 +37,14 @@ dist: mkdir-dist
 %%if is(type,program)
 	@$(MAKE) build-release
 %%end if
-ifeq ($(wildcard $(BINOUT)*),)
+ifeq ($(wildcard $(BINPATH)*),)
 	@$(call print_error,"Cannot produce distributable archive for target '$(OSMODE)':")
-	@$(call print_error,"The bin folder is empty: '$(BINOUT)'.")
+	@$(call print_error,"The bin output folder is empty: '$(BINPATH)'.")
 else
 	@$(call print_message,"Preparing .zip archive: $(DIST_FILE)")
 	@rm -rf   $(TEMPDIR)
 	@mkdir -p $(TEMPDIR)
-	@cp -rf $(BINOUT)*  $(TEMPDIR)
+	@cp -rf $(BINPATH)*  $(TEMPDIR)
 %%if is(type,library)
 	@mkdir -p $(TEMPDIR)include
 	@for i in $(HDRS) ; do \

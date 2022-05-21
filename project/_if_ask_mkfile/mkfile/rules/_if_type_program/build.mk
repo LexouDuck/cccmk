@@ -5,10 +5,10 @@
 objs = ` cat "$(OBJSFILE)" | tr '\n' ' ' `
 
 #! Path of the file which stores the list of compiled object files
-OBJSFILE = $(OBJOUT)objs.txt
+OBJSFILE = $(OBJPATH)objs.txt
 
 #! Derive list of compiled object files (.o) from list of srcs
-OBJS := $(SRCS:$(SRCDIR)%.c=$(OBJOUT)%.o)
+OBJS := $(SRCS:$(SRCDIR)%.c=$(OBJPATH)%.o)
 
 #! Derive list of dependency files (.d) from list of srcs
 DEPS := $(OBJS:%.o=%.d)
@@ -26,7 +26,7 @@ INCLUDES := $(INCLUDES) \
 copylibs = $(foreach i,$(PACKAGES), \
 	if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
 		for i in $(PACKAGE_$(i)_LINKDIR)*.$(LIBEXT_dynamic) ; do \
-			cp -p "$$i" $(BINOUT)dynamic/ ; \
+			cp -p "$$i" $(BINPATH)dynamic/ ; \
 		done ; \
 	fi ; )
 
@@ -53,7 +53,7 @@ $(OBJSFILE): $(SRCSFILE)
 
 
 #! Compiles object files from source files
-$(OBJOUT)%.o : $(SRCDIR)%.c
+$(OBJPATH)%.o : $(SRCDIR)%.c
 	@mkdir -p $(@D)
 	@printf "Compiling file: $@ -> "
 	@$(CC) -o $@ $(CFLAGS) -MMD $(INCLUDES) -c $<
@@ -62,7 +62,7 @@ $(OBJOUT)%.o : $(SRCDIR)%.c
 
 
 #! Compiles the project executable
-$(BINOUT)$(NAME): $(OBJSFILE) $(OBJS)
+$(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
 	@mkdir -p $(@D)
 	@printf "Compiling program: $@ -> "
 	@$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS)
@@ -107,15 +107,15 @@ clean-build-dep:
 .PHONY:\
 clean-build-exe #! Deletes the built program in the root project folder
 clean-build-exe:
-	@$(call print_message,"Deleting program: $(BINOUT)$(NAME)")
-	@rm -f $(BINOUT)$(NAME)
+	@$(call print_message,"Deleting program: $(BINPATH)$(NAME)")
+	@rm -f $(BINPATH)$(NAME)
 	@rm -f $(NAME)
 
 .PHONY:\
 clean-build-bin #! Deletes all build binaries in the ./bin folder
 clean-build-bin:
-	@$(call print_message,"Deleting builds in '$(BINOUT)'...")
-	@rm -f $(BINOUT)*
+	@$(call print_message,"Deleting builds in '$(BINPATH)'...")
+	@rm -f $(BINPATH)*
 
 
 

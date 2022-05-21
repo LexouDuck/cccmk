@@ -77,7 +77,7 @@ TEST_LDFLAGS_EXTRA ?= \
 
 #! GNU conventional variable: C libraries to link against
 TEST_LDLIBS = \
-%%if is(type,library):	$(BINOUT)$(LIBMODE)/$(NAME_LIBMODE) \
+%%if is(type,library):	$(BINPATH)$(LIBMODE)/$(NAME_LIBMODE) \
 	$(TEST_LDLIBS_BUILDMODE) \
 	$(TEST_LDLIBS_OS) \
 	$(TEST_LDLIBS_EXTRA)
