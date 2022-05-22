@@ -24,6 +24,12 @@ TEST_INCLUDES := $(TEST_INCLUDES) \
 
 
 .PHONY:\
+build-tests #! Builds the test suite, with the default BUILDMODE (typically debug)
+build-tests: \
+build \
+$(NAME_TEST)
+
+.PHONY:\
 build-tests-debug #! Builds the library, in 'debug' mode (with debug flags and symbol-info)
 build-tests-debug: BUILDMODE = debug
 build-tests-debug: \

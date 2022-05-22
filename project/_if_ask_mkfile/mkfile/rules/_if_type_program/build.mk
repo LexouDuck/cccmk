@@ -33,6 +33,10 @@ copylibs = $(foreach i,$(PACKAGES), \
 
 
 .PHONY:\
+build #! Builds the program, with the default BUILDMODE (typically debug)
+build: $(NAME)
+
+.PHONY:\
 build-debug #! Builds the program, in 'debug' mode (with debug flags and symbol-info)
 build-debug: BUILDMODE = debug
 build-debug: $(NAME)
