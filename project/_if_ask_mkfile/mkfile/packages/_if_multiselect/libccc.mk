@@ -30,21 +30,33 @@ package_libccc_checkupdates = \
 
 
 .PHONY:\
-package-libccc #! prepares the package for building
+package-libccc #! prepares the package for use in the project
 package-libccc:
 ifeq ($(strip $(PACKAGE_libccc_VERSION)),?)
 	@$(call print_message,"No specific version set - getting latest version...")
 	$(eval PACKAGE_libccc_VERSION := $(shell $(call package_libccc_checkupdates)))
 endif
 	@$(call packages_setversion,$(PACKAGE_libccc),$(PACKAGE_libccc_VERSION))
+	@$(MAKE) package-install-libccc
+	@$(MAKE) package-compile-libccc
+
+.PHONY:\
+package-install-libccc #! downloads the package and sets up its package folder
+package-install-libccc:
 	@$(call print_message,"Downloading package: $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)...")
 	@if [ -d "$(PACKAGE_libccc_DIR)" ] && [ -f ".gitmodules" ] ; \
 	then git submodule update --init $(PACKAGE_libccc_DIR) ; \
 	else git submodule add $(PACKAGE_libccc_URL) $(PACKAGE_libccc_DIR) ; \
 	fi
-	@$(call print_message,"Building package: $(PACKAGE_libccc)...")
-	@$(MAKE) -C $(PACKAGE_libccc_DIR) build-$(BUILDMODE)
 	@$(call print_success,"Installed $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)")
+
+.PHONY:\
+package-compile-libccc #! downloads the package
+package-compile-libccc:
+	@$(call print_message,"Building package: $(PACKAGE_libccc)...")
+	@$(MAKE) -C $(PACKAGE_libccc_DIR) BUILDMODE=$(BUILDMODE)
+	@$(call print_success,"Compiled $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)")
+
 
 
 
