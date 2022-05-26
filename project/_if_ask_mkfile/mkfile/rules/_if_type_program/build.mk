@@ -34,17 +34,18 @@ copylibs = $(foreach i,$(PACKAGES), \
 
 .PHONY:\
 build #! Builds the program, with the default BUILDMODE (typically debug)
-build: $(NAME)
+build: \
+$(NAME)
 
 .PHONY:\
 build-debug #! Builds the program, in 'debug' mode (with debug flags and symbol-info)
-build-debug: BUILDMODE = debug
-build-debug: $(NAME)
+build-debug:
+	@$(MAKE) build BUILDMODE=debug
 
 .PHONY:\
 build-release #! Builds the program, in 'release' mode (with optimization flags)
-build-release: BUILDMODE = release
-build-release: $(NAME)
+build-release:
+	@$(MAKE) build BUILDMODE=release
 
 
 
