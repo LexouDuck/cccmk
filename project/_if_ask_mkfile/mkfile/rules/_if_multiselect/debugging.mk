@@ -24,6 +24,17 @@ endif
 
 
 .PHONY:\
+debug-include #! Outputs the list of header include paths searched by the current compiler
+debug-include: all
+ifeq ($(strip $(CC)),)
+	@$(call print_error,"This rule expects the CC compiler variable to be defined")
+else
+	@echo | $(CC) -E -Wp,-v -
+endif
+
+
+
+.PHONY:\
 debug-symbols #! Outputs the list of symbols found inside the given `ARGS` binary/ies
 debug-symbols: all
 ifeq ($(ARGS),)
