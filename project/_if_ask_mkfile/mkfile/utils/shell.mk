@@ -20,5 +20,14 @@ endif
 
 
 
-#! Shell command used to run a program
+#! Shell command used to run a program in a cross-platform manner
 run = ./$(1)
+
+
+
+#! Shell command used to run a program as a background service
+ifeq ($(OS),Windows_NT)
+daemon = cygstart --hide "`which bash | cygpath`" -l -c cd "$(CURRENT_DIR)" && $(1)
+else
+daemon = ./$(1)
+endif
