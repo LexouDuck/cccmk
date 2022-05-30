@@ -14,7 +14,7 @@ $(OBJDIR)%.c: %.c
 
 .PHONY:\
 debug-macros #! Preprocesses all source files and stores them in the obj folder (uses ARGS, or SRCS if no ARGS given)
-debug-macros: all
+debug-macros:
 ifeq ($(ARGS),)
 	@$(eval ARGS := $(SRCS))
 endif
@@ -25,7 +25,7 @@ endif
 
 .PHONY:\
 debug-include #! Outputs the list of header include paths searched by the current compiler
-debug-include: all
+debug-include:
 ifeq ($(strip $(CC)),)
 	@$(call print_error,"This rule expects the CC compiler variable to be defined")
 else
@@ -36,7 +36,7 @@ endif
 
 .PHONY:\
 debug-symbols #! Outputs the list of symbols found inside the given `ARGS` binary/ies
-debug-symbols: all
+debug-symbols:
 ifeq ($(ARGS),)
 	@$(call print_error,"This rule expects one or more binary files given as arguments (ARGS=...)")
 else
@@ -47,7 +47,7 @@ endif
 
 .PHONY:\
 debug-linking #! Outputs the list of linking paths to find dynamic libraries for the given `ARGS`
-debug-linking: all
+debug-linking:
 ifeq ($(ARGS),)
 	@$(call print_error,"This rule expects one or more binary files given as arguments (ARGS=...)")
 else ifeq ($(OSMODE),win32)
