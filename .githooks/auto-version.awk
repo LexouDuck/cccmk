@@ -1,3 +1,5 @@
+#!/usr/bin/awk
+
 BEGIN { incremented = 0; }
 
 {

@@ -41,7 +41,7 @@ SOURCES="./.githooks/pre-commit"
 SOURCES="$SOURCES ` find . -type f \( -name '*.sh' -or -name '*.bash' -or -name '*.awk' \) `"
 
 #! The awk script used to auto-increment the version number in the version file
-SCRIPT="./githooks/auto-version.awk"
+SCRIPT="./.githooks/auto-version.awk"
 
 
 
