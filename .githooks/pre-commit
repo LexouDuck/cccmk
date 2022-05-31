@@ -78,7 +78,7 @@ then
 		&& mv "$VERSIONFILE.tmp" "$VERSIONFILE" \
 		&& print_success "incremented version patch number in $VERSIONFILE:" \
 		|| print_warning "failed to auto-increment version number in $VERSIONFILE:"
-		printf "$io_cyan""$VERSIONFILE""$io_reset""\n"
+		printf "$io_cyan""`cat $VERSIONFILE`""$io_reset""\n"
 		git add "$VERSIONFILE"
 	fi
 fi
