@@ -1,14 +1,30 @@
 #!/bin/sh -e
 
 #! utility variables for terminal colored output
-ansi_esc() { printf "\033[""$@""m" ; }
-IO_RESET="`   ansi_esc 0`"
-IO_RED="`     ansi_esc 31`"
-IO_GREEN="`   ansi_esc 32`"
-IO_YELLOW="`  ansi_esc 33`"
-IO_BLUE="`    ansi_esc 34`"
-IO_MAGENTA="` ansi_esc 35`"
-IO_CYAN="`    ansi_esc 36`"
+
+ansi_esc()      { printf "\033[""$@""m" ; }
+ansi_color_fg() { printf "\033[38;5;""$@""m" ; }
+ansi_color_bg() { printf "\033[48;5;""$@""m" ; }
+
+io_reset="`     ansi_esc 0`"
+
+io_bold="`      ansi_esc 1`"
+io_underline="` ansi_esc 4`"
+
+io_red="`     ansi_esc 31`"
+io_green="`   ansi_esc 32`"
+io_yellow="`  ansi_esc 33`"
+io_blue="`    ansi_esc 34`"
+io_magenta="` ansi_esc 35`"
+io_cyan="`    ansi_esc 36`"
+
+print_verbose() {
+if $verbose; then { printf "cccmk: %s%s%s%s\n" "$io_blue"   "verbose" "$io_reset: " "$@" ; } >&2 ; fi ; }
+print_message() { { printf "cccmk: %s%s%s%s\n" "$io_blue"   "message" "$io_reset: " "$@" ; } >&2 ; }
+print_warning() { { printf "cccmk: %s%s%s%s\n" "$io_yellow" "warning" "$io_reset: " "$@" ; } >&2 ; }
+print_success() { { printf "cccmk: %s%s%s%s\n" "$io_green"  "success" "$io_reset: " "$@" ; } >&2 ; }
+print_failure() { { printf "cccmk: %s%s%s%s\n" "$io_red"    "failure" "$io_reset: " "$@" ; } >&2 ; }
+print_error()   { { printf "cccmk: %s%s%s%s\n" "$io_red"    "error"   "$io_reset: " "$@" ; } >&2 ; exit 1 ; }
 
 
 
@@ -17,7 +33,7 @@ VERSIONFILE=VERSION
 
 #! List of files with changes in this commit
 CHANGED="` git diff --cached --name-only || echo '' `"
-printf "Files changed:$IO_CYAN\n$CHANGED\n$IO_RESET"
+print_message "Files changed:$io_cyan\n$CHANGED\n$io_reset"
 
 #! List of important files (which, when changed, should update the version number)
 SOURCES="./.githooks/pre-commit"
@@ -37,10 +53,10 @@ done
 
 if $match
 then
-	printf "Detected changes to project source files.\n"
+	print_message "Detected changes to project source files.\n"
 	if printf "$CHANGED" | grep -q "$VERSIONFILE"
 	then
-		printf "Project version file '$VERSIONFILE' has already been updated.\n"
+		print_message "Project version file '$VERSIONFILE' has already been updated.\n"
 	else
 		awk '
 		{
@@ -59,8 +75,8 @@ then
 			else { print; }
 		}' "$VERSIONFILE" > "$VERSIONFILE.tmp" \
 		&& mv "$VERSIONFILE.tmp" "$VERSIONFILE" \
-		&& printf "$IO_GREEN""Success""$IO_RESET"": incremented version patch number in $VERSIONFILE:\n` cat $VERSIONFILE `\n" \
-		|| printf "$IO_YELLOW""Warning""$IO_RESET"": failed to auto-increment version number in $VERSIONFILE\n"
+		&& print_success "incremented version patch number in $VERSIONFILE:\n` cat $VERSIONFILE `\n" \
+		|| print_warning "failed to auto-increment version number in $VERSIONFILE\n"
 		git add "$VERSIONFILE"
 	fi
 fi
