@@ -20,7 +20,8 @@ CHANGED="` git diff --cached --name-only || echo '' `"
 printf "Files changed:$IO_CYAN\n$CHANGED\n$IO_RESET"
 
 #! List of important files (which, when changed, should update the version number)
-SOURCES="` find -type f \( -name '*.sh' -or -name '*.bash' -or -name '*.awk' \) `"
+SOURCES="./.githooks/pre-commit"
+SOURCES="$SOURCES ` find -type f \( -name '*.sh' -or -name '*.bash' -or -name '*.awk' \) `"
 
 
 
@@ -56,7 +57,9 @@ then
 				$0 = before + (major + "." + minor + "." + patch) + after;
 			}
 			print;
-		}' "$VERSIONFILE" > "$VERSIONFILE.tmp" && mv "$VERSIONFILE.tmp" "$VERSIONFILE"
+		}' "$VERSIONFILE" > "$VERSIONFILE.tmp" \
+		&& mv "$VERSIONFILE.tmp" "$VERSIONFILE" \
+		&& printf "$IO_GREEN""Success""$IO_RESET"": incremented version patch number in $VERSIONFILE:\n` cat $VERSIONFILE `"
 		git add "$VERSIONFILE"
 	fi
 fi
