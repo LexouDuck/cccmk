@@ -19,12 +19,12 @@ io_magenta="` ansi_esc 35`"
 io_cyan="`    ansi_esc 36`"
 
 print_verbose() {
-if $verbose; then { printf "cccmk: %s%s%s%s\n" "$io_blue"   "verbose" "$io_reset: " "$@" ; } >&2 ; fi ; }
-print_message() { { printf "cccmk: %s%s%s%s\n" "$io_blue"   "message" "$io_reset: " "$@" ; } >&2 ; }
-print_warning() { { printf "cccmk: %s%s%s%s\n" "$io_yellow" "warning" "$io_reset: " "$@" ; } >&2 ; }
-print_success() { { printf "cccmk: %s%s%s%s\n" "$io_green"  "success" "$io_reset: " "$@" ; } >&2 ; }
-print_failure() { { printf "cccmk: %s%s%s%s\n" "$io_red"    "failure" "$io_reset: " "$@" ; } >&2 ; }
-print_error()   { { printf "cccmk: %s%s%s%s\n" "$io_red"    "error"   "$io_reset: " "$@" ; } >&2 ; exit 1 ; }
+if $verbose; then { printf "%s%s%s%s\n" "$io_blue"   "verbose" "$io_reset: " "$@" ; } >&2 ; fi ; }
+print_message() { { printf "%s%s%s%s\n" "$io_blue"   "message" "$io_reset: " "$@" ; } >&2 ; }
+print_warning() { { printf "%s%s%s%s\n" "$io_yellow" "warning" "$io_reset: " "$@" ; } >&2 ; }
+print_success() { { printf "%s%s%s%s\n" "$io_green"  "success" "$io_reset: " "$@" ; } >&2 ; }
+print_failure() { { printf "%s%s%s%s\n" "$io_red"    "failure" "$io_reset: " "$@" ; } >&2 ; }
+print_error()   { { printf "%s%s%s%s\n" "$io_red"    "error"   "$io_reset: " "$@" ; } >&2 ; exit 1 ; }
 
 
 
@@ -33,7 +33,8 @@ VERSIONFILE=VERSION
 
 #! List of files with changes in this commit
 CHANGED="` git diff --cached --name-only || echo '' `"
-print_message "Files changed:$io_cyan\n$CHANGED\n$io_reset"
+print_message "Files changed:"
+printf "$io_cyan""$CHANGED""$io_reset""\n"
 
 #! List of important files (which, when changed, should update the version number)
 SOURCES="./.githooks/pre-commit"
