@@ -1,22 +1,22 @@
 #!/bin/sh -e
 
-#! utility variables for terminal colored output
+#! utility variables & functions for colored terminal output
 
 ansi_esc()      { printf "\033[""$@""m" ; }
 ansi_color_fg() { printf "\033[38;5;""$@""m" ; }
 ansi_color_bg() { printf "\033[48;5;""$@""m" ; }
-
+# reset text style to default
 io_reset="`     ansi_esc 0`"
-
+# set text style
 io_bold="`      ansi_esc 1`"
 io_underline="` ansi_esc 4`"
-
-io_red="`     ansi_esc 31`"
-io_green="`   ansi_esc 32`"
-io_yellow="`  ansi_esc 33`"
-io_blue="`    ansi_esc 34`"
-io_magenta="` ansi_esc 35`"
-io_cyan="`    ansi_esc 36`"
+# set text color (foreground)
+io_red="`       ansi_esc 31`"
+io_green="`     ansi_esc 32`"
+io_yellow="`    ansi_esc 33`"
+io_blue="`      ansi_esc 34`"
+io_magenta="`   ansi_esc 35`"
+io_cyan="`      ansi_esc 36`"
 
 print_verbose() {
 if $verbose; then { printf "%s%s%s%s\n" "$io_blue"   "verbose" "$io_reset: " "$@" ; } >&2 ; fi ; }
@@ -62,7 +62,7 @@ then
 		awk '
 		BEGIN { incremented = 0; }
 		{
-			if (match(/@[0-9]+(\.[0-9]+)+/, $0))
+			if (match(/@[0-9][0-9]*(\.[0-9][0-9]*)*/, $0))
 			{
 				before  = substr($0, 1, RSTART + 1);
 				version = substr($0, RSTART + 1, RLENGTH - 1);
