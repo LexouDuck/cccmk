@@ -1,0 +1,64 @@
+#!/bin/sh -e
+
+#! utility variables for terminal colored output
+ansi_esc() { printf "\033[""$@""m" ; }
+IO_RESET="`   ansi_esc 0`"
+IO_RED="`     ansi_esc 31`"
+IO_GREEN="`   ansi_esc 32`"
+IO_YELLOW="`  ansi_esc 33`"
+IO_BLUE="`    ansi_esc 34`"
+IO_MAGENTA="` ansi_esc 35`"
+IO_CYAN="`    ansi_esc 36`"
+
+
+
+#! The filepath of the version file
+VERSIONFILE=VERSION
+
+#! List of files with changes in this commit
+CHANGED="` git diff --cached --name-only `"
+#printf "Files changed:$IO_CYAN\n$CHANGED\n$IO_RESET"
+
+#! List of important files (which, when changed, should update the version number)
+SOURCES="` find -type f \( -name '*.sh' -or -name '*.bash' -or -name '*.awk' \) `"
+
+
+
+match=false
+for i in $CHANGED
+do
+	if printf "$SOURCES" | grep -q "./$i"
+	then
+		match=true
+		break
+	fi
+done
+
+if $match
+then
+	printf "Detected changes to project source files.\n"
+	if printf "$CHANGED" | grep -q "$VERSIONFILE"
+	then
+		printf "Project version file '$VERSIONFILE' has already been updated.\n"
+	else
+		awk '
+		{
+			if (match(/@[0-9]+(\.[0-9]+)+/, $0))
+			{
+				before  = substr($0, 1, RSTART + 1);
+				version = substr($0, RSTART + 1, RLENGTH - 1);
+				after   = substr($0, RSTART + RLENGTH);
+				split(version, parts, ".");
+				major = parts[0] + 0; # parse int
+				minor = parts[1] + 0; # parse int
+				patch = parts[2] + 0; # parse int
+				patch += 1;
+				$0 = before + (major + "." + minor + "." + patch) + after;
+			}
+			print;
+		}' "$VERSIONFILE" > "$VERSIONFILE.tmp" && mv "$VERSIONFILE.tmp" "$VERSIONFILE"
+		git add "$VERSIONFILE"
+	fi
+fi
+
+exit 0
