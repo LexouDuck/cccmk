@@ -11,6 +11,8 @@ if $debug
 then set -x
 fi
 
+
+
 # set the initial values for important program variables
 
 #! If set to `true`, then cccmk will display any `print_verbose` messages
