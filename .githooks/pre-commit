@@ -16,8 +16,8 @@ IO_CYAN="`    ansi_esc 36`"
 VERSIONFILE=VERSION
 
 #! List of files with changes in this commit
-CHANGED="` git diff --cached --name-only `"
-#printf "Files changed:$IO_CYAN\n$CHANGED\n$IO_RESET"
+CHANGED="` git diff --cached --name-only || echo '' `"
+printf "Files changed:$IO_CYAN\n$CHANGED\n$IO_RESET"
 
 #! List of important files (which, when changed, should update the version number)
 SOURCES="` find -type f \( -name '*.sh' -or -name '*.bash' -or -name '*.awk' \) `"

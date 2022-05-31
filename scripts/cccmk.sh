@@ -3,6 +3,7 @@
 #! This is the main entry-point script for cccmk
 #! It sets some key variables, and processes commandline arguments
 
+# check if cccmk debug execution mode is set, amd apply setting if so
 if [ -z $debug ]
 then debug=false
 fi
