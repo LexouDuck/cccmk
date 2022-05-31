@@ -83,6 +83,7 @@ then
 		&& print_success "auto-incremented version number in $VERSIONFILE:" \
 		|| print_warning "failed to auto-increment version number in $VERSIONFILE:"
 		printf "$io_cyan""`cat $VERSIONFILE`""$io_reset""\n"
+		rm -f "$VERSIONFILE.tmp"
 		git add "$VERSIONFILE"
 	fi
 fi
