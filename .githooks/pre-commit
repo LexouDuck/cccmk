@@ -54,12 +54,13 @@ then
 				minor = parts[1] + 0; # parse int
 				patch = parts[2] + 0; # parse int
 				patch += 1;
-				$0 = before + (major + "." + minor + "." + patch) + after;
+				print (before + "@" + major + "." + minor + "." + patch + after);
 			}
-			print;
+			else { print; }
 		}' "$VERSIONFILE" > "$VERSIONFILE.tmp" \
 		&& mv "$VERSIONFILE.tmp" "$VERSIONFILE" \
-		&& printf "$IO_GREEN""Success""$IO_RESET"": incremented version patch number in $VERSIONFILE:\n` cat $VERSIONFILE `"
+		&& printf "$IO_GREEN""Success""$IO_RESET"": incremented version patch number in $VERSIONFILE:\n` cat $VERSIONFILE `\n" \
+		|| printf "$IO_YELLOW""Warning""$IO_RESET"": failed to auto-increment version number in $VERSIONFILE\n"
 		git add "$VERSIONFILE"
 	fi
 fi
