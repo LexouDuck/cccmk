@@ -60,6 +60,7 @@ then
 		print_message "Project version file '$VERSIONFILE' has already been updated."
 	else
 		awk '
+		BEGIN { incremented = 0; }
 		{
 			if (match(/@[0-9]+(\.[0-9]+)+/, $0))
 			{
@@ -71,12 +72,15 @@ then
 				minor = parts[1] + 0; # parse int
 				patch = parts[2] + 0; # parse int
 				patch += 1;
+				incremented = 1;
 				print (before + "@" + major + "." + minor + "." + patch + after);
 			}
 			else { print; }
-		}' "$VERSIONFILE" > "$VERSIONFILE.tmp" \
+		}
+		END { exit(!incremented); }
+		' "$VERSIONFILE" > "$VERSIONFILE.tmp" \
 		&& mv "$VERSIONFILE.tmp" "$VERSIONFILE" \
-		&& print_success "incremented version patch number in $VERSIONFILE:" \
+		&& print_success "auto-incremented version number in $VERSIONFILE:" \
 		|| print_warning "failed to auto-increment version number in $VERSIONFILE:"
 		printf "$io_cyan""`cat $VERSIONFILE`""$io_reset""\n"
 		git add "$VERSIONFILE"
