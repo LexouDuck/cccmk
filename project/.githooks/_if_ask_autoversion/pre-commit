@@ -46,8 +46,11 @@ then
 		printf "Project version file '$VERSIONFILE' has already been updated.\n"
 	else
 %%if tracked(_if_ask_mkfile/mkfile/rules/version.mk):		make version-patch
-%%if tracked(_if_lang_js-jsx-ts-tsx/package.json):			npm version patch
 		git add $VERSIONFILE
+%%if tracked(_if_lang_js-jsx-ts-tsx/package.json)   :		git add package.json
+%%if tracked(_if_lang_cs/%[name]%.csproj)           :		git add %[name]%.csproj
+%%if tracked(_if_lang_rs/Cargo.toml)                :		git add Cargo.toml
+%%if tracked(_if_lang_py/setup.py)                  :		git add setup.py
 	fi
 fi
 
