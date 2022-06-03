@@ -229,6 +229,12 @@ project_author=
 project_name=
 #! Parsed from the .cccmk file: The year of a project
 project_year=
+#! Parsed from the .cccmk file: The official website URL of a project
+project_link=
+#! Parsed from the .cccmk file: The documentation URL of a project
+project_docs=
+#! Parsed from the .cccmk file: The repository URL of a project
+project_repo=
 #! Parsed from the .cccmk file: The type (program/library) of a project
 project_type=
 #! Parsed from the .cccmk file: The cccmk commit revision
@@ -260,6 +266,9 @@ else
 	print_verbose "parsed project_author:      '$project_author'"
 	print_verbose "parsed project_name:        '$project_name'"
 	print_verbose "parsed project_year:        '$project_year'"
+	print_verbose "parsed project_link:        '$project_link'"
+	print_verbose "parsed project_docs:        '$project_docs'"
+	print_verbose "parsed project_repo:        '$project_repo'"
 	print_verbose "parsed project_lang:        '$project_lang'"
 	print_verbose "parsed project_type:        '$project_type'"
 	print_verbose "parsed project_cccmk:       '$project_cccmk'"
@@ -332,6 +341,9 @@ cccmk_template()
 		author=$project_author;
 		name=$project_name;
 		year=$project_year;
+		link=$project_link;
+		docs=$project_docs;
+		repo=$project_repo;
 		lang=$project_lang;
 		type=$project_type;
 		cccmk=$project_cccmk;
