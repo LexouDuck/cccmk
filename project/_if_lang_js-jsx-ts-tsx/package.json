@@ -4,13 +4,13 @@
 	"author": "%[author]%",
 	"contributors": [
 	],
-	"description": "A React-based web application",
-	"license": "See LICENSE.md",
-	"repository": "",
-	"bugs": "",
+	"description": "%[description]%",
+	"license": "See ./LICENSE file",
+	"homepage": "%[link]%",
+	"repository": "%[repo]%",
+	"bugs": "%[docs]%",
 	"keywords": [
 	],
-	"homepage": ".",
 %%if is(type,binding):	"gypfile": true,
 	"main": "index.js",
 	"scripts": {
