@@ -218,11 +218,11 @@ project_type="$response"
 printf "$io_cyan""Who is the author of this project ?""$io_reset\n"
 prompt_text response "Type any text, which will be used as the project author name."
 project_author="$response"
-if [ -z "$response" ]
-then
-	print_error "Invalid author name: should be a non-empty string."
-	exit 1
-fi
+
+# prompt the user for the project_description
+printf "$io_cyan""Please enter a short one-line description of this project.""$io_reset\n"
+prompt_text response "Type any text, which will be used as the project description."
+project_description="$response"
 
 # automatically fill in the project year
 project_year="`date "+%Y" `"
@@ -245,7 +245,7 @@ after_create()
 fi
 
 # set the default function to parse version number from versionfile for project
-if ! [ "`type -t parse_versionfile`" = "function" ] && 
+if ! [ "`type -t parse_versionfile`" = "function" ]
 then
 # shell command to parse version number from versionfile
 parse_versionfile()
@@ -273,12 +273,13 @@ fi
 	echo '#!/bin/sh -e' > "./$project_cccmkfile"
 	chmod 755 "./$project_cccmkfile"
 	{	echo ""
-		echo "project_author='$project_author'"
 		echo "project_name='$command_arg_name'"
 		echo "project_year='$project_year'"
 		echo "project_link='$project_link'"
 		echo "project_docs='$project_docs'"
 		echo "project_repo='$project_repo'"
+		echo "project_author='$project_author'"
+		echo "project_description='$project_description'"
 		echo "project_lang='$project_lang'"
 		echo "project_type='$project_type'"
 		echo "project_cccmk='$project_cccmk'"
