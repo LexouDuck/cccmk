@@ -10,7 +10,7 @@ after_create()
 		then git config core.hooksPath    './.githooks'
 		fi
 	fi
-	#./configure
+	#python -m pip install -r requirements.txt
 }
 
 # shell command to parse version number from versionfile
@@ -18,9 +18,9 @@ parse_versionfile()
 {
 	awk '
 	{
-		if (/@([0-9]+(\.[0-9]+)+)/)
+		if (/^[ \t]*version[ \t]*=[ \t]*"([^"]*)",/)
 		{
-			if (match($$0, /@([0-9]+(\.[0-9]+)+)/))
+			if (match($$0, /"([^"]*)",/))
 			{
 				print substr($$0, RSTART + 1, RLENGTH - 2);
 			}

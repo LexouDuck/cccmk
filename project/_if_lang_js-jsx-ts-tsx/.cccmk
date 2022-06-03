@@ -3,11 +3,28 @@
 # shell command for initial project setup
 after_create()
 {
+	if echo "$project_track" | grep -q '/_if_ask_mkfile/mkfile/all.mk'
+	then make setup
+	else
+		if echo "$project_track" | grep -q '/.githooks/'
+		then git config core.hooksPath    './.githooks'
+		fi
+	fi
 	npm install
 }
 
 # shell command to parse version number from versionfile
 parse_versionfile()
 {
-	cat "$1" | awk '{ if (match($0, /^[ \t]*"version"[ \t]*:[ \t]*"([^"]*)"/, matched)) { print matched[1]; } }'
+	awk '
+	{
+		if (/^[ \t]*"version"[ \t]*:[ \t]*"([^"]*)"/)
+		{
+			if (match($$0, /"([^"]*)"/))
+			{
+				print substr($$0, RSTART + 1, RLENGTH - 2);
+			}
+		}
+	}
+	' "$1"
 }
