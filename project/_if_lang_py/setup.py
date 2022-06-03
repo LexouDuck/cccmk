@@ -65,21 +65,21 @@ except Exception as ex:
 %%end if
 
 # Get the project description from the README file
-project_description = ""
+project_readme = ""
 try:
     file_readme = 'README.md'
     with open(path.join(here, file_readme), encoding='utf-8') as f:
-        project_description = f.read()
+        project_readme = f.read()
 except Exception as ex:
     print(f"Error when reading project readme file: {file_version}\n{repr(ex)}")
 
 
 
 setup(
-    name             = project_name,
-    version          = project_version,
-    description      = "",
-    long_description = project_description,
+    name             = "%[name]%",
+    version          = "%[version]%",
+    description      = "%[description]%",
+    long_description = project_readme,
     author           = "%[author]%",
     author_email     = "%[email]%",
     classifiers      = [
