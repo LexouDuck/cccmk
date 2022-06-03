@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 #! utility variables & functions for colored terminal output
 
@@ -28,9 +28,11 @@ print_error()   { { printf "%s%s%s%s\n" "$io_red"    "error"   "$io_reset: " "$@
 
 
 
-# Get commit message contents
+# The commit message filepath
 COMMITMSG_FILE=$1
+# The commit message content
 COMMITMSG="$(cat $COMMITMSG_FILE)"
+# The list of valid type-of-commit names for a commit message, with descriptions
 COMMIT_MSG_TYPE_DESCRIPTIONS='
 	feature      for new feature implementing commits
 	fix          for bug fix commits
@@ -57,13 +59,15 @@ COMMIT_MSG_TYPE_DESCRIPTIONS='
 	revert       for history revert commits
 	wip          for work in progress commits
 '
+# The list of valid type-of-commit names (space-delimited)
 COMMIT_MSG_TYPES="`echo "$COMMIT_MSG_TYPE_DESCRIPTIONS" | awk '{ print $1; }' `"
+# The list of valid type-of-commit names (verticalbar-delimited)
 COMMIT_MSG_TYPES_REGEX="`echo "$COMMIT_MSG_TYPES" | tr '\n' '|' `"
 COMMIT_MSG_TYPES_REGEX="`echo "$COMMIT_MSG_TYPES_REGEX" | sed 's/^\|//' | sed 's/\|$//' `"
-print_message "DEBUG: $COMMIT_MSG_TYPES_REGEX"
-
-export REGEX="^([&|/,]?(feature|fix|security|performance|improvement|breaking|deprecated|refactor|merge|style|test|cleanup|doc|docs|example|dependency|i18n|config|build|ci|release|update|revert|wip))+\(((.?)*)\): (.*)"
-export ERROR_MSG="
+# The regular expression used to check if the commit message follows the right format
+REGEX="^([&|/,]?($COMMIT_MSG_TYPES_REGEX))+\(((.?)*)\): (.*)"
+# The error message to display when the commit message does not properly follow the format
+ERROR_MSG="
 Commit message is invalid, should follow this format:
 <types>(<scope>): <message>
 <body>
@@ -78,6 +82,7 @@ $COMMIT_MSG_TYPE_DESCRIPTIONS
 You can read the full contributing guidelines here:
 https://github.com/LexouDuck/cccmk/blob/master/project/CONTRIBUTING.md
 "
+
 # Match the regular expression to the git commit message
 if echo "$COMMITMSG" | grep -Eq "$REGEX"
 then print_success "Commit message follows the proper format."
