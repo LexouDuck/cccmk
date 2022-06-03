@@ -227,9 +227,41 @@ fi
 # automatically fill in the project year
 project_year="`date "+%Y" `"
 
-# by default, do not perform any project after-create operations
+# set the default after-create operations for project
 if ! [ "`type -t after_create`" = "function" ]
-then after_create() { : ; } # define empty function
+then
+# shell command for initial project setup
+after_create()
+{
+	if echo "$project_track" | grep -q '/_if_ask_mkfile/mkfile/all.mk'
+	then make setup
+	else
+		if echo "$project_track" | grep -q '/.githooks/'
+		then git config core.hooksPath    './.githooks'
+		fi
+	fi
+	#./configure
+}
+fi
+
+# set the default function to parse version number from versionfile for project
+if ! [ "`type -t parse_versionfile`" = "function" ] && 
+then
+# shell command to parse version number from versionfile
+parse_versionfile()
+{
+	awk '
+	{
+		if (/([0-9]+(\.[0-9]+)+)/)
+		{
+			if (match($$0, /([0-9]+(\.[0-9]+)+)/))
+			{
+				print substr($$0, RSTART + 1, RLENGTH - 1);
+			}
+		}
+	}
+	' "$1"
+}
 fi
 
 (

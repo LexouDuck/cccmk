@@ -22,9 +22,14 @@ parse_versionfile()
 		{
 			if (match($$0, /"([^"]*)",/))
 			{
-				print substr($$0, RSTART + 1, RLENGTH - 2);
+				print substr($$0, RSTART + 1, RLENGTH - 3);
 			}
 		}
 	}
 	' "$1"
 }
+
+if echo "$project_track" | grep -q '/_if_ask_mkfile/'
+then project_versionfile="VERSION"
+else project_versionfile="setup.py"
+fi
