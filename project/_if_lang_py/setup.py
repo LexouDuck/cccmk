@@ -81,7 +81,6 @@ setup(
     description      = "%[description]%",
     long_description = project_readme,
     author           = "%[author]%",
-    author_email     = "%[email]%",
     classifiers      = [
         "Programming Language :: Python :: %[langversion]%",
         "Intended Audience :: Developers",

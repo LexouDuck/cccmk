@@ -32,3 +32,6 @@ parse_versionfile()
 if echo "$project_track" | grep -q '/_if_ask_mkfile/'
 then project_versionfile="VERSION"
 fi
+
+# minimum C standard edition
+project_langversion="c11"

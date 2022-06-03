@@ -239,6 +239,8 @@ project_author=
 project_description=
 #! Parsed from the .cccmk file: The programming language of a project
 project_lang=
+#! Parsed from the .cccmk file: The programming language version required for a project
+project_langversion=
 #! Parsed from the .cccmk file: The type (program/library) of a project
 project_type=
 #! Parsed from the .cccmk file: The cccmk commit revision
@@ -275,6 +277,7 @@ else
 	print_verbose "parsed project_author:      '$project_author'"
 	print_verbose "parsed project_description: '$project_description'"
 	print_verbose "parsed project_lang:        '$project_lang'"
+	print_verbose "parsed project_langversion: '$project_langversion'"
 	print_verbose "parsed project_type:        '$project_type'"
 	print_verbose "parsed project_cccmk:       '$project_cccmk'"
 	print_verbose "parsed project_versionfile: '$project_versionfile'"
@@ -354,6 +357,7 @@ cccmk_template()
 		author=$project_author;
 		description=$project_description;
 		lang=$project_lang;
+		langversion=$project_langversion;
 		type=$project_type;
 		cccmk=$project_cccmk;
 		versionfile=$project_versionfile;

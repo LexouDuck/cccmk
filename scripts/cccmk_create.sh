@@ -281,6 +281,7 @@ fi
 		echo "project_author='$project_author'"
 		echo "project_description='$project_description'"
 		echo "project_lang='$project_lang'"
+		echo "project_langversion='$project_langversion'"
 		echo "project_type='$project_type'"
 		echo "project_cccmk='$project_cccmk'"
 		echo "project_versionfile='$project_versionfile'"

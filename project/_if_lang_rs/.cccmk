@@ -33,3 +33,6 @@ if echo "$project_track" | grep -q '/_if_ask_mkfile/'
 then project_versionfile="VERSION"
 else project_versionfile="Cargo.toml"
 fi
+
+# rust language edition
+project_langversion="2021"
