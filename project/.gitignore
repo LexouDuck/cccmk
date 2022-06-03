@@ -86,7 +86,18 @@ dkms.conf
 
 
 %%end if
-%%if is(lang,c)
+%%if is(lang,rs)
+###
+### Language: Rust
+###
+/Cargo.lock
+/target
+/bin
+
+
+
+%%end if
+%%if is(lang,py)
 ###
 ### Language: Python
 ###

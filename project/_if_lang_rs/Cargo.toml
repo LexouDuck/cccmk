@@ -1,0 +1,42 @@
+# Learn more about Cargo.toml at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "%[name]%"
+version = "%[version]%"
+publish = false
+authors = [
+	"%[author]%",
+]
+categories = [ # https://crates.io/category_slugs
+]
+keywords = [ # https://crates.io/keywords
+]
+description = "%[description]%"
+readme = "README.md"
+homepage = "%[link]%"
+repository = "%[repo]%"
+documentation = "%[docs]%"
+license-file = "LICENSE"
+
+include = [
+#	"/src/",
+]
+exclude = [
+#	"/target/",
+]
+
+edition = "2021"
+
+
+
+[build-dependencies]
+%%if is(type,binding)
+bindgen = "~0"
+%%end if
+
+[dev-dependencies]
+
+[dependencies]
+%%if is(type,binding)
+libc = "^0.2"
+%%end if
