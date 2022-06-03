@@ -43,12 +43,15 @@ endif
 .PHONY:\
 package-install-libccc #! downloads the package and sets up its package folder
 package-install-libccc:
-	@$(call print_message,"Downloading package: $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)...")
-	@if [ -d "$(PACKAGE_libccc_DIR)" ] && [ -f ".gitmodules" ] ; \
-	then git submodule update --init $(PACKAGE_libccc_DIR) ; \
-	else git submodule add $(PACKAGE_libccc_URL) $(PACKAGE_libccc_DIR) ; \
+	@if ! [ -f ".gitmodules" ] ; then \
+		$(call print_message,"Adding git submodule: $(PACKAGE_libccc_URL)...") ; \
+		git submodule add $(PACKAGE_libccc_URL) $(PACKAGE_libccc_DIR) ; \
 	fi
-	@$(call print_success,"Installed $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)")
+	@if find "$(PACKAGE_libccc_DIR)" -type -d -empty ; then \
+		$(call print_message,"Downloading package: $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)...") ; \
+		git submodule update --init $(PACKAGE_libccc_DIR) ; \
+		$(call print_success,"Installed $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)") ; \
+	fi
 
 .PHONY:\
 package-compile-libccc #! downloads the package
