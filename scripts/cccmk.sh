@@ -264,7 +264,10 @@ project_missing=
 
 # parse the project tracker file
 if ! [ -f "./$project_cccmkfile" ]
-then print_warning "The current folder is not a valid cccmk project folder."
+then
+	if ! [ "$command" = "create" ]
+	then print_warning "The current folder is not a valid cccmk project folder."
+	fi
 	project_missing="$project_missing - missing project tracker file: ./$project_cccmkfile\n"
 else
 	# parse the .cccmk file (by simply running it as an inline shell script)
@@ -314,7 +317,9 @@ else
 	done
 	if [ -z "$project_version" ]
 	then
-		print_warning "Could not parse version number from versionfile, defaulting to '0.0.0'."
+		if ! [ "$command" = "create" ]
+		then print_warning "Could not parse version number from versionfile, defaulting to '0.0.0'."
+		fi
 		project_version="0.0.0"
 	else
 		print_verbose "parsed project_version: '$project_version'"
@@ -330,8 +335,12 @@ fi
 
 # display warning if current folder is missing any necessary project files
 if ! [ -z "$project_missing" ]
-then print_warning "The current cccmk project folder is missing important files:"
-	printf "$project_missing"
+then
+	if ! [ "$command" = "create" ]
+	then
+		print_warning "The current cccmk project folder is missing important files:"
+		printf "$project_missing"
+	fi
 fi
 
 
