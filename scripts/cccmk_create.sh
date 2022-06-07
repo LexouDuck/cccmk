@@ -248,6 +248,7 @@ fi
 		echo "project_docs='$project_docs'"
 		echo "project_repo='$project_repo'"
 		echo "project_lang='$project_lang'"
+		echo "project_langversion='$project_langversion'"
 		echo "project_type='$project_type'"
 		echo "project_cccmk='$project_cccmk'"
 		echo "project_versionfile='$project_versionfile'"

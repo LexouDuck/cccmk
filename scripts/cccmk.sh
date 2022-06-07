@@ -235,6 +235,10 @@ project_link=
 project_docs=
 #! Parsed from the .cccmk file: The repository URL of a project
 project_repo=
+#! Parsed from the .cccmk file: The programming language of a project
+project_lang=
+#! Parsed from the .cccmk file: The minimal version number for the programming language of a project
+project_langversion=
 #! Parsed from the .cccmk file: The type (program/library) of a project
 project_type=
 #! Parsed from the .cccmk file: The cccmk commit revision
@@ -270,6 +274,7 @@ else
 	print_verbose "parsed project_docs:        '$project_docs'"
 	print_verbose "parsed project_repo:        '$project_repo'"
 	print_verbose "parsed project_lang:        '$project_lang'"
+	print_verbose "parsed project_langversion: '$project_langversion'"
 	print_verbose "parsed project_type:        '$project_type'"
 	print_verbose "parsed project_cccmk:       '$project_cccmk'"
 	print_verbose "parsed project_versionfile: '$project_versionfile'"
@@ -345,6 +350,7 @@ cccmk_template()
 		docs=$project_docs;
 		repo=$project_repo;
 		lang=$project_lang;
+		langversion=$project_langversion;
 		type=$project_type;
 		cccmk=$project_cccmk;
 		versionfile=$project_versionfile;
