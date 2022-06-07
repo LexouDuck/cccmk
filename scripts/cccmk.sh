@@ -223,8 +223,6 @@ parse_args "$@"
 #! The filepath of a project's project-tracker file
 project_cccmkfile=".cccmk"
 
-#! Parsed from the .cccmk file: The author of a project
-project_author=
 #! Parsed from the .cccmk file: The name of a project
 project_name=
 #! Parsed from the .cccmk file: The year of a project
@@ -235,9 +233,13 @@ project_link=
 project_docs=
 #! Parsed from the .cccmk file: The repository URL of a project
 project_repo=
+#! Parsed from the .cccmk file: The author of a project
+project_author=
+#! Parsed from the .cccmk file: The brief description of a project
+project_description=
 #! Parsed from the .cccmk file: The programming language of a project
 project_lang=
-#! Parsed from the .cccmk file: The minimal version number for the programming language of a project
+#! Parsed from the .cccmk file: The programming language version required for a project
 project_langversion=
 #! Parsed from the .cccmk file: The type (program/library) of a project
 project_type=
@@ -262,17 +264,21 @@ project_missing=
 
 # parse the project tracker file
 if ! [ -f "./$project_cccmkfile" ]
-then print_warning "The current folder is not a valid cccmk project folder."
+then
+	if ! [ "$command" = "create" ]
+	then print_warning "The current folder is not a valid cccmk project folder."
+	fi
 	project_missing="$project_missing - missing project tracker file: ./$project_cccmkfile\n"
 else
 	# parse the .cccmk file (by simply running it as an inline shell script)
 	. "./$project_cccmkfile"
-	print_verbose "parsed project_author:      '$project_author'"
 	print_verbose "parsed project_name:        '$project_name'"
 	print_verbose "parsed project_year:        '$project_year'"
 	print_verbose "parsed project_link:        '$project_link'"
 	print_verbose "parsed project_docs:        '$project_docs'"
 	print_verbose "parsed project_repo:        '$project_repo'"
+	print_verbose "parsed project_author:      '$project_author'"
+	print_verbose "parsed project_description: '$project_description'"
 	print_verbose "parsed project_lang:        '$project_lang'"
 	print_verbose "parsed project_langversion: '$project_langversion'"
 	print_verbose "parsed project_type:        '$project_type'"
@@ -310,9 +316,14 @@ else
 		fi
 	done
 	if [ -z "$project_version" ]
-	then print_warning "Could not parse version number from versionfile, got empty string."
+	then
+		if ! [ "$command" = "create" ]
+		then print_warning "Could not parse version number from versionfile, defaulting to '0.0.0'."
+		fi
+		project_version="0.0.0"
+	else
+		print_verbose "parsed project_version: '$project_version'"
 	fi
-	print_verbose "parsed project_version: '$project_version'"
 fi
 
 # parse the project file which holds the list of packages
@@ -324,8 +335,12 @@ fi
 
 # display warning if current folder is missing any necessary project files
 if ! [ -z "$project_missing" ]
-then print_warning "The current cccmk project folder is missing important files:"
-	printf "$project_missing"
+then
+	if ! [ "$command" = "create" ]
+	then
+		print_warning "The current cccmk project folder is missing important files:"
+		printf "$project_missing"
+	fi
 fi
 
 
@@ -343,12 +358,13 @@ cccmk_template()
 	local variables="$3"
 	if [ -z "$variables" ]
 	then variables="
-		author=$project_author;
 		name=$project_name;
 		year=$project_year;
 		link=$project_link;
 		docs=$project_docs;
 		repo=$project_repo;
+		author=$project_author;
+		description=$project_description;
 		lang=$project_lang;
 		langversion=$project_langversion;
 		type=$project_type;

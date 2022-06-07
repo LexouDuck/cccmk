@@ -64,7 +64,7 @@
 %%if tracked(_if_lang_js-jsx-ts-tsx/_if_ask_eslint/):	},
 %%if matches(lang,[jt]s$)
 	"engines": {
-		"node": ">=12.0"
+		"node": ">=%[langversion]%"
 	}
 %%end if
 %%if matches(lang,[jt]sx)

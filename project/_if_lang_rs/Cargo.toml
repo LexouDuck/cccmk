@@ -25,7 +25,7 @@ exclude = [
 #	"/target/",
 ]
 
-edition = "2021"
+edition = "%[langversion]%"
 
 
 
