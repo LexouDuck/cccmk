@@ -146,7 +146,7 @@ $(APPFILE).icns: $(APPICON)
 
 
 
-else ifneq ($(filter $(OSMODE), win32 win64),)
+else ifeq ($(OSMODE),windows)
 APPDIST = $(BINPATH)$(APPNAME).exe
 APPMETA = $(BINPATH)$(APPNAME).rc
 define APPMETADATA

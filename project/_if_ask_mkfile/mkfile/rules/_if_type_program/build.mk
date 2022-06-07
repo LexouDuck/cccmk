@@ -82,10 +82,12 @@ $(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
 
 
 .PHONY:\
-mkdir-build #! Creates all the build folders in the ./bin folder (according to `OSMODES`)
+mkdir-build #! Creates all the build folders in the ./bin folder (according to `OSMODES` and `CPUMODES`)
 mkdir-build:
 	@$(call print_message,"Creating build folders...")
-	@$(foreach i,$(OSMODES), mkdir -p $(BINDIR)$(i) ; )
+	$(foreach i,$(BUILDMODES),\
+	$(foreach os,$(OSMODES),\
+	$(foreach cpu,$(CPUMODES),	@mkdir -p $(BINDIR)$(i)_$(os)_$(cpu)$(C_NL))))
 
 
 

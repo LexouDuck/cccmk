@@ -11,25 +11,11 @@ https://packaging.python.org/en/latest/overview/
 https://blog.ian.stapletoncordas.co/2019/02/distributing-python-libraries-with-type-annotations.html
 """
 from os import path, listdir
-from sys import platform
 # To use a consistent encoding
 from codecs import open
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-
-
-
-# Get a string representing the target OS/platform
-def get_os_name():
-    if platform == 'darwin':
-        return 'macos'
-    elif platform == 'linux':
-        return 'linux'
-    elif platform == 'win32' or platform == 'cygwin':
-        return 'win64'
-    else:
-        raise RuntimeError("get_os_name(): unsupported platform")
 
 
 
@@ -42,10 +28,10 @@ here = path.abspath(path.dirname(__file__))
 # The list of dynamic libraries which should be copied over as part of this package
 project_dynlibs = []
 try:
-    binfolder = path.join(here,"..","C_client","bin",get_os_name(),"dynamic")
-    project_dynlibs = listdir(binfolder)
+    libfolder = path.join(here,"lib")
+    project_dynlibs = listdir(libfolder)
 except Exception as ex:
-    print(f"Error when checking for dynamic libraries in folder: {binfolder}\n{repr(ex)}")
+    print(f"Error when checking for dynamic libraries in folder: {libfolder}\n{repr(ex)}")
 %%end if
 
 %%if tracked(_if_ask_mkfile/mkfile/rules/version.mk)

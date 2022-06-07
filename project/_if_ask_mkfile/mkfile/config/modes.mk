@@ -161,15 +161,13 @@ LIBEXT_static=a
 #! The file extension used for dynamic library files
 LIBEXT_dynamic=
 ifeq ($(OSMODE),other)
-	LIBEXT_dynamic=
-else ifeq ($(OSMODE),win32)
-	LIBEXT_dynamic=dll
-else ifeq ($(OSMODE),win64)
-	LIBEXT_dynamic=dll
+	LIBEXT_dynamic:=
+else ifeq ($(OSMODE),windows)
+	LIBEXT_dynamic:=dll
 else ifeq ($(OSMODE),linux)
-	LIBEXT_dynamic=so
+	LIBEXT_dynamic:=so
 else ifeq ($(OSMODE),macos)
-	LIBEXT_dynamic=dylib
+	LIBEXT_dynamic:=dylib
 else
 $(error Unsupported platform: you must configure the dynamic library file extension your machine uses)
 endif

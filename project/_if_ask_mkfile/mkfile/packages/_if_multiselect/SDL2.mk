@@ -34,15 +34,15 @@ PACKAGE_SDL2_PKG_INSTALL = \
 	@$(call print_warning,"Unsupported platform: SDL2 must be configured manually")
 
 ifeq ($(OSMODE),other)
-else ifneq ($(filter $(OSMODE), win32 win64),)
+else ifeq ($(OSMODE),windows)
 	PACKAGE_SDL2_PKG = SDL2-devel-$(PACKAGE_SDL2_VERSION)-mingw.tar.gz
 	PACKAGE_SDL2_GETVERSIONS = grep 'mingw.tar.gz'
 	PACKAGE_SDL2_PKG_INSTALL = \
 		tar -xf $(PACKAGE_SDL2_PKG) --directory=$(PACKAGE_SDL2_DIR) ; \
 		mv -f $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION)/* $(PACKAGE_SDL2_DIR) && \
 		rmdir $(PACKAGE_SDL2_DIR)SDL2-$(PACKAGE_SDL2_VERSION) ; \
-		{ mkdir -p $(PACKAGE_SDL2_DIR)bin/win32/ && mv $(PACKAGE_SDL2_DIR)i686-w64-mingw32/*   $(PACKAGE_SDL2_DIR)bin/win32/ && rmdir $(PACKAGE_SDL2_DIR)i686-w64-mingw32   ; } ; \
-		{ mkdir -p $(PACKAGE_SDL2_DIR)bin/win64/ && mv $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32/* $(PACKAGE_SDL2_DIR)bin/win64/ && rmdir $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32 ; } ; \
+		{ mv $(PACKAGE_SDL2_DIR)i686-w64-mingw32/   $(PACKAGE_SDL2_DIR)bin/windows_x86-32/ ; } ; \
+		{ mv $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32/ $(PACKAGE_SDL2_DIR)bin/windows_x86-64/ ; } ; \
 
 else ifeq ($(OSMODE),macos)
 	PACKAGE_SDL2_PKG = SDL2-$(PACKAGE_SDL2_VERSION).dmg
