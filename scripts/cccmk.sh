@@ -145,8 +145,8 @@ parse_args()
 		if [ "`echo "$1" | cut -c1-1`" = "-" ]
 		then # options (w/ leading dash)
 		case "$1" in
-			(-h|--help|help)        command="$1" ; show_help    ; exit 0 ;;
-			(-v|--version|version)  command="$1" ; show_version ; exit 0 ;;
+			(-h|--help)             command="$1" ; show_help    ; exit 0 ;;
+			(-v|--version)          command="$1" ; show_version ; exit 0 ;;
 			(-V|--verbose)          verbose=true ;;
 			(-w|--ignore-spaces)    ignore_spaces=true ;;
 			(-W|--ignore-blanks)    ignore_blanks=true ;;
@@ -158,6 +158,8 @@ parse_args()
 		esac
 		else # commands (no leading dash)
 		case "$1" in
+			(help)     command="$1" ; show_help    ; exit 0 ;;
+			(version)  command="$1" ; show_version ; exit 0 ;;
 			(create)
 				command="$1"
 				print_verbose "parsed command: '$command'"
