@@ -20,9 +20,12 @@ check_prereq = \
 	echo "$$ $(2)\n" ; \
 	valid=false ; \
 	$(2) && valid=true ; \
-	if $$valid && [ -z "$(4)" ] ; \
-	then version="`$(2) |& awk '{ if (match($$0, /[0-9]+(\.[0-9]+)+?/)) { print substr($$0, RSTART, RLENGTH); exit 0; } }' `" ; \
-		$(call check_version,$$version,$(4)) && valid=false ; \
+	if $$valid && ! [ -z "$(4)" ] ; \
+	then \
+		version="`$(2) 2>&1 | awk '{ if (match($$0, /[0-9]+(\.[0-9]+)+?/)) { print substr($$0, RSTART, RLENGTH); exit 0; } }' `" ; \
+		$(call check_version,$$version,$(4)) \
+		&& valid=false \
+		&& $(call print_warning,"You have installed version '$$version' but this project requires version '$(4)'") ; \
 	fi ; \
 	$$valid || \
 	{ \
