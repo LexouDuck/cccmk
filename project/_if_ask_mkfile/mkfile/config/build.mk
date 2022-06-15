@@ -106,8 +106,8 @@ LDFLAGS_OS_linux =
 LDFLAGS_OS_other = 
 ifneq ($(findstring clang,$(CC)),)
 %%if tracked(_if_ask_mkfile/mkfile/rules/version.mk)
-	LDFLAGS_OS += -current_version       $(VERSION)
-	LDFLAGS_OS += -compatibility_version $(VERSION)
+	LDFLAGS_OS_macos += -current_version       $(VERSION)
+	LDFLAGS_OS_macos += -compatibility_version $(VERSION)
 %%end if
 endif
 
