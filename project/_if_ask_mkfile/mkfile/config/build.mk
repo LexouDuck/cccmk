@@ -104,6 +104,12 @@ LDFLAGS_OS_windows =
 LDFLAGS_OS_macos = 
 LDFLAGS_OS_linux = 
 LDFLAGS_OS_other = 
+ifneq ($(findstring clang,$(CC)),)
+%%if tracked(_if_ask_mkfile/mkfile/rules/version.mk)
+	LDFLAGS_OS += -current_version       $(VERSION)
+	LDFLAGS_OS += -compatibility_version $(VERSION)
+%%end if
+endif
 
 #! This variable is intentionally empty, to specify additional C linker options from the commandline
 LDFLAGS_EXTRA ?= \
