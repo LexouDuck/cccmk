@@ -51,7 +51,6 @@ dist: mkdir-dist
 	@cd $(TEMPDIR) && zip -r ../$(DIST_FILE) ./
 	@rm -rf $(TEMPDIR)
 	@printf " -> "$(IO_GREEN)"OK!"$(IO_RESET)"\n"
-endif
 
 
 
