@@ -64,3 +64,15 @@ clean-dist #! Deletes the distributable builds folder
 clean-dist:
 	@$(call print_message,"Deleting distributable builds folder...")
 	@rm -rf $(DIST_PATH)
+
+
+
+.PHONY:\
+prereq-dist #! Checks prerequisite installs to distribute build archives of the program
+prereq-dist:
+	@-$(call check_prereq,'(dist) ZIP archive creator: zip',\
+		zip --version,\
+		$(call install_prereq,zip))
+	@-$(call check_prereq,'(dist) ZIP archive extractor: unzip',\
+		unzip --version,\
+		$(call install_prereq,unzip))
