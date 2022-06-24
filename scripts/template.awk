@@ -144,11 +144,19 @@ BEGIN {
 		}
 		next;
 	}
-	else if (match($0, /^%%if[ \t]+([a-zA-Z_]+)\(([^\)]*)\)[ \t]*/, matched))
+	else if (match($0, /^%%if[ \t]+(!?[a-zA-Z_]+)\(([^\)]*)\)[ \t]*/, matched))
 	{
 		if_function = matched[1];
+		if (substr(if_function, 1, 1) == "!")
+		{
+			if_function = substr(if_function, 2);
+			negation = 1;
+		}
+		else { negation = 0; }
 		split(matched[2], if_arguments, /,[ \t]*/);
-		if (_if(if_function, if_arguments))
+		condition = _if(if_function, if_arguments);
+		if ((condition == 1 && negation == 0) ||
+			(condition == 0 && negation == 1))
 		{ scope_if = 1; }
 		else
 		{ scope_if = 2; }
