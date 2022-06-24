@@ -155,13 +155,13 @@ BEGIN {
 		else { negation = 0; }
 		split(matched[2], if_arguments, /,[ \t]*/);
 		condition = _if(if_function, if_arguments);
-		if ((condition == 1 && negation == 0) ||
+		if ((condition != 0 && negation == 0) ||
 			(condition == 0 && negation == 1))
 		{ scope_if = 1; }
 		else
 		{ scope_if = 2; }
 		# single-line
-		if (/^%%if[ \t]+([a-zA-Z_]+)\(([^\)]*)\)[ \t]*:/)
+		if (/^%%if[ \t]+(!?[a-zA-Z_]+)\(([^\)]*)\)[ \t]*:/)
 		{
 			if (scope_if == 1)
 			{ print template_variable(substr($0, RSTART + RLENGTH + 1)); }
@@ -173,7 +173,7 @@ BEGIN {
 		}
 		next;
 	}
-	else if (/^%%if[ \t]+([a-zA-Z_]+)[^\(]/)
+	else if (/^%%if[ \t]+(!?[a-zA-Z_]+)[^\(]/)
 	{ print_error("expected parentheses after function for '%%if *(*):' condition directive"); }
 	else if (/^%%if/)
 	{ print_error("expected function name for '%%if *(*):' condition directive"); }
