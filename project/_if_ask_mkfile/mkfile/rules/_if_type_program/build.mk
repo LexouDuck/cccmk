@@ -35,24 +35,25 @@ bin_copylibs = \
 #! @param $(2)	name of the binary file (without version number, and without file extension)
 #! @param $(3)	file extension of the binary file
 bin_symlinks = \
-
-ifeq ($(OSMODE),macos)
-bin_symlinks = \
 	cd $(1) \
-	&& mv    $(2).$(3)            $(2).$(VERSION).$(3) \
-	&& ln -s $(2).$(VERSION).$(3) $(2).$(VERSION_MAJOR).$(3) \
-	&& ln -s $(2).$(VERSION).$(3) $(2).$(3) \
+
+%%if tracked(_if_ask_mkfile/rules/version.mk)
+ifeq ($(OSMODE),macos)
+bin_symlinks += \
+	&& mv     $(2).$(3)            $(2).$(VERSION).$(3) \
+	&& ln -sf $(2).$(VERSION).$(3) $(2).$(VERSION_MAJOR).$(3) \
+	&& ln -sf $(2).$(VERSION).$(3) $(2).$(3) \
 
 endif
 ifeq ($(OSMODE),linux)
-bin_symlinks = \
-	cd $(1) \
-	&& mv    $(2).$(3)            $(2).$(3).$(VERSION) \
-	&& ln -s $(2).$(3).$(VERSION) $(2).$(3).$(VERSION_MAJOR) \
-	&& ln -s $(2).$(3).$(VERSION) $(2).$(3) \
+bin_symlinks += \
+	&& mv     $(2).$(3)            $(2).$(3).$(VERSION) \
+	&& ln -sf $(2).$(3).$(VERSION) $(2).$(3).$(VERSION_MAJOR) \
+	&& ln -sf $(2).$(3).$(VERSION) $(2).$(3) \
 
 endif
 
+%%end if
 
 
 .PHONY:\
@@ -91,6 +92,7 @@ $(OBJPATH)%.o : $(SRCDIR)%.c
 
 #! Compiles the project executable
 $(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
+	@rm -f $@
 	@mkdir -p $(@D)
 	@printf "Compiling program: $@ -> "
 	@$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS)
