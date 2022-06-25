@@ -37,7 +37,7 @@ bin_copylibs = \
 bin_symlinks = \
 	cd $(1) \
 
-%%if tracked(_if_ask_mkfile/rules/version.mk)
+%%if tracked(_if_ask_mkfile/mkfile/rules/version.mk)
 ifeq ($(OSMODE),macos)
 bin_symlinks += \
 	&& mv     $(2).$(3)            $(2).$(VERSION).$(3) \
