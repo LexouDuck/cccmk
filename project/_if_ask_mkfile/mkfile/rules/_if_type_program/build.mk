@@ -21,15 +21,39 @@ LDLIBS := $(LDLIBS) \
 INCLUDES := $(INCLUDES) \
 	$(foreach i,$(PACKAGES), -I$(PACKAGE_$(i)_INCLUDE))
 
-#! Shell command used to copy over libraries from ./lib into ./bin
-#! @param $(1)	file extension glob
-copylibs = $(foreach i,$(PACKAGES), \
+#! Shell command used to copy over dependency libraries from ./lib into ./bin
+bin_copylibs = \
+	$(foreach i,$(PACKAGES), \
 	if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
 		for i in $(PACKAGE_$(i)_LINKDIR)*.$(LIBEXT_dynamic) ; do \
 			cp -p "$$i" $(BINPATH)dynamic/ ; \
 		done ; \
 	fi ; )
 
+#! Shell command used to create symbolic links for version-named library binary
+#! @param $(1)	path of the binary file (folder, relative to root-level Makefile)
+#! @param $(2)	name of the binary file (without version number, and without file extension)
+#! @param $(3)	file extension of the binary file
+bin_symlinks = \
+	cd $(1) \
+
+%%if tracked(_if_ask_mkfile/mkfile/rules/version.mk)
+ifeq ($(OSMODE),macos)
+bin_symlinks += \
+	&& mv     $(2).$(3)            $(2).$(VERSION).$(3) \
+	&& ln -sf $(2).$(VERSION).$(3) $(2).$(VERSION_MAJOR).$(3) \
+	&& ln -sf $(2).$(VERSION).$(3) $(2).$(3) \
+
+endif
+ifeq ($(OSMODE),linux)
+bin_symlinks += \
+	&& mv     $(2).$(3)            $(2).$(3).$(VERSION) \
+	&& ln -sf $(2).$(3).$(VERSION) $(2).$(3).$(VERSION_MAJOR) \
+	&& ln -sf $(2).$(3).$(VERSION) $(2).$(3) \
+
+endif
+
+%%end if
 
 
 .PHONY:\
@@ -68,11 +92,13 @@ $(OBJPATH)%.o : $(SRCDIR)%.c
 
 #! Compiles the project executable
 $(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
+	@rm -f $@
 	@mkdir -p $(@D)
 	@printf "Compiling program: $@ -> "
 	@$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS)
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
-	@$(call copylibs)
+	@$(call bin_copylibs)
+	@$(call bin_symlinks,$(BINPATH),$(NAME),)
 
 
 
@@ -103,13 +129,13 @@ clean-build-bin \
 clean-build-obj #! Deletes all .o build object files
 clean-build-obj:
 	@$(call print_message,"Deleting all build .o files...")
-	$(foreach i,$(OBJS),	@rm "$(i)" $(C_NL))
+	$(foreach i,$(OBJS),	@rm -f "$(i)" $(C_NL))
 
 .PHONY:\
 clean-build-dep #! Deletes all .d build dependency files
 clean-build-dep:
 	@$(call print_message,"Deleting all build .d files...")
-	$(foreach i,$(DEPS),	@rm "$(i)" $(C_NL))
+	$(foreach i,$(DEPS),	@rm -f "$(i)" $(C_NL))
 
 .PHONY:\
 clean-build-exe #! Deletes the built program in the root project folder

@@ -11,11 +11,23 @@ DIST_FILE = $(DIST_PATH)$(DIST_NAME)
 
 
 
+#! Shell command used to create a distributable archive file (by default, in .zip format)
+#!	@param	$(1)	Folder to put into a distributable archive file
+#!	@param	$(2)	Filename of the output archive file
+dist_archive = \
+	cd $(1) && zip --symlinks -r ../$(2) ./
+ifeq ($(OSMODE),windows)
+dist_archive = \
+	cd $(1) && zip -r ../$(2) ./
+endif
+
+
+
 .PHONY:\
 dist-all #! Prepares .zip archives in ./dist for each platform from the contents of the ./bin folder
 dist-all:
 	@mkdir -p $(DISTDIR)
-	$(foreach i,$(OSMODES),	@-$(MAKE) dist-version OSMODE=$(i)$(C_NL))
+	$(foreach i,$(OSMODES),	@-$(MAKE) dist-version OSMODE=$(i) $(C_NL))
 
 
 
@@ -25,34 +37,26 @@ dist: mkdir-dist
 	@if [ -f $(DIST_FILE) ]; then \
 		$(call print_error,"File already exists: $(DIST_FILE)") ; \
 	fi
-	@$(MAKE) clean
-	@$(call print_message,"Building release (for OSMODE/CPUMODE: '$(OSMODE)_$(CPUMODE)')...")
-%%if is(type,library)
-	@$(MAKE) build-release LIBMODE=static
-	@$(MAKE) build-release LIBMODE=dynamic
-%%end if
-%%if is(type,program)
+	@$(call print_message,"Building release (for target: '$(BUILDMODE)_$(OSMODE)_$(CPUMODE)')...")
 	@$(MAKE) build-release
-%%end if
-ifeq ($(wildcard $(BINPATH)*),)
-	@$(call print_error,"Cannot produce distributable archive for target '$(OSMODE)_$(CPUMODE)':")
-	@$(call print_error,"The bin output folder is empty: '$(BINPATH)'.")
-else
+	$(eval BUILDMODE = release)
+	@if [ -z "`ls $(BINPATH)* `" ] ; \
+	then $(call print_error,"Cannot produce distributable archive for target '$(BUILDMODE)_$(OSMODE)_$(CPUMODE)':\n\t-> the bin output folder is empty: '$(BINPATH)'.") ; \
+	fi
 	@$(call print_message,"Preparing .zip archive: $(DIST_FILE)")
 	@rm -rf   $(TEMPDIR)
 	@mkdir -p $(TEMPDIR)
-	@cp -rf $(BINPATH)*  $(TEMPDIR)
+	@cp -Rf $(BINPATH)*  $(TEMPDIR)
 %%if is(type,library)
 	@mkdir -p $(TEMPDIR)include
 	@for i in $(HDRS) ; do \
 		mkdir -p `dirname $(TEMPDIR)include/$$i` ; \
-		cp -p $(HDRDIR)$$i $(TEMPDIR)include/$$i ; \
+		cp -p $$i $(TEMPDIR)include/$$i ; \
 	done
 %%end if
-	@cd $(TEMPDIR) && zip -r ../$(DIST_FILE) ./
+	@$(call dist_archive,$(TEMPDIR),$(DIST_FILE))
 	@rm -rf $(TEMPDIR)
 	@printf " -> "$(IO_GREEN)"OK!"$(IO_RESET)"\n"
-endif
 
 
 
@@ -66,3 +70,15 @@ clean-dist #! Deletes the distributable builds folder
 clean-dist:
 	@$(call print_message,"Deleting distributable builds folder...")
 	@rm -rf $(DIST_PATH)
+
+
+
+.PHONY:\
+prereq-dist #! Checks prerequisite installs to distribute build archives of the program
+prereq-dist:
+	@-$(call check_prereq,'(dist) ZIP archive creator: zip',\
+		zip --version,\
+		$(call install_prereq,zip))
+	@-$(call check_prereq,'(dist) ZIP archive extractor: unzip',\
+		unzip --version,\
+		$(call install_prereq,unzip))

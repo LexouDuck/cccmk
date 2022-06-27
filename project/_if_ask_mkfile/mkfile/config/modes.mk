@@ -41,6 +41,12 @@ NAME_dynamic = $(NAME).$(LIBEXT_dynamic)
 %%end if
 
 
+UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
+UNAME_P := $(shell uname -p)
+
+
+
 #! Define all possible supported target platforms/operating systems
 OSMODES = \
 	windows	\
@@ -49,11 +55,10 @@ OSMODES = \
 	other	\
 # if the OSMODE variable has no value, give it a default value based on the current platform
 ifeq ($(strip $(OSMODE)),)
-	OSMODE = other
+	OSMODE := other
 	ifeq ($(OS),Windows_NT)
 		OSMODE := windows
 	else
-		UNAME_S := $(shell uname -s)
 		ifeq ($(UNAME_S),Linux)
 			OSMODE := linux
 		endif
@@ -68,85 +73,16 @@ endif
 
 
 
-#! Define all possible supported target ASM/CPU architectures
+#! Since it is not viable to have/maintain make an exhaustive list of all possible target ASM/CPU architectures, instead we simply use the result of `uname -m`)
 CPUMODES = \
-	wasm-32	\
-	wasm-64	\
-	x86-32	\
-	x86-64	\
-	arm8-32	\
-	arm8-64	\
-	arm7-32	\
-	arm7-64	\
-	arm6-32	\
-	arm6-64	\
-	ppc-32	\
-	ppc-64	\
-	s390-32	\
-	s390-64	\
-	hppa-32	\
-	hppa-64	\
-	mips-32	\
-	mips-64	\
-	sparc-32\
-	sparc-64\
 	other	\
 # if the CPUMODE variable has no value, give it a default value based on the current CPU architecture
 ifeq ($(strip $(CPUMODE)),)
-	UNAME_M := $(shell uname -m)
-	UNAME_P := $(shell uname -p)
-	CPUMODE = other
+	CPUMODE := other
 	ifdef __EMSCRIPTEN__
 		CPUMODE := wasm-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
 	else
-		ifneq ($(findstring 86, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := x86-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring amd, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := x86-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring ia64, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := x86-64
-		endif
-		ifneq ($(findstring x64, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := x86-64
-		endif
-		ifneq ($(findstring arm, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := arm8-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring armv6, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := arm6-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring armv7, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := arm7-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring aarch64, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := arm8-64
-		endif
-		ifneq ($(findstring ppc, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := ppc-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring powerpc, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := ppc-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring s390, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := s390-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring s390x, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := s390-64
-		endif
-		ifneq ($(findstring parisc, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := hppa-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring 9000/, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := hppa-64
-		endif
-		ifneq ($(findstring mips, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := mips-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
-		ifneq ($(findstring sparc, $(UNAME_M) $(UNAME_P)),)
-			CPUMODE := sparc-$(if $(findstring 64, $(UNAME_M) $(UNAME_P)),64,32)
-		endif
+		CPUMODE := $(subst _,-,$(UNAME_M))
 	endif
 	ifeq ($(OSMODE),other)
 	_:=$(call print_warning,"Could not estimate the current target CPU architecture, defaulting to 'CPUMODE = other'...")
@@ -156,18 +92,18 @@ endif
 
 
 #! The file extension used for static library files
-LIBEXT_static=a
+LIBEXT_static := a
 
 #! The file extension used for dynamic library files
-LIBEXT_dynamic=
+LIBEXT_dynamic := 
 ifeq ($(OSMODE),other)
-	LIBEXT_dynamic:=
+	LIBEXT_dynamic := 
 else ifeq ($(OSMODE),windows)
-	LIBEXT_dynamic:=dll
+	LIBEXT_dynamic := dll
 else ifeq ($(OSMODE),linux)
-	LIBEXT_dynamic:=so
+	LIBEXT_dynamic := so
 else ifeq ($(OSMODE),macos)
-	LIBEXT_dynamic:=dylib
+	LIBEXT_dynamic := dylib
 else
 $(error Unsupported platform: you must configure the dynamic library file extension your machine uses)
 endif
