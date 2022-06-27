@@ -21,12 +21,16 @@ endif
 
 
 #! Shell command used to run a program in a cross-platform manner
+ifneq ($(findstring iPhone,$(shell uname -m)),)
+run = ldid -S ./$(1) && ./$(1)
+else
 run = ./$(1)
+endif
 
 
 
 #! Shell command used to run a program as a background service
-ifeq ($(OS),Windows_NT)
+ifneq ($(findstring CYGWIN,$(shell uname -s)),)
 daemon = cygstart --hide $(1)
 else
 daemon = $(1) &
