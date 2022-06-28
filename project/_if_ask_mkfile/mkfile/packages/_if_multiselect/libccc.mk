@@ -17,7 +17,7 @@ PACKAGE_libccc_LINK = -L$(PACKAGE_libccc_LINKDIR) $(PACKAGE_libccc_LINKLIB)
 PACKAGE_libccc_URL = https://github.com/LexouDuck/libccc
 PACKAGE_libccc_URL_VERSION = https://raw.githubusercontent.com/LexouDuck/libccc/$(PACKAGE_libccc_GITBRANCH)/VERSION
 
-PACKAGE_libccc_GITBRANCH = master
+PACKAGE_libccc_GITBRANCH ?= master
 
 
 
@@ -47,7 +47,7 @@ package-install-libccc:
 		$(call print_message,"Adding git submodule: $(PACKAGE_libccc_URL)...") ; \
 		git submodule add $(PACKAGE_libccc_URL) $(PACKAGE_libccc_DIR) ; \
 	fi
-	@if find "$(PACKAGE_libccc_DIR)" -type -d -empty ; then \
+	@if find "$(PACKAGE_libccc_DIR)" -type d -empty ; then \
 		$(call print_message,"Downloading package: $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)...") ; \
 		git submodule update --init $(PACKAGE_libccc_DIR) ; \
 		$(call print_success,"Installed $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)") ; \
