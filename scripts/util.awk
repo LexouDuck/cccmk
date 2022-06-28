@@ -55,7 +55,10 @@ function command(cmd)
 	line = "";
 	while (( cmd | getline line ) > 0)
 	{
-		output = output "\n" line;
+		if (length(output) == 0)
+		{ output = line; }
+		else
+		{ output = output "\n" line; }
 	}
 	close(cmd);
 	return (output);
