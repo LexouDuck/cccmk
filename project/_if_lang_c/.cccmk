@@ -29,8 +29,11 @@ parse_versionfile()
 	' "$1"
 }
 
-if echo "$project_track" | grep -q '/_if_ask_mkfile/'
-then project_versionfile="VERSION"
+if [ -z "$project_versionfile" ]
+then
+	if echo "$project_track" | grep -q '_if_ask_mkfile/'
+	then project_versionfile="VERSION"
+	fi
 fi
 
 # minimum C standard edition

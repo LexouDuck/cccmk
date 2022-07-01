@@ -29,9 +29,12 @@ parse_versionfile()
 	' "$1"
 }
 
-if echo "$project_track" | grep -q '/_if_ask_mkfile/'
-then project_versionfile="VERSION"
-else project_versionfile="Cargo.toml"
+if [ -z "$project_versionfile" ]
+then
+	if echo "$project_track" | grep -q '_if_ask_mkfile/'
+	then project_versionfile="VERSION"
+	else project_versionfile="Cargo.toml"
+	fi
 fi
 
 # rust language edition
