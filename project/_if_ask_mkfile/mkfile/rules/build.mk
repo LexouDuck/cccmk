@@ -155,10 +155,11 @@ endif
 mkdir-build #! Creates all the build folders in the ./bin folder (according to `OSMODES`)
 mkdir-build:
 	@$(call print_message,"Creating build folders...")
-	$(foreach libmode,$(LIBMODES),\
 	$(foreach i,$(BUILDMODES),\
 	$(foreach os,$(OSMODES),\
-	$(foreach cpu,$(CPUMODES),	@mkdir -p $(BINDIR)$(i)_$(os)_$(cpu)/$(libmode)$(C_NL)))))
+%%if is(type,library):	$(foreach libmode,$(LIBMODES),\
+%%if is(type,library):	$(foreach cpu,$(CPUMODES),	@mkdir -p $(BINDIR)$(i)_$(os)_$(cpu)/$(libmode)$(C_NL)))))
+%%if is(type,program):	$(foreach cpu,$(CPUMODES),	@mkdir -p $(BINDIR)$(i)_$(os)_$(cpu)$(C_NL))))
 
 
 
