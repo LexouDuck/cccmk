@@ -84,9 +84,9 @@ ifeq ($(strip $(CPUMODE)),)
 	else
 		CPUMODE := $(subst _,-,$(UNAME_M))
 	endif
-	ifeq ($(OSMODE),other)
+	ifeq ($(strip $(CPUMODE)),)
 	_:=$(call print_warning,"Could not estimate the current target CPU architecture, defaulting to 'CPUMODE = other'...")
-	endif
+	CPUMODE := other
 endif
 
 
