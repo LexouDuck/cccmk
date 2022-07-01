@@ -87,6 +87,7 @@ ifeq ($(strip $(CPUMODE)),)
 	ifeq ($(strip $(CPUMODE)),)
 	_:=$(call print_warning,"Could not estimate the current target CPU architecture, defaulting to 'CPUMODE = other'...")
 	CPUMODE := other
+	endif
 endif
 
 
