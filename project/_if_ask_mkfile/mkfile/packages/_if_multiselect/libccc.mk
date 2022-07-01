@@ -4,7 +4,8 @@
 
 PACKAGE_libccc = libccc
 PACKAGE_libccc_VERSION := $(shell $(call packages_getversion,$(PACKAGE_libccc)))
-PACKAGE_libccc_LIBMODE ?= static
+%%if is(type,library):PACKAGE_libccc_LIBMODE ?= dynamic
+%%if is(type,program):PACKAGE_libccc_LIBMODE ?= static
 PACKAGE_libccc_DIR = $(LIBDIR)libccc/
 PACKAGE_libccc_BIN = $(PACKAGE_libccc_DIR)bin/$(TARGETDIR)/
 PACKAGE_libccc_INCLUDE = $(PACKAGE_libccc_DIR)hdr/
@@ -47,7 +48,7 @@ package-install-libccc:
 		$(call print_message,"Adding git submodule: $(PACKAGE_libccc_URL)...") ; \
 		git submodule add $(PACKAGE_libccc_URL) $(PACKAGE_libccc_DIR) ; \
 	fi
-	@if find "$(PACKAGE_libccc_DIR)" -type d -empty ; then \
+	@if [ -z "`ls $(PACKAGE_libccc_DIR)`" ] ; then \
 		$(call print_message,"Downloading package: $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)...") ; \
 		git submodule update --init $(PACKAGE_libccc_DIR) ; \
 		$(call print_success,"Installed $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)") ; \
