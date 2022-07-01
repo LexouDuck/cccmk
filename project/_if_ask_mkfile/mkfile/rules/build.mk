@@ -1,4 +1,4 @@
-#! This file holds C-specific rules to build a program
+#! This file holds C-specific rules to build a %[type]%
 
 
 
@@ -22,14 +22,13 @@ INCLUDES := $(INCLUDES) \
 	$(foreach i,$(PACKAGES), -I$(PACKAGE_$(i)_INCLUDE))
 
 #! Shell command used to copy over dependency libraries from ./lib into ./bin
+#! @param	$(1)	The subdirectory within the ./bin target folder
 bin_copylibs = \
-	mkdir -p $(BINPATH)dynamic/ && \
+	mkdir -p $(BINPATH)$(1) ; \
 	$(foreach i,$(PACKAGES), \
-	if [ "$(PACKAGE_$(i)_LIBMODE)" = "dynamic" ] ; then \
-		for i in $(PACKAGE_$(i)_LINKDIR)*.$(LIBEXT_dynamic) ; do \
-			cp -p "$$i" $(BINPATH)dynamic/ ; \
-		done ; \
-	fi ; )
+		for i in $(PACKAGE_$(i)_LINKDIR)* ; do \
+			cp -p "$$i" $(BINPATH)$(1) ; \
+		done ; )
 
 #! Shell command used to create symbolic links for version-named library binary
 #! @param $(1)	path of the binary file (folder, relative to root-level Makefile)
@@ -58,17 +57,21 @@ endif
 
 
 .PHONY:\
-build #! Builds the program, with the default BUILDMODE (typically debug)
+build #! Builds the %[type]%, with the default BUILDMODE (typically debug)
 build: \
-$(NAME)
+%%if is(type,library)
+$(BINPATH)static/$(NAME_static) \
+$(BINPATH)dynamic/$(NAME_dynamic) \
+%%end if
+%%if is(type,program):$(NAME)
 
 .PHONY:\
-build-debug #! Builds the program, in 'debug' mode (with debug flags and symbol-info)
+build-debug #! Builds the %[type]%, in 'debug' mode (with debug flags and symbol-info)
 build-debug:
 	@$(MAKE) build BUILDMODE=debug
 
 .PHONY:\
-build-release #! Builds the program, in 'release' mode (with optimization flags)
+build-release #! Builds the %[type]%, in 'release' mode (with optimization flags)
 build-release:
 	@$(MAKE) build BUILDMODE=release
 
@@ -91,6 +94,7 @@ $(OBJPATH)%.o : $(SRCDIR)%.c
 
 
 
+%%if is(type,program)
 #! Compiles the project executable
 $(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
 	@rm -f $@
@@ -100,6 +104,45 @@ $(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
 	@$(call bin_copylibs)
 	@$(call bin_symlinks,$(BINPATH),$(NAME),)
+%%end if
+%%if is(type,library)
+#! Builds the static-link library '.a' binary file for the current target platform
+$(BINPATH)static/$(NAME_static): $(OBJSFILE) $(OBJS)
+	@rm -f $@
+	@mkdir -p $(@D)
+	@printf "Compiling static library: $@ -> "
+	@$(AR) $(ARFLAGS) $@ $(call objs)
+	@$(RANLIB) $(RANLIB_FLAGS) $@
+	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
+	@$(call bin_copylibs)
+	@$(call bin_symlinks,$(BINPATH)static,$(NAME),$(LIBEXT_static))
+
+#! Builds the dynamic-link library file(s) for the current target platform
+$(BINPATH)dynamic/$(NAME_dynamic): $(OBJSFILE) $(OBJS)
+	@rm -f $@
+	@mkdir -p $(@D)
+	@printf "Compiling dynamic library: $@ -> "
+ifeq ($(OSMODE),windows)
+	@$(CC) -shared -o $@ $(CFLAGS) $(LDFLAGS) $(call objs) $(LDLIBS) \
+		-Wl,--output-def,$(NAME).def \
+		-Wl,--out-implib,$(NAME).lib \
+		-Wl,--export-all-symbols
+	@cp -p $(NAME).def $(BINPATH)dynamic/
+	@cp -p $(NAME).lib $(BINPATH)dynamic/
+else ifeq ($(OSMODE),macos)
+	@$(CC) -shared -o $@ $(CFLAGS) $(LDFLAGS) $(call objs) $(LDLIBS) \
+		-install_name '@loader_path/$(NAME_dynamic)'
+else ifeq ($(OSMODE),linux)
+	@$(CC) -shared -o $@ $(CFLAGS) $(LDFLAGS) $(call objs) $(LDLIBS) \
+		-Wl,-rpath='$$ORIGIN/'
+else
+	@$(call print_warning,"Unknown platform: needs manual configuration.")
+	@$(call print_warning,"You must manually configure the script to build a dynamic library")
+endif
+	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
+	@$(call bin_copylibs)
+	@$(call bin_symlinks,$(BINPATH)dynamic,$(NAME),$(LIBEXT_dynamic))
+%%end if
 
 
 
@@ -109,12 +152,13 @@ $(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
 
 
 .PHONY:\
-mkdir-build #! Creates all the build folders in the ./bin folder (according to `OSMODES` and `CPUMODES`)
+mkdir-build #! Creates all the build folders in the ./bin folder (according to `OSMODES`)
 mkdir-build:
 	@$(call print_message,"Creating build folders...")
+	$(foreach libmode,$(LIBMODES),\
 	$(foreach i,$(BUILDMODES),\
 	$(foreach os,$(OSMODES),\
-	$(foreach cpu,$(CPUMODES),	@mkdir -p $(BINDIR)$(i)_$(os)_$(cpu)$(C_NL))))
+	$(foreach cpu,$(CPUMODES),	@mkdir -p $(BINDIR)$(i)_$(os)_$(cpu)/$(libmode)$(C_NL)))))
 
 
 
@@ -123,8 +167,9 @@ clean-build #! Deletes all intermediary build-related files
 clean-build: \
 clean-build-obj \
 clean-build-dep \
-clean-build-exe \
 clean-build-bin \
+%%if is(type,program):clean-build-exe \
+%%if is(type,library):clean-build-lib \
 
 .PHONY:\
 clean-build-obj #! Deletes all .o build object files
@@ -139,23 +184,49 @@ clean-build-dep:
 	$(foreach i,$(DEPS),	@rm -f "$(i)" $(C_NL))
 
 .PHONY:\
+%%if is(type,program)
 clean-build-exe #! Deletes the built program in the root project folder
 clean-build-exe:
 	@$(call print_message,"Deleting program: $(BINPATH)$(NAME)")
 	@rm -f $(BINPATH)$(NAME)
 	@rm -f $(NAME)
+%%end if
+%%if is(type,library)
+clean-build-lib #! Deletes the built library(ies) in the root project folder
+clean-build-lib:
+	@$(call print_message,"Deleting static library: $(BINPATH)static/$(NAME_static)")
+	@rm -f $(BINPATH)static/$(NAME_static)
+	@$(call print_message,"Deleting dynamic library: $(BINPATH)dynamic/$(NAME_dynamic)")
+	@rm -f $(BINPATH)dynamic/$(NAME_dynamic)
+%%end if
 
 .PHONY:\
 clean-build-bin #! Deletes all build binaries in the ./bin folder
 clean-build-bin:
+%%if is(type,program)
 	@$(call print_message,"Deleting builds in '$(BINPATH)'...")
 	@rm -f $(BINPATH)*
+%%end if
+%%if is(type,library)
+	@$(call print_message,"Deleting builds in '$(BINPATH)static'...")
+	@rm -f $(BINPATH)static/*
+	@$(call print_message,"Deleting builds in '$(BINPATH)dynamic'...")
+	@rm -f $(BINPATH)dynamic/*
+%%end if
 
 
 
 .PHONY:\
-prereq-build #! Checks prerequisite installs to build the program
+prereq-build #! Checks prerequisite installed tools to build a %[type]%
 prereq-build:
 	@-$(call check_prereq,'(build) C compiler: $(CC)',\
 		$(CC) --version,\
 		$(call install_prereq,$(CC)))
+%%if is(type,library)
+	@-$(call check_prereq,'(build) C archiver: $(AR)',\
+		which $(AR),\
+		$(call install_prereq,binutils))
+	@-$(call check_prereq,'(build) C archive symbol table tool: $(RANLIB)',\
+		which $(RANLIB),\
+		$(call install_prereq,binutils))
+%%end if
