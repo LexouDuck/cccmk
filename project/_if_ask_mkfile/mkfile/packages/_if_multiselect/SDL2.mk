@@ -34,7 +34,9 @@ PACKAGE_SDL2_PKG_INSTALL = \
 	@$(call print_warning,"Unsupported platform: SDL2 must be configured manually")
 
 ifeq ($(OSMODE),other)
-else ifeq ($(OSMODE),windows)
+$(error Unsupported platform: external package 'SDL2' must be configured manually)
+endif
+ifeq ($(OSMODE),windows)
 	PACKAGE_SDL2_PKG = SDL2-devel-$(PACKAGE_SDL2_VERSION)-mingw.tar.gz
 	PACKAGE_SDL2_GETVERSIONS = grep 'mingw.tar.gz'
 	PACKAGE_SDL2_PKG_INSTALL = \
@@ -44,7 +46,8 @@ else ifeq ($(OSMODE),windows)
 		{ mv $(PACKAGE_SDL2_DIR)i686-w64-mingw32/   $(PACKAGE_SDL2_DIR)bin/windows_x86-32/ ; } ; \
 		{ mv $(PACKAGE_SDL2_DIR)x86_64-w64-mingw32/ $(PACKAGE_SDL2_DIR)bin/windows_x86-64/ ; } ; \
 
-else ifeq ($(OSMODE),macos)
+endif
+ifeq ($(OSMODE),macos)
 	PACKAGE_SDL2_PKG = SDL2-$(PACKAGE_SDL2_VERSION).dmg
 	PACKAGE_SDL2_GETVERSIONS = grep '.dmg'
 	PACKAGE_SDL2_PKG_INSTALL = \
@@ -53,7 +56,8 @@ else ifeq ($(OSMODE),macos)
 		cp -rf "$$volume"/SDL2.framework $(PACKAGE_SDL2_BIN)$(PACKAGE_SDL2_LIBMODE) ; \
 		hdiutil detach `echo "$$listing" | cut -f 1` ; \
 
-else ifeq ($(OSMODE),linux)
+endif
+ifeq ($(OSMODE),linux)
 	PACKAGE_SDL2_PKG = SDL2-$(PACKAGE_SDL2_VERSION).zip
 	PACKAGE_SDL2_GETVERSIONS = grep '.zip'
 	PACKAGE_SDL2_PKG_INSTALL = \
@@ -63,8 +67,6 @@ else ifeq ($(OSMODE),linux)
 		cd $(PACKAGE_SDL2_BIN) ; \
 		./configure && make ; \
 
-else
-$(error Unsupported platform: external package 'SDL2' must be configured manually)
 endif
 
 

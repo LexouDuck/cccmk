@@ -41,12 +41,13 @@ MAGICK_FLAGS :=
 
 
 
-ifeq ($(OSMODE),)
-_:=$(shell $(call print_error,"Unknown platform ($(OSMODE)), cannot embed application metadata"))
+ifeq ($(OSMODE),other)
+_:=$(shell $(call print_warning,"Unknown platform ($(OSMODE)), requires manual configuration"))
+endif
 
 
 
-else ifeq ($(OSMODE),linux)
+ifeq ($(OSMODE),linux)
 APPDIST = $(BINPATH)$(APPNAME)
 APPMETA = $(BINPATH)$(APPNAME).desktop
 define APPMETADATA
@@ -84,10 +85,11 @@ $(BINPATH).icons: $(APPICON)
 		mkdir -p $$folder ; \
 		$(MAGICK) convert $(APPICON) -scale $$i $$folder/$(NAME).png ; \
 	done
+endif
 
 
 
-else ifeq ($(OSMODE),macos)
+ifeq ($(OSMODE),macos)
 APPDIST = $(BINPATH)$(APPNAME).app
 APPMETA = $(BINPATH)$(APPNAME).plist
 define APPMETADATA
@@ -143,10 +145,11 @@ $(APPFILE).icns: $(APPICON)
 	done
 	@iconutil -c icns -o $@ $(APPFILE).iconset
 	@rm -rf $(APPFILE).iconset
+endif
 
 
 
-else ifeq ($(OSMODE),windows)
+ifeq ($(OSMODE),windows)
 APPDIST = $(BINPATH)$(APPNAME).exe
 APPMETA = $(BINPATH)$(APPNAME).rc
 define APPMETADATA
@@ -198,11 +201,6 @@ $(APPFILE).ico: $(APPICON)
 	done
 	@$(MAGICK) convert $(foreach i,$(ICON_SIZES), $(TEMPDIR)$(i).png) $@
 	@rm -rf $(TEMPDIR)
-
-
-
-else
-_:=$(shell $(call print_warning,"Unknown platform ($(OSMODE)), requires manual configuration"))
 endif
 
 

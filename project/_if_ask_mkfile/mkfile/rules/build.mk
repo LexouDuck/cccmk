@@ -122,6 +122,10 @@ $(BINPATH)dynamic/$(NAME_dynamic): $(OBJSFILE) $(OBJS)
 	@rm -f $@
 	@mkdir -p $(@D)
 	@printf "Compiling dynamic library: $@ -> "
+ifeq ($(OSMODE),other)
+	@$(call print_warning,"Unknown platform: needs manual configuration.")
+	@$(call print_warning,"You must manually configure the script to build a dynamic library")
+endif
 ifeq ($(OSMODE),windows)
 	@$(CC) -shared -o $@ $(CFLAGS) $(LDFLAGS) $(call objs) $(LDLIBS) \
 		-Wl,--output-def,$(NAME).def \
@@ -129,15 +133,14 @@ ifeq ($(OSMODE),windows)
 		-Wl,--export-all-symbols
 	@cp -p $(NAME).def $(BINPATH)dynamic/
 	@cp -p $(NAME).lib $(BINPATH)dynamic/
-else ifeq ($(OSMODE),macos)
+endif
+ifeq ($(OSMODE),macos)
 	@$(CC) -shared -o $@ $(CFLAGS) $(LDFLAGS) $(call objs) $(LDLIBS) \
 		-install_name '@loader_path/$(NAME_dynamic)'
-else ifeq ($(OSMODE),linux)
+endif
+ifeq ($(OSMODE),linux)
 	@$(CC) -shared -o $@ $(CFLAGS) $(LDFLAGS) $(call objs) $(LDLIBS) \
 		-Wl,-rpath='$$ORIGIN/'
-else
-	@$(call print_warning,"Unknown platform: needs manual configuration.")
-	@$(call print_warning,"You must manually configure the script to build a dynamic library")
 endif
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
 	@$(call bin_copylibs,dynamic)
