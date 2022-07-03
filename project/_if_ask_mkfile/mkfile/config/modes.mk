@@ -106,6 +106,6 @@ endif
 ifeq ($(OSMODE),macos)
 	LIBEXT_dynamic := dylib
 endif
-ifeq ($(strip $(OSMODE)),)
+ifeq ($(OSMODE),other)
 $(warning Unsupported platform: you must configure the dynamic library file extension your machine uses)
 endif
