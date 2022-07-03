@@ -46,11 +46,11 @@ package-install-libccc #! downloads the package and sets up its package folder
 package-install-libccc:
 	@if ! [ -f ".gitmodules" ] ; then \
 		$(call print_message,"Adding git submodule: $(PACKAGE_libccc_URL)...") ; \
-		git submodule add $(PACKAGE_libccc_URL) $(PACKAGE_libccc_DIR) ; \
+		$(GIT) submodule add $(PACKAGE_libccc_URL) $(PACKAGE_libccc_DIR) ; \
 	fi
 	@if [ -z "`ls $(PACKAGE_libccc_DIR)`" ] ; then \
 		$(call print_message,"Downloading package: $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)...") ; \
-		git submodule update --init $(PACKAGE_libccc_DIR) ; \
+		$(GIT) submodule update --init $(PACKAGE_libccc_DIR) ; \
 		$(call print_success,"Installed $(PACKAGE_libccc)@$(PACKAGE_libccc_VERSION)") ; \
 	fi
 
@@ -73,7 +73,7 @@ update-libccc:
 	fi
 	@echo "=> Current version is: $(PACKAGE_libccc_VERSION)"
 	@cd $(PACKAGE_libccc_DIR) ; \
-	if git status | grep -q "HEAD detached" ; then \
+	if $(GIT) status | grep -q "HEAD detached" ; then \
 		$(call print_warning,"Your git submodule "$$i" is in detached HEAD state.") ; \
 		printf "You need to manually go into the submodule folder and do:\n" ; \
 		printf "$$ git checkout $(PACKAGE_libccc_GITBRANCH)\n" ; \
@@ -81,8 +81,8 @@ update-libccc:
 	else \
 		newer_version=`$(call package_libccc_checkupdates)` ; \
 		printf "Newest version is '$${newer_version}'.\n" ; \
-		git fetch ; \
-		git checkout $(PACKAGE_libccc_GITBRANCH) ; \
+		$(GIT) fetch ; \
+		$(GIT) checkout $(PACKAGE_libccc_GITBRANCH) ; \
 		cd - ; \
 		$(MAKE) package-libccc PACKAGE_libccc_VERSION=$$newer_version ; \
 	fi

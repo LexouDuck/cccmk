@@ -11,9 +11,9 @@ init:
 %%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/test.mk) :	@mkdir -p $(TESTDIR)
 %%if tracked(.githooks/)                                            :	@mkdir -p $(GITHOOKSDIR)
 %%if tracked(_if_ask_mkfile/mkfile/rules/lists.mk)                  :	@mkdir -p $(LISTSDIR)
-	@git submodule update --init --recursive
+	@$(GIT) submodule update --init --recursive
 %%if tracked(.githooks/)
-	@git config core.hooksPath $(GITHOOKSDIR)
+	@$(GIT) config core.hooksPath $(GITHOOKSDIR)
 %%end if
 
 # TODO 'configure' rule, for easier cross-platform setup ?
