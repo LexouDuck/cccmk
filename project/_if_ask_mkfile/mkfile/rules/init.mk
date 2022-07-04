@@ -12,6 +12,7 @@ init:
 %%if tracked(.githooks/)                                            :	@mkdir -p $(GITHOOKSDIR)
 %%if tracked(_if_ask_mkfile/mkfile/rules/lists.mk)                  :	@mkdir -p $(LISTSDIR)
 	@$(GIT) submodule update --init --recursive
+	@$(GIT) config submodule.recurse true
 %%if tracked(.githooks/)
 	@$(GIT) config core.hooksPath $(GITHOOKSDIR)
 %%end if

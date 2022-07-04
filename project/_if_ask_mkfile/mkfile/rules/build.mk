@@ -112,7 +112,7 @@ $(BINPATH)static/$(NAME_static): $(OBJSFILE) $(OBJS)
 	@mkdir -p $(@D)
 	@printf "Compiling static library: $@ -> "
 	@$(AR) $(ARFLAGS) $@ $(call objs)
-	@$(RANLIB) $(RANLIB_FLAGS) $@
+	@$(RANLIB) $(RANLIB_FLAGS) $@ || $(call print_warning,"call to 'ranlib' command failed: $(RANLIB) $(RANLIB_FLAGS) $@")
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
 	@$(call bin_copylibs,static)
 	@$(call bin_symlinks,$(BINPATH)static,$(NAME),$(LIBEXT_static))
