@@ -86,7 +86,6 @@ LINTDIR = $(LOGDIR)lint/
 
 
 
-
 #######################################
 #     Included Makefile Variables     #
 #######################################
@@ -104,6 +103,14 @@ include $(MKFILES_DIR)config/modes.mk
 include $(MKFILES_DIR)config/build.mk
 %%if tracked(_if_ask_mkfile/mkfile/_if_ask_testsuite/rules/build-tests.mk):include $(MKFILES_DIR)config/build-tests.mk
 include $(MKFILES_DIR)config/install.mk
+
+
+
+# parse any .env files, to override variables
+ifneq ($(wildcard .env),)
+$(shell $(call print_message,"Sourcing local '.env' file..."))
+$(shell sh ./.env)
+endif
 
 
 
