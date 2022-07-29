@@ -1,0 +1,2 @@
+%%if tracked(_if_ask_mkfile/mkfile/packages/libccc.mk) :libccc@0.0.0-?
+%%if tracked(_if_ask_mkfile/mkfile/packages/SDL2.mk)   :SDL2@0.0.0-?

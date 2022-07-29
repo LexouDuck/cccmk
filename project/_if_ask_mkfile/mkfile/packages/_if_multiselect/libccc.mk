@@ -81,6 +81,7 @@ update-libccc:
 	else \
 		newer_version=`$(call package_libccc_checkupdates)` ; \
 		printf "Newest version is '$${newer_version}'.\n" ; \
+		$(call packages_setversion,libccc,$$newer_version) ; \
 		$(GIT) fetch ; \
 		$(GIT) checkout $(PACKAGE_libccc_GITBRANCH) ; \
 		cd - ; \
