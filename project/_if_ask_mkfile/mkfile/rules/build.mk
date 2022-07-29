@@ -100,7 +100,7 @@ $(BINPATH)$(NAME): $(OBJSFILE) $(OBJS)
 	@rm -f $@
 	@mkdir -p $(@D)
 	@printf "Compiling program: $@ -> "
-	@$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS)
+	@$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(call objs) $(LDLIBS)
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
 	@$(call bin_copylibs)
 	@$(call bin_symlinks,$(BINPATH),$(NAME),)
