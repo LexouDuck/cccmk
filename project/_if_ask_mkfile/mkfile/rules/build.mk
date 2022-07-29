@@ -59,11 +59,11 @@ endif
 .PHONY:\
 build #! Builds the %[type]%, with the default BUILDMODE (typically debug)
 build: \
+%%if is(type,program):$(BINPATH)$(NAME)
 %%if is(type,library)
 $(BINPATH)static/$(NAME_static) \
 $(BINPATH)dynamic/$(NAME_dynamic) \
 %%end if
-%%if is(type,program):$(NAME)
 
 .PHONY:\
 build-debug #! Builds the %[type]%, in 'debug' mode (with debug flags and symbol-info)
