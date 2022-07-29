@@ -106,8 +106,8 @@ LDFLAGS_OS_other =
 ifneq ($(findstring clang,$(CC)),)
 %%if tracked(_if_ask_mkfile/mkfile/rules/version.mk)
 	LDFLAGS_OS_macos += -current_version       $(VERSION)
-	LDFLAGS_OS_macos += -compatibility_version $(VERSION)
 %%end if
+%%if is(type,library):	LDFLAGS_OS_macos += -compatibility_version $(VERSION)
 endif
 
 #! This variable is intentionally empty, to specify additional C linker options from the commandline
