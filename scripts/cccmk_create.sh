@@ -204,6 +204,13 @@ TypeScript;
 TypeScript-React;
 '
 project_lang="$response"
+project_langsources="$project_lang"
+project_langheaders=""
+if [ "$project_langsources" = "c"   ] ; then project_langheaders="h"   ; fi
+if [ "$project_langsources" = "c++" ] ; then project_langheaders="h++" ; fi
+if [ "$project_langsources" = "cxx" ] ; then project_langheaders="hxx" ; fi
+if [ "$project_langsources" = "cpp" ] ; then project_langheaders="hpp" ; fi
+if [ "$project_langsources" = "adb" ] ; then project_langheaders="ads" ; fi
 
 # prompt the user for the project_type
 printf "$io_cyan""Is the project a program, or library ?""$io_reset\n"
@@ -282,6 +289,8 @@ fi
 		echo "project_description='$project_description'"
 		echo "project_lang='$project_lang'"
 		echo "project_langversion='$project_langversion'"
+		echo "project_langsources='$project_langsources'"
+		echo "project_langheaders='$project_langheaders'"
 		echo "project_type='$project_type'"
 		echo "project_cccmk='$project_cccmk'"
 		echo "project_versionfile='$project_versionfile'"

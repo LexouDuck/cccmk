@@ -71,7 +71,7 @@ BEGIN {
 
 {
 	# loop directive
-	if (scope_for != 0)
+	if (scope_for)
 	{
 		if (/^%%end[ \t]+for[ \t]*$/)
 		{
@@ -126,7 +126,7 @@ BEGIN {
 
 
 	# condition directive
-	if (scope_if != 0)
+	if (scope_if)
 	{
 		if (/^%%end[ \t]+if[ \t]*$/)
 		{

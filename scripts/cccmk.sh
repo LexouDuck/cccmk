@@ -243,6 +243,10 @@ project_description=
 project_lang=
 #! Parsed from the .cccmk file: The programming language version required for a project
 project_langversion=
+#! Parsed from the .cccmk file: The programming language file extension for source code
+project_langsources=
+#! Parsed from the .cccmk file: The programming language file extension for header code (if applicable for $project_lang)
+project_langheaders=
 #! Parsed from the .cccmk file: The type (program/library) of a project
 project_type=
 #! Parsed from the .cccmk file: The cccmk commit revision
@@ -283,6 +287,8 @@ else
 	print_verbose "parsed project_description: '$project_description'"
 	print_verbose "parsed project_lang:        '$project_lang'"
 	print_verbose "parsed project_langversion: '$project_langversion'"
+	print_verbose "parsed project_langsources: '$project_langsources'"
+	print_verbose "parsed project_langheaders: '$project_langheaders'"
 	print_verbose "parsed project_type:        '$project_type'"
 	print_verbose "parsed project_cccmk:       '$project_cccmk'"
 	print_verbose "parsed project_versionfile: '$project_versionfile'"
@@ -329,11 +335,11 @@ else
 fi
 
 # parse the project file which holds the list of packages
-if [ -z "$project_packagefile" ]
-then :
-elif ! [ -f "./$project_packagefile" ]
-then project_missing="$project_missing - missing packages dependency list file: ./$project_packagefile\n"
-fi
+#if [ -z "$project_packagefile" ]
+#then :
+#elif ! [ -f "./$project_packagefile" ]
+#then project_missing="$project_missing - missing packages dependency list file: ./$project_packagefile\n"
+#fi
 
 # display warning if current folder is missing any necessary project files
 if ! [ -z "$project_missing" ]
@@ -369,6 +375,8 @@ cccmk_template()
 		description=$project_description;
 		lang=$project_lang;
 		langversion=$project_langversion;
+		langsources=$project_langsources;
+		langheaders=$project_langheaders;
 		type=$project_type;
 		cccmk=$project_cccmk;
 		versionfile=$project_versionfile;
