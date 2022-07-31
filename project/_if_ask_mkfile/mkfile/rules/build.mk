@@ -8,7 +8,7 @@ objs = ` cat "$(OBJSFILE)" | tr '\n' ' ' `
 OBJSFILE = $(OBJPATH)objs.txt
 
 #! Derive list of compiled object files (.o) from list of srcs
-OBJS := $(SRCS:$(SRCDIR)%.c=$(OBJPATH)%.o)
+OBJS := $(SRCS:$(SRCDIR)%.%[lang]%=$(OBJPATH)%.o)
 
 #! Derive list of dependency files (.d) from list of srcs
 DEPS := $(OBJS:%.o=%.d)
@@ -85,11 +85,20 @@ $(OBJSFILE): $(SRCSFILE)
 
 
 
-#! Compiles object files from source files
+%%if is(lang,cpp)
+#! Compiles object files from C++ source files
+$(OBJPATH)%.o : $(SRCDIR)%.cpp
+	@mkdir -p $(@D)
+	@printf "Compiling file: $@ -> "
+	@$(CXX) -o $@ $(CXXFLAGS) $(CPPFLAGS) -MMD $(INCLUDES) -c $<
+	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
+
+%%end if
+#! Compiles object files from C source files
 $(OBJPATH)%.o : $(SRCDIR)%.c
 	@mkdir -p $(@D)
 	@printf "Compiling file: $@ -> "
-	@$(CC) -o $@ $(CFLAGS) -MMD $(INCLUDES) -c $<
+	@$(CC) -o $@ $(CFLAGS) $(CPPFLAGS) -MMD $(INCLUDES) -c $<
 	@printf $(IO_GREEN)"OK!"$(IO_RESET)"\n"
 
 
