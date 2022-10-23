@@ -2,6 +2,7 @@
 
 
 
+%%if !is(langheaders,)
 #! Path of the file which stores the list of header code files
 HDRSFILE = $(LISTSDIR)hdrs.txt
 #! The shell command which outputs the list of header code files
@@ -19,6 +20,7 @@ HDRS := $(shell cat $(HDRSFILE))
 
 
 
+%%end if
 #! Path of the file which stores the list of source code files
 SRCSFILE = $(LISTSDIR)srcs.txt
 #! The shell command which generates the list of source code files
