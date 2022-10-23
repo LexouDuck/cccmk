@@ -185,46 +185,46 @@ clean-build-bin \
 %%if is(type,library):clean-build-lib \
 
 .PHONY:\
-clean-build-obj #! Deletes all .o build object files
+clean-build-obj #! Deletes all .o build object files, for the current TARGETDIR
 clean-build-obj:
-	@$(call print_message,"Deleting all build .o files...")
+	@$(call print_message,"Deleting all .o files for target $(TARGETDIR)...")
 	$(foreach i,$(OBJS),	@rm -f "$(i)" $(C_NL))
 
 .PHONY:\
-clean-build-dep #! Deletes all .d build dependency files
+clean-build-dep #! Deletes all .d build dependency files, for the current TARGETDIR
 clean-build-dep:
-	@$(call print_message,"Deleting all build .d files...")
+	@$(call print_message,"Deleting all .d files for target $(TARGETDIR)...")
 	$(foreach i,$(DEPS),	@rm -f "$(i)" $(C_NL))
 
 .PHONY:\
+clean-build-bin #! Deletes all build binaries, for the current TARGETDIR
+clean-build-bin:
 %%if is(type,program)
-clean-build-exe #! Deletes the built program in the root project folder
+	@$(call print_message,"Deleting binaries in '$(BINPATH)'...")
+	@rm -f $(BINPATH)*
+%%end if
+%%if is(type,library)
+	@$(call print_message,"Deleting binaries in '$(BINPATH)static'...")
+	@rm -f $(BINPATH)static/*
+	@$(call print_message,"Deleting binaries in '$(BINPATH)dynamic'...")
+	@rm -f $(BINPATH)dynamic/*
+%%end if
+
+.PHONY:\
+%%if is(type,program)
+clean-build-exe #! Deletes the built program, for the current TARGETDIR
 clean-build-exe:
 	@$(call print_message,"Deleting program: $(BINPATH)$(NAME)")
 	@rm -f $(BINPATH)$(NAME)
 	@rm -f $(NAME)
 %%end if
 %%if is(type,library)
-clean-build-lib #! Deletes the built library(ies) in the root project folder
+clean-build-lib #! Deletes the built library(ies), for the current TARGETDIR
 clean-build-lib:
 	@$(call print_message,"Deleting static library: $(BINPATH)static/$(NAME_static)")
 	@rm -f $(BINPATH)static/$(NAME_static)
 	@$(call print_message,"Deleting dynamic library: $(BINPATH)dynamic/$(NAME_dynamic)")
 	@rm -f $(BINPATH)dynamic/$(NAME_dynamic)
-%%end if
-
-.PHONY:\
-clean-build-bin #! Deletes all build binaries in the ./bin folder
-clean-build-bin:
-%%if is(type,program)
-	@$(call print_message,"Deleting builds in '$(BINPATH)'...")
-	@rm -f $(BINPATH)*
-%%end if
-%%if is(type,library)
-	@$(call print_message,"Deleting builds in '$(BINPATH)static'...")
-	@rm -f $(BINPATH)static/*
-	@$(call print_message,"Deleting builds in '$(BINPATH)dynamic'...")
-	@rm -f $(BINPATH)dynamic/*
 %%end if
 
 

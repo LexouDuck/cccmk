@@ -4,8 +4,8 @@
 
 .PHONY:\
 all #! Builds all targets (this is the default rule)
-all: \
-build-$(BUILDMODE)
+all:
+	$(foreach i,$(BUILDMODES),	@$(MAKE) BUILDMODE=$(i) build)
 
 
 
