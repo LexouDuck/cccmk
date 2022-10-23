@@ -126,13 +126,13 @@ cccmk_diff_brief()
 if ! diff --version > /dev/null
 then print_error "cccmk requires the shell command 'diff' to be installed and accessible from the \$PATH."	; exit 1
 fi
-# check the `git` command
-if ! git --version > /dev/null
-then print_error "cccmk requires the shell command 'git' to be installed and accessible from the \$PATH."	; exit 1
-fi
 # check the `make` command
 if ! make --version > /dev/null
 then print_error "cccmk requires the shell command 'make' to be installed and accessible from the \$PATH."	; exit 1
+fi
+# check the `git` command
+if ! git --version > /dev/null
+then print_error "cccmk requires the shell command 'git' to be installed and accessible from the \$PATH."	; exit 1
 fi
 
 
@@ -280,23 +280,23 @@ then
 else
 	# parse the .cccmk file (by simply running it as an inline shell script)
 	. "./$project_cccmkfile"
-	print_verbose "parsed project_name:        '$project_name'"
-	print_verbose "parsed project_year:        '$project_year'"
-	print_verbose "parsed project_link:        '$project_link'"
-	print_verbose "parsed project_docs:        '$project_docs'"
-	print_verbose "parsed project_repo:        '$project_repo'"
-	print_verbose "parsed project_author:      '$project_author'"
-	print_verbose "parsed project_description: '$project_description'"
-	print_verbose "parsed project_lang:        '$project_lang'"
-	print_verbose "parsed project_langversion: '$project_langversion'"
-	print_verbose "parsed project_langsources: '$project_langsources'"
-	print_verbose "parsed project_langheaders: '$project_langheaders'"
-	print_verbose "parsed project_type:        '$project_type'"
-	print_verbose "parsed project_cccmk:       '$project_cccmk'"
-	print_verbose "parsed project_versionfile: '$project_versionfile'"
-	print_verbose "parsed project_packagefile: '$project_packagefile'"
-	print_verbose "parsed project_track_paths: '$project_track_paths'"
-	print_verbose "parsed project_track:       '$project_track'"
+	if [ -z "$project_name"        ]; then print_warning "undefined variable in .cccmk file: project_name"        ; else print_verbose "parsed project_name:        '$project_name'"        ; fi
+	if [ -z "$project_year"        ]; then print_warning "undefined variable in .cccmk file: project_year"        ; else print_verbose "parsed project_year:        '$project_year'"        ; fi
+	if [ -z "$project_link"        ]; then print_warning "undefined variable in .cccmk file: project_link"        ; else print_verbose "parsed project_link:        '$project_link'"        ; fi
+	if [ -z "$project_docs"        ]; then print_warning "undefined variable in .cccmk file: project_docs"        ; else print_verbose "parsed project_docs:        '$project_docs'"        ; fi
+	if [ -z "$project_repo"        ]; then print_warning "undefined variable in .cccmk file: project_repo"        ; else print_verbose "parsed project_repo:        '$project_repo'"        ; fi
+	if [ -z "$project_author"      ]; then print_warning "undefined variable in .cccmk file: project_author"      ; else print_verbose "parsed project_author:      '$project_author'"      ; fi
+	if [ -z "$project_description" ]; then print_warning "undefined variable in .cccmk file: project_description" ; else print_verbose "parsed project_description: '$project_description'" ; fi
+	if [ -z "$project_lang"        ]; then print_warning "undefined variable in .cccmk file: project_lang"        ; else print_verbose "parsed project_lang:        '$project_lang'"        ; fi
+	if [ -z "$project_langversion" ]; then print_warning "undefined variable in .cccmk file: project_langversion" ; else print_verbose "parsed project_langversion: '$project_langversion'" ; fi
+	if [ -z "$project_langsources" ]; then print_warning "undefined variable in .cccmk file: project_langsources" ; else print_verbose "parsed project_langsources: '$project_langsources'" ; fi
+	if [ -z "$project_langheaders" ]; then print_warning "undefined variable in .cccmk file: project_langheaders" ; else print_verbose "parsed project_langheaders: '$project_langheaders'" ; fi
+	if [ -z "$project_type"        ]; then print_warning "undefined variable in .cccmk file: project_type"        ; else print_verbose "parsed project_type:        '$project_type'"        ; fi
+	if [ -z "$project_cccmk"       ]; then print_warning "undefined variable in .cccmk file: project_cccmk"       ; else print_verbose "parsed project_cccmk:       '$project_cccmk'"       ; fi
+	if [ -z "$project_versionfile" ]; then print_warning "undefined variable in .cccmk file: project_versionfile" ; else print_verbose "parsed project_versionfile: '$project_versionfile'" ; fi
+	if [ -z "$project_packagefile" ]; then print_warning "undefined variable in .cccmk file: project_packagefile" ; else print_verbose "parsed project_packagefile: '$project_packagefile'" ; fi
+	if [ -z "$project_track_paths" ]; then print_warning "undefined variable in .cccmk file: project_track_paths" ; else print_verbose "parsed project_track_paths: '$project_track_paths'" ; fi
+	if [ -z "$project_track"       ]; then print_warning "undefined variable in .cccmk file: project_track"       ; else print_verbose "parsed project_track:       '$project_track'"       ; fi
 fi
 
 # parse the project file which holds the version number

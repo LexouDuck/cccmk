@@ -107,7 +107,7 @@ The functions which can be used in conditional directives are implemented in `cc
 By default, a couple of useful functions are provided:
 - `%%if true()`: Always include the given section
 - `%%if false()`: Never include the given section
-- `%%if is(varname, text)`: Checks if the variable `varname` contains a value which is identical to the given `text`.
+- `%%if is(varname,text)`: Checks if the variable `varname` contains a value which is identical to the given `text`.
 - `%%if matches(varname, regexp)`: Checks if the variable `varname` matches the given `regexp` regular expression.
 - `%%if tracked(filepath)`: Checks if the given project template `filepath` is tracked in the project's `.cccmk` file.
 
