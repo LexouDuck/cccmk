@@ -3,6 +3,8 @@
 #! This is the main entry-point script for cccmk
 #! It sets some key variables, and processes commandline arguments
 
+program=cccmk
+
 # check if cccmk debug execution mode is set, amd apply setting if so
 if [ -z $debug ]
 then debug=false
@@ -110,7 +112,7 @@ cccmk_diff_brief()
 
 
 # general shell utility functions
-. $CCCMK_PATH_SCRIPTS/util.sh
+. $CCCMK_PATH_SCRIPTS/utils.sh
 # general shell user-prompting functions
 . $CCCMK_PATH_SCRIPTS/prompt.bash
 # cccmk help doc texts and functions

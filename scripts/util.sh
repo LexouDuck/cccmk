@@ -23,12 +23,12 @@ io_magenta="` ansi_esc 35`"
 io_cyan="`    ansi_esc 36`"
 
 print_verbose() {
-if $verbose; then { printf "cccmk: %s%s%s%s\n" "$io_blue"   "verbose" "$io_reset: " "$@" ; } >&2 ; fi ; }
-print_message() { { printf "cccmk: %s%s%s%s\n" "$io_blue"   "message" "$io_reset: " "$@" ; } >&2 ; }
-print_warning() { { printf "cccmk: %s%s%s%s\n" "$io_yellow" "warning" "$io_reset: " "$@" ; } >&2 ; }
-print_success() { { printf "cccmk: %s%s%s%s\n" "$io_green"  "success" "$io_reset: " "$@" ; } >&2 ; }
-print_failure() { { printf "cccmk: %s%s%s%s\n" "$io_red"    "failure" "$io_reset: " "$@" ; } >&2 ; }
-print_error()   { { printf "cccmk: %s%s%s%s\n" "$io_red"    "error"   "$io_reset: " "$@" ; } >&2 ; exit 1 ; }
+if $verbose; then { printf "$program: %s%s%s%s\n" "$io_blue"   "verbose" "$io_reset: " "$@" ; } >&2 ; fi ; }
+print_message() { { printf "$program: %s%s%s%s\n" "$io_blue"   "message" "$io_reset: " "$@" ; } >&2 ; }
+print_warning() { { printf "$program: %s%s%s%s\n" "$io_yellow" "warning" "$io_reset: " "$@" ; } >&2 ; }
+print_success() { { printf "$program: %s%s%s%s\n" "$io_green"  "success" "$io_reset: " "$@" ; } >&2 ; }
+print_failure() { { printf "$program: %s%s%s%s\n" "$io_red"    "failure" "$io_reset: " "$@" ; } >&2 ; }
+print_error()   { { printf "$program: %s%s%s%s\n" "$io_red"    "error"   "$io_reset: " "$@" ; } >&2 ; exit 1 ; }
 
 
 
