@@ -4,7 +4,7 @@
 # Here is an example of how this script should be called:
 #	$ awk \
 #		-v variables=" foo=FOO; bar=BAR; " \
-#		-f "util.awk" \
+#		-f "utils.awk" \
 #		-f "template-functions.awk" \
 #		-f "template.awk" \
 #		"$inputfile"

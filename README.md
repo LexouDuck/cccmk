@@ -81,7 +81,7 @@ Each project template file is processed by the `template.awk` templater program 
 // Here is an example of how this script should be called:
 	$ awk \
 		-v variables=" foo=FOO; bar=BAR; " \
-		-f ~/.cccmk/scripts/util.awk \
+		-f ~/.cccmk/scripts/utils.awk \
 		-f ~/.cccmk/scripts/template-functions.awk \
 		-f ~/.cccmk/scripts/template.awk \
 		"$inputfile"

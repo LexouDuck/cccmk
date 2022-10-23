@@ -253,7 +253,7 @@ do
 			-v file_ccc="$file_ccc" \
 			-v file_pwd="$file_pwd" \
 			-v rev="$cccmk_git_rev" \
-			-f "$CCCMK_PATH_SCRIPTS/util.awk" \
+			-f "$CCCMK_PATH_SCRIPTS/utils.awk" \
 			-f "$CCCMK_PATH_SCRIPTS/cccmk_track.awk"
 		# keep track all previously updated/merged files
 		updated_files="$updated_files $trackedfile_pwdpath"

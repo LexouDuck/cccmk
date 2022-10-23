@@ -7,7 +7,7 @@
 #		| awk \
 #		-v path_old="$old" \
 #		-v path_new="$new" \
-#		-f util.awk
+#		-f utils.awk
 #		-f diff.awk
 
 

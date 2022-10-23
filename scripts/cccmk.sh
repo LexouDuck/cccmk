@@ -105,7 +105,7 @@ cccmk_diff_brief()
 	| awk \
 	-v path_old="$1" \
 	-v path_new="$2" \
-	-f "$CCCMK_PATH_SCRIPTS/util.awk" \
+	-f "$CCCMK_PATH_SCRIPTS/utils.awk" \
 	-f "$CCCMK_PATH_SCRIPTS/diff.awk"
 }
 
@@ -392,13 +392,13 @@ cccmk_template()
 	then
 		awk_inplace "$inputfile" \
 		-v variables="$variables" \
-		-f "$CCCMK_PATH_SCRIPTS/util.awk" \
+		-f "$CCCMK_PATH_SCRIPTS/utils.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template-functions.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template.awk"
 	else
 		awk \
 		-v variables="$variables" \
-		-f "$CCCMK_PATH_SCRIPTS/util.awk" \
+		-f "$CCCMK_PATH_SCRIPTS/utils.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template-functions.awk" \
 		-f "$CCCMK_PATH_SCRIPTS/template.awk" \
 		"$inputfile" > "$outputfile"
