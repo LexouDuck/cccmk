@@ -1,6 +1,8 @@
 #!/bin/sh -e
 
-
+if [ -z "$program" ]
+then program="$0"
+fi
 
 ###
 ### utility functions for logging/io
