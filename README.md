@@ -22,46 +22,6 @@ It is worth noting that `cccmk` was originally designed as a build system manage
 
 
 
-### Installation
-
-While it is simple enough to download this repo as a .zip and manually install cccmk, it is recommended that you clone the repo properly, using `git clone` (see "Step 1, method A: read-only installation").
-If you wish to customize the "project template", or `cccmk` itself, then it is probably best that you fork this repository, so that you can then `git push` your custom changes to your own forked repo (see "Step 1, method B: customizable installation").
-
-- **Step 1, method A: read-only installation**
-
-So, start by cloning the `cccmk` repo directly:
-```sh
-git clone  https://github.com/LexouDuck/cccmk.git  ~/.cccmk
-```
-
-- **Step 1, method B: customizable installation**
-
-So, start by forking the repo (learn more here: https://docs.github.com/en/get-started/quickstart/fork-a-repo).
-When you clone your forked repo, you may want to use an SSH address rather than HTTPS, depending on your use-case:
-```sh
-git clone  git@github.com:<USERNAME>/cccmk.git  ~/.cccmk
-```
-
-- **Step 2: installing the `cccmk` command**
-
-The above step will create your `cccmk` installation, in the standard `~/.cccmk/` directory.
-
-Then, we simply need to let your shell know where to find the `cccmk` command:
-```sh
-sudo ln -s  ~/.cccmk/scripts/cccmk.sh  /usr/local/bin/cccmk
-sudo chmod 755 /usr/local/bin/cccmk # On most systems, this isn't necessary
-```
-That should be it ! Try running `cccmk --help` to see if it works.
-
-NOTE: If you use a windows machine, then, depending on the shell that you use, there is perhaps no `chmod` command, there is probably no `sudo` command, and there is most likely no simple working `ln -s` command to create symlinks.
-In this case, the best manner to have a working `cccmk` command is to add your installation folder to your PATH env variable, like so:
-```sh
-export PATH="$PATH:~/.cccmk/scripts/"
-mv ~/.cccmk/scripts/cccmk.sh ~/.cccmk/scripts/cccmk # remove the .sh file extension from the main entry-point script
-```
-
-
-
 ### Usage
 
 `cccmk` has three main features/commands:
@@ -110,6 +70,46 @@ By default, a couple of useful functions are provided:
 - `%%if is(varname,text)`: Checks if the variable `varname` contains a value which is identical to the given `text`.
 - `%%if matches(varname, regexp)`: Checks if the variable `varname` matches the given `regexp` regular expression.
 - `%%if tracked(filepath)`: Checks if the given project template `filepath` is tracked in the project's `.cccmk` file.
+
+
+
+### Installation
+
+While it is simple enough to download this repo as a .zip and manually install cccmk, it is recommended that you clone the repo properly, using `git clone` (see "Step 1, method A: read-only installation").
+If you wish to customize the "project template", or `cccmk` itself, then it is probably best that you fork this repository, so that you can then `git push` your custom changes to your own forked repo (see "Step 1, method B: customizable installation").
+
+- **Step 1, method A: read-only installation**
+
+So, start by cloning the `cccmk` repo directly:
+```sh
+git clone  https://github.com/LexouDuck/cccmk.git  ~/.cccmk
+```
+
+- **Step 1, method B: customizable installation**
+
+So, start by forking the repo (learn more here: https://docs.github.com/en/get-started/quickstart/fork-a-repo).
+When you clone your forked repo, you may want to use an SSH address rather than HTTPS, depending on your use-case:
+```sh
+git clone  git@github.com:<USERNAME>/cccmk.git  ~/.cccmk
+```
+
+- **Step 2: installing the `cccmk` command**
+
+The above step will create your `cccmk` installation, in the standard `~/.cccmk/` directory.
+
+Then, we simply need to let your shell know where to find the `cccmk` command:
+```sh
+sudo ln -s  ~/.cccmk/scripts/cccmk.sh  /usr/local/bin/cccmk
+sudo chmod 755 /usr/local/bin/cccmk # On most systems, this isn't necessary
+```
+That should be it ! Try running `cccmk --help` to see if it works.
+
+NOTE: If you use a windows machine, then, depending on the shell that you use, there is perhaps no `chmod` command, there is probably no `sudo` command, and there is most likely no simple working `ln -s` command to create symlinks.
+In this case, the best manner to have a working `cccmk` command is to add your installation folder to your PATH env variable, like so:
+```sh
+export PATH="$PATH:~/.cccmk/scripts/"
+mv ~/.cccmk/scripts/cccmk.sh ~/.cccmk/scripts/cccmk # remove the .sh file extension from the main entry-point script
+```
 
 
 
