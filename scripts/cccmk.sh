@@ -112,11 +112,11 @@ cccmk_diff_brief()
 
 
 # general shell utility functions
-. $CCCMK_PATH_SCRIPTS/utils.sh
+. "$CCCMK_PATH_SCRIPTS/utils.sh"
 # general shell user-prompting functions
-. $CCCMK_PATH_SCRIPTS/prompt.bash
+. "$CCCMK_PATH_SCRIPTS/prompt.bash"
 # cccmk help doc texts and functions
-. $CCCMK_PATH_SCRIPTS/cccmk_help.sh
+. "$CCCMK_PATH_SCRIPTS/cccmk_help.sh"
 
 
 
@@ -305,21 +305,21 @@ then :
 elif ! [ -f "./$project_versionfile" ]
 then project_missing="$project_missing - missing versioning info file: ./$project_versionfile\n"
 else
-	for subdir in `list_subfolders $CCCMK_PATH_PROJECT`
+	for subdir in `list_subfolders "$CCCMK_PATH_PROJECT"`
 	do
 		if echo "$subdir" | grep -q "_if_lang_"
 		then
 			values="` echo "$subdir" | cut -d'_' -f 4`"
 			if contains "$project_lang" "` echo "$values" | tr '-' ' ' `"
 			then
-				. $CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk
+				. "$CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk"
 				if [ "`type -t parse_versionfile `" = "function" ]
 				then
 					project_version=`parse_versionfile "$project_versionfile" `
 					break
 				else
 					print_warning "Cannot parse version number from versionfile, no \`parse_versionfile\` function implemented."
-					print_warning "Go check the code inside your language-specific script file: $CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk"
+					print_warning "Go check the code inside your language-specific script file: \"$CCCMK_PATH_PROJECT/_if_lang_$values/.cccmk\""
 					parse_versionfile() { : ; } # define empty function
 				fi
 			fi
@@ -413,9 +413,9 @@ cccmk_template()
 case "$command" in
 	help)    show_help    ;;
 	version) show_version ;;
-	create)  . $CCCMK_PATH_SCRIPTS/cccmk_create.sh  ;;
-	migrate) . $CCCMK_PATH_SCRIPTS/cccmk_migrate.sh ;;
-	diff)    . $CCCMK_PATH_SCRIPTS/cccmk_diff.sh    ;;
-	update)  . $CCCMK_PATH_SCRIPTS/cccmk_update.sh  ;;
-	upgrade) . $CCCMK_PATH_SCRIPTS/cccmk_upgrade.sh ;;
+	create)  . "$CCCMK_PATH_SCRIPTS/cccmk_create.sh"  ;;
+	migrate) . "$CCCMK_PATH_SCRIPTS/cccmk_migrate.sh" ;;
+	diff)    . "$CCCMK_PATH_SCRIPTS/cccmk_diff.sh"    ;;
+	update)  . "$CCCMK_PATH_SCRIPTS/cccmk_update.sh"  ;;
+	upgrade) . "$CCCMK_PATH_SCRIPTS/cccmk_upgrade.sh" ;;
 esac
