@@ -98,16 +98,11 @@ endif
 LIBEXT_static := a
 
 #! The file extension used for dynamic library files
-LIBEXT_dynamic := 
-ifeq ($(OSMODE),windows)
-	LIBEXT_dynamic := dll
-endif
-ifeq ($(OSMODE),linux)
-	LIBEXT_dynamic := so
-endif
-ifeq ($(OSMODE),macos)
-	LIBEXT_dynamic := dylib
-endif
+LIBEXT_dynamic = $(LIBEXT_dynamic_$(OSMODE))
+LIBEXT_dynamic_windows	:= dll
+LIBEXT_dynamic_linux	:= so
+LIBEXT_dynamic_macos	:= dylib
+LIBEXT_dynamic_other	:= 
 ifeq ($(OSMODE),other)
 $(warning Unsupported platform: you must configure the dynamic library file extension your machine uses)
 endif

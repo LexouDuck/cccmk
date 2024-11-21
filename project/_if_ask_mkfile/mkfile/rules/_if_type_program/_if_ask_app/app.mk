@@ -48,7 +48,7 @@ endif
 
 
 ifeq ($(OSMODE),linux)
-APPDIST = $(BINPATH)$(APPNAME)
+APPDIST = $(BINPATH)$(APPNAME).linux
 APPMETA = $(BINPATH)$(APPNAME).desktop
 define APPMETADATA
 [Desktop Entry]
